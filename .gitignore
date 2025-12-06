@@ -137,3 +137,11 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# CDK build artifacts
+cdk.out/
+.cdk.staging/
+cdk.context.json
+
+# Build output
+dist/

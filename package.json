@@ -1,0 +1,21 @@
+{
+    "name": "time-management",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Time management and focus application",
+    "scripts": {
+        "lint": "echo 'Lint not implemented yet'",
+        "test": "echo 'Tests not implemented yet'",
+        "build": "echo 'Build not implemented yet'"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.3",
+        "eslint": "^8.56.0",
+        "prettier": "^3.1.1",
+        "@types/node": "^20.10.6"
+    },
+    "engines": {
+        "node": ">=20.0.0",
+        "pnpm": ">=8.0.0"
+    }
+}
