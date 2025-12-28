@@ -191,26 +191,39 @@ git clone https://github.com/<your-username>/time-manager.git
 cd time-manager
 ```
 
-### 2. Install dependencies
+### 2. Update corepack (if needed)
+
+If you encounter a corepack signature verification error, update corepack:
+
+```bash
+npm install -g corepack@latest
+corepack enable
+```
+
+### 3. Install dependencies
 
 ```bash
 pnpm install
 ```
 
-### 3. Start the frontend (local dev)
+### 4. Start the frontend (local dev)
 
 ```bash
 pnpm --filter web dev
 ```
 
-### 4. Run local backend tests
+The frontend will be available at [http://localhost:5173/](http://localhost:5173/)
+
+### 5. Run local backend tests
 
 ```bash
 pnpm --filter api test
 ```
 
-### 5. Synthesize infrastructure (no deploy yet)
+*(Note: The API service is not yet implemented)*
+
+### 6. Synthesize infrastructure (no deploy yet)
 
 ```bash
-pnpm --filter infra run cdk synth
+pnpm --filter @time-management/infra-cdk run synth
 ```
