@@ -268,21 +268,21 @@ If relevant, describe expectations for visibility into system behavior.
 Capture known uncertainties without blocking progress.
 
 ### Q1: ESLint Rule Strictness
-**Question**: Should we enforce zero warnings in CI, or only errors?  
-**Decision**: Start with errors-only enforcement. Warnings allowed but visible. Can be tightened in future sprints.  
-**Owner**: Team decision during sprint  
+**Question**: Should we enforce zero warnings in CI, or only errors?
+**Decision**: Start with errors-only enforcement. Warnings allowed but visible. Can be tightened in future sprints.
+**Owner**: Team decision during sprint
 **Status**: Recommend errors-only for v1
 
 ### Q2: Pre-commit Hooks
-**Question**: Should we use Husky/lint-staged for pre-commit validation?  
-**Decision**: Defer to Sprint 1. CI enforcement is sufficient for Sprint 0.  
-**Owner**: Deferred  
+**Question**: Should we use Husky/lint-staged for pre-commit validation?
+**Decision**: Defer to Sprint 1. CI enforcement is sufficient for Sprint 0.
+**Owner**: Deferred
 **Status**: Out of scope for Sprint 0
 
 ### Q3: Package Versioning Strategy
-**Question**: How do we version workspace packages?  
-**Decision**: All packages start at 0.1.0. No publishing in v1. Defer to post-launch.  
-**Owner**: Deferred  
+**Question**: How do we version workspace packages?
+**Decision**: All packages start at 0.1.0. No publishing in v1. Defer to post-launch.
+**Owner**: Deferred
 **Status**: Not needed for Sprint 0
 
 ---
