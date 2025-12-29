@@ -193,12 +193,17 @@ The system explains itself by existing.
 
 * UI copy refinement
 * Coach scaffolding hooks
+* **Copy alignment with philosophy:**
+  * Use "drivers" and "actions" consistently (never "goals" or "tasks")
+  * Reference the three core problems the system solves
+  * Reinforce "meaning before execution" principle
 
 ### Exit Criteria
 
 * New user sees a meaningful system immediately
 * Zero blank screens
 * No tutorial required
+* Terminology matches system philosophy
 
 ---
 
@@ -241,9 +246,12 @@ Make “today” intentional.
 ### Scope
 
 * Daily planning workflow
-* Rollover logic
+* **Rollover logic (deliberate, not passive):**
+  * Automatic rollover detection
+  * User confirmation required during daily planning
+  * Time estimation validation on rollover
 * Priority classification
-* Time estimation
+* Time estimation with realism checks
 * Trigger definition
 * Coach nudges for:
 
@@ -261,6 +269,7 @@ Make “today” intentional.
 * A full day can be planned and completed
 * Planning friction is low
 * System feels honest, not aspirational
+* Rollovers are acknowledged, not automatic
 
 ---
 
@@ -337,6 +346,11 @@ Turn activity into learning.
 * Completion vs rollover trends
 * Anti-pattern detection
 * Reflection prompts surfaced via coach
+* **Success metrics & trend analysis:**
+  * Driver completion indicators
+  * Action completion rate trends over time
+  * Time estimation accuracy improvements
+  * Rollover frequency patterns
 
 ### Supporting Work
 
@@ -345,8 +359,9 @@ Turn activity into learning.
 
 ### Exit Criteria
 
-* Users can answer: “Why did this week feel hard?”
+* Users can answer: "Why did this week feel hard?"
 * History feels illuminating, not judgmental
+* Progress is visible and measurable
 
 ---
 
@@ -365,17 +380,25 @@ Make the system self-correcting.
 * UI for suggestions
 * User control over coach verbosity
 * Logging for future AI enhancement
+* **Coach personality & tone:**
+  * Guidance, never enforcement
+  * Encouragement without judgment
+  * Questions over commands
+  * Avoid gamification patterns
+  * Respect user autonomy
 
 ### Supporting Work
 
 * Telemetry hooks
 * Documentation for future AI upgrades
+* Coach tone guidelines document
 
 ### Exit Criteria
 
 * System gently teaches itself
 * No chatbot required
 * Coach feels helpful, not nagging
+* Tone aligns with philosophy principles
 
 ---
 
@@ -396,9 +419,15 @@ Be publicly usable without embarrassment.
 * Early access feature flags
 * Feedback collection hooks
 * Legal basics (privacy policy, ToS)
+* **Data portability & user rights:**
+  * User data export functionality (JSON format)
+  * Account deletion flow
+  * Data portability documentation
+  * GDPR/CCPA compliance basics
 
 ### Exit Criteria
 
 * App is safe, stable, and opinionated
-* Clear “early access” positioning
+* Clear "early access" positioning
 * You are comfortable inviting users
+* Users can export and delete their data
