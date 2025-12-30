@@ -110,6 +110,7 @@ new TimeManagementStack(app, `TimeManagement-${env}`, {
 ### API Gateway + Lambda Pattern
 
 **✅ Good:**
+
 ```typescript
 // lib/constructs/api-construct.ts
 import * as cdk from 'aws-cdk-lib';
@@ -166,13 +167,9 @@ export class ApiConstruct extends Construct {
     });
 
     // Authorizer
-    const authorizer = new apigateway.CognitoUserPoolsAuthorizer(
-      this,
-      'Authorizer',
-      {
-        cognitoUserPools: [props.userPool],
-      }
-    );
+    const authorizer = new apigateway.CognitoUserPoolsAuthorizer(this, 'Authorizer', {
+      cognitoUserPools: [props.userPool],
+    });
 
     // Routes
     const tasks = this.api.root.addResource('tasks');
@@ -207,6 +204,7 @@ export class ApiConstruct extends Construct {
 ### DynamoDB Pattern
 
 **✅ Good:**
+
 ```typescript
 // lib/constructs/database-construct.ts
 import * as cdk from 'aws-cdk-lib';
@@ -259,6 +257,7 @@ export class DatabaseConstruct extends Construct {
 ### Cognito Authentication Pattern
 
 **✅ Good:**
+
 ```typescript
 // lib/constructs/auth-construct.ts
 import * as cdk from 'aws-cdk-lib';
@@ -331,6 +330,7 @@ export class AuthConstruct extends Construct {
 ### Use Consistent Naming Patterns
 
 **✅ Good:**
+
 ```typescript
 // Pattern: {Project}-{Environment}-{Resource}
 const tableName = `TimeManagement-${env}-Tasks`;
@@ -341,6 +341,7 @@ const bucketName = `timemanagement-${env}-assets-${accountId}`;
 ### Use Logical IDs for CDK Constructs
 
 **✅ Good:**
+
 ```typescript
 new lambda.Function(this, 'ApiHandler', { ... });
 new dynamodb.Table(this, 'TasksTable', { ... });
@@ -352,6 +353,7 @@ new s3.Bucket(this, 'AssetsBucket', { ... });
 ### Use Environment-Specific Configs
 
 **✅ Good:**
+
 ```typescript
 // lib/config/dev.ts
 export const devConfig = {
@@ -375,6 +377,7 @@ export const prodConfig = {
 ### Define Stack Outputs for Frontend
 
 **✅ Good:**
+
 ```typescript
 new cdk.CfnOutput(this, 'ApiUrl', {
   value: api.url,
@@ -399,6 +402,7 @@ new cdk.CfnOutput(this, 'UserPoolClientId', {
 Prefer high-level (L2) constructs over low-level (L1) CloudFormation resources:
 
 **✅ Good:**
+
 ```typescript
 import * as s3 from 'aws-cdk-lib/aws-s3';
 
@@ -409,6 +413,7 @@ new s3.Bucket(this, 'MyBucket', {
 ```
 
 **❌ Avoid:**
+
 ```typescript
 import * as s3 from 'aws-cdk-lib/aws-s3';
 
@@ -420,22 +425,27 @@ new s3.CfnBucket(this, 'MyBucket', {
 ### 2. Grant Permissions, Don't Create Policies
 
 **✅ Good:**
+
 ```typescript
 table.grantReadWriteData(lambdaFunction);
 bucket.grantRead(lambdaFunction);
 ```
 
 **❌ Avoid (manual policies):**
+
 ```typescript
-lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
-  actions: ['dynamodb:GetItem', 'dynamodb:PutItem'],
-  resources: [table.tableArn],
-}));
+lambdaFunction.addToRolePolicy(
+  new iam.PolicyStatement({
+    actions: ['dynamodb:GetItem', 'dynamodb:PutItem'],
+    resources: [table.tableArn],
+  })
+);
 ```
 
 ### 3. Enable Removal Policies Carefully
 
 **✅ Good:**
+
 ```typescript
 // Stateful resources - retain on deletion
 new dynamodb.Table(this, 'Table', {
@@ -451,6 +461,7 @@ new lambda.Function(this, 'Function', {
 ### 4. Use Aspects for Cross-Cutting Concerns
 
 **✅ Good:**
+
 ```typescript
 import { IAspect, Aspects, Tags } from 'aws-cdk-lib';
 
@@ -475,6 +486,7 @@ Aspects.of(stack).add(new EnforceEncryptionAspect());
 ### 5. Use Context for Environment Values
 
 **✅ Good:**
+
 ```typescript
 // cdk.json
 {
@@ -499,6 +511,7 @@ const config = this.node.tryGetContext(env);
 ### Snapshot Tests
 
 **✅ Good:**
+
 ```typescript
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
@@ -520,6 +533,7 @@ test('Stack creates expected resources', () => {
 ### Fine-Grained Assertions
 
 **✅ Good:**
+
 ```typescript
 test('Lambda has correct environment variables', () => {
   const app = new App();

@@ -49,13 +49,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
-      exclude: [
-        'node_modules/',
-        'dist/',
-        '**/*.test.ts',
-        '**/*.config.ts',
-        '**/types.ts',
-      ],
+      exclude: ['node_modules/', 'dist/', '**/*.test.ts', '**/*.config.ts', '**/types.ts'],
       thresholds: {
         lines: 80,
         functions: 80,
@@ -116,12 +110,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'src/test/',
-        '**/*.config.ts',
-        'src/main.tsx',
-      ],
+      exclude: ['node_modules/', 'src/test/', '**/*.config.ts', 'src/main.tsx'],
       thresholds: {
         lines: 80,
         functions: 80,
@@ -189,9 +178,7 @@ export function isOverdue(task: Task): boolean {
 
 export function sortByPriority(tasks: Task[]): Task[] {
   const priorityOrder = { high: 0, medium: 1, low: 2 };
-  return [...tasks].sort(
-    (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
-  );
+  return [...tasks].sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
 }
 
 // src/domain/task.test.ts
@@ -247,9 +234,7 @@ describe('sortByPriority', () => {
   });
 
   it('should not mutate original array', () => {
-    const tasks: Task[] = [
-      { id: '1', title: 'Low', priority: 'low', completed: false },
-    ];
+    const tasks: Task[] = [{ id: '1', title: 'Low', priority: 'low', completed: false }];
     const original = [...tasks];
 
     sortByPriority(tasks);
@@ -655,9 +640,7 @@ describe('API Client', () => {
 
     vi.mocked(fetch).mockResolvedValue(mockResponse as Response);
 
-    await expect(fetchUserTasks('user-123')).rejects.toThrow(
-      'Failed to fetch tasks'
-    );
+    await expect(fetchUserTasks('user-123')).rejects.toThrow('Failed to fetch tasks');
   });
 });
 ```
@@ -743,6 +726,7 @@ it('should handle completed tasks', () => {
 ### Coverage Requirements
 
 **Minimum coverage:**
+
 - Overall: 80%
 - New code: 90%
 - Critical paths: 100%
@@ -820,17 +804,19 @@ describe('isOverdue', () => {
 ### 3. Descriptive Test Names
 
 **✅ Good:**
+
 ```typescript
-it('should format date in user locale')
-it('should return 400 for invalid email')
-it('should disable submit button when form is invalid')
+it('should format date in user locale');
+it('should return 400 for invalid email');
+it('should disable submit button when form is invalid');
 ```
 
 **❌ Avoid:**
+
 ```typescript
-it('works')
-it('test 1')
-it('should work correctly')
+it('works');
+it('test 1');
+it('should work correctly');
 ```
 
 ### 4. Test Edge Cases

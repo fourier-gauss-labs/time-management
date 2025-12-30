@@ -21,7 +21,10 @@ This document defines security principles, authentication patterns, and secure c
 
 ```typescript
 // Frontend: Login flow
-import { CognitoIdentityProviderClient, InitiateAuthCommand } from '@aws-sdk/client-cognito-identity-provider';
+import {
+  CognitoIdentityProviderClient,
+  InitiateAuthCommand,
+} from '@aws-sdk/client-cognito-identity-provider';
 
 async function login(username: string, password: string): Promise<AuthTokens> {
   const client = new CognitoIdentityProviderClient({ region: 'us-east-1' });
@@ -140,6 +143,7 @@ export async function deleteUser(currentUser: User, targetUserId: string) {
 ### Least Privilege IAM Policies
 
 **✅ Good - Specific permissions:**
+
 ```typescript
 // CDK: Grant specific permissions
 table.grantReadWriteData(lambdaFunction);
@@ -148,17 +152,21 @@ secretsManager.grantRead(lambdaFunction);
 ```
 
 **❌ Avoid - Overly broad permissions:**
+
 ```typescript
 // Don't grant admin access
-lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
-  actions: ['*'],
-  resources: ['*'],
-}));
+lambdaFunction.addToRolePolicy(
+  new iam.PolicyStatement({
+    actions: ['*'],
+    resources: ['*'],
+  })
+);
 ```
 
 ### Lambda Execution Roles
 
 **✅ Good:**
+
 ```typescript
 const lambdaRole = new iam.Role(this, 'LambdaRole', {
   assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
@@ -248,6 +256,7 @@ export async function handler(event: any) {
 ### Environment Variables
 
 **✅ Good - Non-sensitive config:**
+
 ```typescript
 environment: {
   TABLE_NAME: tasksTable.tableName,
@@ -257,6 +266,7 @@ environment: {
 ```
 
 **❌ Avoid - Sensitive data in env vars:**
+
 ```typescript
 environment: {
   DATABASE_PASSWORD: 'plain-text-password', // Never do this!
@@ -269,6 +279,7 @@ environment: {
 ### Encryption at Rest
 
 **DynamoDB:**
+
 ```typescript
 new dynamodb.Table(this, 'Table', {
   encryption: dynamodb.TableEncryption.AWS_MANAGED, // Or CUSTOMER_MANAGED with KMS
@@ -277,6 +288,7 @@ new dynamodb.Table(this, 'Table', {
 ```
 
 **S3:**
+
 ```typescript
 new s3.Bucket(this, 'Bucket', {
   encryption: s3.BucketEncryption.S3_MANAGED, // Or KMS_MANAGED
@@ -285,6 +297,7 @@ new s3.Bucket(this, 'Bucket', {
 ```
 
 **Secrets Manager:**
+
 ```typescript
 new secretsmanager.Secret(this, 'Secret', {
   encryptionKey: kmsKey, // Optional: Use custom KMS key
@@ -294,6 +307,7 @@ new secretsmanager.Secret(this, 'Secret', {
 ### Encryption in Transit
 
 **API Gateway - Enforce HTTPS:**
+
 ```typescript
 // HTTPS is enforced by default in API Gateway
 const api = new apigateway.RestApi(this, 'Api', {
@@ -302,6 +316,7 @@ const api = new apigateway.RestApi(this, 'Api', {
 ```
 
 **Frontend - Use HTTPS only:**
+
 ```typescript
 // In production, ensure all API calls use HTTPS
 const API_URL = 'https://api.example.com'; // Never http://
@@ -318,6 +333,7 @@ const API_URL = 'https://api.example.com'; // Never http://
 ### Validate All User Input
 
 **✅ Good:**
+
 ```typescript
 import { z } from 'zod';
 
@@ -338,6 +354,7 @@ export async function createTask(input: unknown): Promise<Task> {
 ```
 
 **❌ Avoid - No validation:**
+
 ```typescript
 export async function createTask(input: any): Promise<Task> {
   // Dangerous: No validation of input
@@ -348,12 +365,13 @@ export async function createTask(input: any): Promise<Task> {
 ### Prevent Injection Attacks
 
 **SQL Injection (if using RDS):**
+
 ```typescript
 // ✅ Good: Use parameterized queries
-const result = await db.query(
-  'SELECT * FROM tasks WHERE user_id = ? AND task_id = ?',
-  [userId, taskId]
-);
+const result = await db.query('SELECT * FROM tasks WHERE user_id = ? AND task_id = ?', [
+  userId,
+  taskId,
+]);
 
 // ❌ Avoid: String concatenation
 const result = await db.query(
@@ -362,15 +380,18 @@ const result = await db.query(
 ```
 
 **NoSQL Injection (DynamoDB):**
+
 ```typescript
 // ✅ Good: Use AWS SDK with proper types
-const result = await dynamodb.send(new GetItemCommand({
-  TableName: 'Tasks',
-  Key: {
-    userId: { S: userId },
-    taskId: { S: taskId },
-  },
-}));
+const result = await dynamodb.send(
+  new GetItemCommand({
+    TableName: 'Tasks',
+    Key: {
+      userId: { S: userId },
+      taskId: { S: taskId },
+    },
+  })
+);
 
 // Type safety prevents injection
 ```
@@ -380,6 +401,7 @@ const result = await dynamodb.send(new GetItemCommand({
 ### Environment-Specific CORS
 
 **✅ Good:**
+
 ```typescript
 // Development
 defaultCorsPreflightOptions: {
@@ -399,6 +421,7 @@ defaultCorsPreflightOptions: {
 ```
 
 **❌ Avoid - Wildcard in production:**
+
 ```typescript
 allowOrigins: apigateway.Cors.ALL_ORIGINS, // Only use in development
 ```
@@ -408,6 +431,7 @@ allowOrigins: apigateway.Cors.ALL_ORIGINS, // Only use in development
 ### Secure Error Messages
 
 **✅ Good:**
+
 ```typescript
 export class AppError extends Error {
   constructor(
@@ -432,6 +456,7 @@ try {
 ```
 
 **❌ Avoid - Exposing internal details:**
+
 ```typescript
 catch (error) {
   // Don't expose stack traces or internal paths
@@ -445,6 +470,7 @@ catch (error) {
 ### Lambda Error Handler
 
 **✅ Good:**
+
 ```typescript
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
@@ -478,6 +504,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 ### CloudWatch Logs
 
 **✅ Good - Structured logging:**
+
 ```typescript
 interface LogEntry {
   timestamp: string;
@@ -508,6 +535,7 @@ log({
 ```
 
 **❌ Avoid - Logging sensitive data:**
+
 ```typescript
 console.log('User login:', { email, password }); // Never log passwords!
 console.log('API key:', apiKey); // Never log secrets!
@@ -517,6 +545,7 @@ console.log('JWT token:', token); // Never log tokens!
 ### CloudWatch Alarms
 
 **Monitor for security events:**
+
 ```typescript
 // CDK: Create alarm for unauthorized access attempts
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
@@ -540,6 +569,7 @@ const alarm = new cloudwatch.Alarm(this, 'UnauthorizedAlarm', {
 ### API Responses
 
 **✅ Good:**
+
 ```typescript
 return {
   statusCode: 200,
@@ -560,6 +590,7 @@ return {
 ### Keep Dependencies Updated
 
 **Regular security updates:**
+
 ```bash
 # Check for vulnerabilities
 pnpm audit
@@ -572,20 +603,22 @@ pnpm audit fix
 ```
 
 **Use Dependabot or Renovate:**
+
 ```yaml
 # .github/dependabot.yml
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     open-pull-requests-limit: 10
 ```
 
 ### Pin Dependency Versions
 
 **✅ Good:**
+
 ```json
 {
   "dependencies": {

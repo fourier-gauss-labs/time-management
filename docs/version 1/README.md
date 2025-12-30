@@ -1,4 +1,3 @@
-
 # Product Requirements Document (PRD)
 
 ## Time Management Application
@@ -19,10 +18,10 @@ Enables personalized planning, persistence, and multi-device usage.
 
 **Key Capabilities**
 
-* Secure user authentication
-* Session management
-* User profile management
-* Environment-aware configuration (dev, QA, prod)
+- Secure user authentication
+- Session management
+- User profile management
+- Environment-aware configuration (dev, QA, prod)
 
 ---
 
@@ -36,10 +35,10 @@ Builds trust and ensures the system can safely support multiple users without so
 
 **Key Capabilities**
 
-* Private-by-default data model
-* Explicit user ownership of all data
-* Ability to export and delete personal data
-* No user-to-user data sharing in v1
+- Private-by-default data model
+- Explicit user ownership of all data
+- Ability to export and delete personal data
+- No user-to-user data sharing in v1
 
 **Out of Scope (Future)**
 Shared planning, delegation, and social productivity features.
@@ -58,14 +57,14 @@ Reduces onboarding friction and teaches the system through use rather than docum
 
 **Key Capabilities**
 
-* Creation of a default driver:
+- Creation of a default driver:
+  - _“Be the most productive version of myself”_
 
-  * *“Be the most productive version of myself”*
-* Creation of two default recurring actions:
+- Creation of two default recurring actions:
+  - “Weekly introspection”
+  - “Daily introspection and planning”
 
-  * “Weekly introspection”
-  * “Daily introspection and planning”
-* All default items are editable or removable by the user
+- All default items are editable or removable by the user
 
 ---
 
@@ -79,15 +78,14 @@ Encourages correct system usage and continuous improvement without prescribing b
 
 **Key Capabilities**
 
-* Non-intrusive suggestions based on usage patterns
-* Guidance rather than enforcement
-* Rules-based in v1, AI-enhanced in later versions
-* Suggestions may include:
-
-  * Completing a weekly review
-  * Performing daily planning
-  * Adding triggers to stalled actions
-  * Breaking down oversized actions
+- Non-intrusive suggestions based on usage patterns
+- Guidance rather than enforcement
+- Rules-based in v1, AI-enhanced in later versions
+- Suggestions may include:
+  - Completing a weekly review
+  - Performing daily planning
+  - Adding triggers to stalled actions
+  - Breaking down oversized actions
 
 ---
 
@@ -103,9 +101,9 @@ Provides strategic intent and meaning for all actions in the system.
 
 **Key Capabilities**
 
-* Create, edit, archive drivers
-* Soft encouragement to limit active drivers (ideal range: 6–10)
-* Drivers serve as the required root of all planning hierarchies
+- Create, edit, archive drivers
+- Soft encouragement to limit active drivers (ideal range: 6–10)
+- Drivers serve as the required root of all planning hierarchies
 
 ---
 
@@ -119,10 +117,10 @@ Ensures planning remains intentional rather than reactive.
 
 **Key Capabilities**
 
-* User-selected weekly review day
-* Dedicated weekly review workflow
-* Review and refinement of drivers
-* Creation or adjustment of milestones and actions during review
+- User-selected weekly review day
+- Dedicated weekly review workflow
+- Review and refinement of drivers
+- Creation or adjustment of milestones and actions during review
 
 ---
 
@@ -138,10 +136,10 @@ Enables day-to-day execution aligned with strategic intent.
 
 **Key Capabilities**
 
-* Actions must be associated with a driver
-* Actions may be one-time or recurring
-* Estimated time allocation per action
-* Priority classification: urgent, important, other
+- Actions must be associated with a driver
+- Actions may be one-time or recurring
+- Estimated time allocation per action
+- Priority classification: urgent, important, other
 
 ---
 
@@ -155,10 +153,10 @@ Preserves alignment between effort and purpose.
 
 **Key Capabilities**
 
-* Driver selection required when creating actions
-* Inline creation of new drivers when needed
-* Coach-based nudges rather than hard errors
-* No silent defaults or automatic driver assignment
+- Driver selection required when creating actions
+- Inline creation of new drivers when needed
+- Coach-based nudges rather than hard errors
+- No silent defaults or automatic driver assignment
 
 ---
 
@@ -172,9 +170,9 @@ Improves initiation and completion of actions.
 
 **Key Capabilities**
 
-* Optional trigger field for actions
-* Coach-initiated suggestions for triggers on stalled actions
-* Visibility of triggers during execution
+- Optional trigger field for actions
+- Coach-initiated suggestions for triggers on stalled actions
+- Visibility of triggers during execution
 
 ---
 
@@ -188,10 +186,10 @@ Ensures daily plans contain only workable items.
 
 **Key Capabilities**
 
-* Promote action to milestone
-* Create child actions under milestone
-* Automatic milestone completion when all actions are complete
-* Discourage excessive nesting (2–3 levels max)
+- Promote action to milestone
+- Create child actions under milestone
+- Automatic milestone completion when all actions are complete
+- Discourage excessive nesting (2–3 levels max)
 
 ---
 
@@ -207,11 +205,11 @@ Creates clarity and realistic expectations for daily work.
 
 **Key Capabilities**
 
-* Dedicated daily planning workflow
-* Rollover of incomplete actions
-* Scope validation and time realism checks
-* Priority classification review
-* Trigger suggestions when appropriate
+- Dedicated daily planning workflow
+- Rollover of incomplete actions
+- Scope validation and time realism checks
+- Priority classification review
+- Trigger suggestions when appropriate
 
 ---
 
@@ -225,9 +223,9 @@ Provides visibility, accountability, and historical insight.
 
 **Key Capabilities**
 
-* States: not started, started, completed, canceled, rolled over
-* Automatic rollover tracking
-* Daily historical snapshots
+- States: not started, started, completed, canceled, rolled over
+- Automatic rollover tracking
+- Daily historical snapshots
 
 ---
 
@@ -243,9 +241,9 @@ Ensures realistic scheduling without duplicating calendar management.
 
 **Key Capabilities**
 
-* Read-only integration with multiple calendars
-* Daily aggregation of appointments
-* Conflict-aware planning
+- Read-only integration with multiple calendars
+- Daily aggregation of appointments
+- Conflict-aware planning
 
 ---
 
@@ -259,10 +257,10 @@ Improves focus, energy management, and execution discipline.
 
 **Key Capabilities**
 
-* Configurable Pomodoro intervals
-* Automatic scheduling around calendar commitments
-* Priority-based time allocation
-* Visual daily timeline
+- Configurable Pomodoro intervals
+- Automatic scheduling around calendar commitments
+- Priority-based time allocation
+- Visual daily timeline
 
 ---
 
@@ -276,9 +274,9 @@ Encourages sustained focus and reduces distraction.
 
 **Key Capabilities**
 
-* Active Pomodoro timer
-* Break notifications
-* Minimal-distraction execution mode
+- Active Pomodoro timer
+- Break notifications
+- Minimal-distraction execution mode
 
 ---
 
@@ -294,9 +292,9 @@ Creates feedback loops for continuous improvement.
 
 **Key Capabilities**
 
-* Daily and weekly history views
-* Action and driver-level summaries
-* Completion and rollover trends
+- Daily and weekly history views
+- Action and driver-level summaries
+- Completion and rollover trends
 
 ---
 
@@ -310,10 +308,10 @@ Helps users refine their system rather than blame themselves.
 
 **Key Capabilities**
 
-* Detection of repeated rollovers
-* Oversized action indicators
-* Missed planning rituals
-* Coach-driven reflection prompts
+- Detection of repeated rollovers
+- Oversized action indicators
+- Missed planning rituals
+- Coach-driven reflection prompts
 
 ---
 
@@ -329,9 +327,9 @@ Enables safe iteration, testing, and deployment.
 
 **Key Capabilities**
 
-* Infrastructure as code
-* Environment-specific configuration
-* CI/CD compatibility
+- Infrastructure as code
+- Environment-specific configuration
+- CI/CD compatibility
 
 ---
 
@@ -345,7 +343,7 @@ Builds trust and supports long-term use.
 
 **Key Capabilities**
 
-* Secure authentication
-* Encrypted data in transit and at rest
-* Observability and audit hooks
-* Principle-of-least-privilege access
+- Secure authentication
+- Encrypted data in transit and at rest
+- Observability and audit hooks
+- Principle-of-least-privilege access

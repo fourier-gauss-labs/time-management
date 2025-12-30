@@ -4,7 +4,7 @@
 
 **Sprint Intent**
 Describe, in one short paragraph, what this sprint is fundamentally about.
-Focus on *capability and outcome*, not tasks or implementation details.
+Focus on _capability and outcome_, not tasks or implementation details.
 
 ---
 
@@ -29,7 +29,7 @@ Explicitly list what this sprint will cover.
 
 ## Out of Scope
 
-Explicitly list what this sprint will *not* attempt to do.
+Explicitly list what this sprint will _not_ attempt to do.
 
 - Deferred feature
 - Future enhancement
@@ -62,6 +62,7 @@ Each requirement should be independently testable.
 Business-oriented description of the behavior.
 
 **Acceptance Criteria**
+
 - Given <context>, when <action>, then <observable outcome>
 - Given <context>, when <action>, then <observable outcome>
 
@@ -73,26 +74,31 @@ Business-oriented description of the behavior.
 Business-oriented description of the behavior.
 
 **Acceptance Criteria**
+
 - Given <context>, when <action>, then <observable outcome>
 
 ---
 
 ## Non-Functional Requirements
 
-List only the non-functional requirements that are relevant *for this sprint*.
+List only the non-functional requirements that are relevant _for this sprint_.
 
 ### Security
+
 - Requirement or constraint
 - Requirement or constraint
 
 ### Performance
+
 - Requirement or expectation
 
 ### Reliability & Error Handling
+
 - Expected failure modes
 - Required error handling behavior
 
 ### Developer Experience
+
 - Testing expectations
 - CI/CD expectations
 - Tooling constraints

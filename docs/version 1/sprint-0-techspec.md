@@ -36,7 +36,7 @@ Explicitly list what this sprint will cover.
 
 ## Out of Scope
 
-Explicitly list what this sprint will *not* attempt to do.
+Explicitly list what this sprint will _not_ attempt to do.
 
 - Actual application code (React, Lambda, CDK)
 - Test framework implementation (deferred to Sprint 1+)
@@ -79,6 +79,7 @@ Each requirement should be independently testable.
 The repository must be structured as a pnpm workspace with clear separation of concerns across apps, packages, and infrastructure code.
 
 **Acceptance Criteria**
+
 - Given a fresh clone of the repository, when running `pnpm install`, then all dependencies install without errors
 - Given the workspace configuration, when adding a new package, then it automatically participates in workspace hoisting
 - Given the workspace structure, when running `pnpm -r <command>`, then the command executes across all packages
@@ -91,6 +92,7 @@ The repository must be structured as a pnpm workspace with clear separation of c
 All TypeScript packages must inherit from a shared base configuration that enforces strict type safety and modern JavaScript features.
 
 **Acceptance Criteria**
+
 - Given a new TypeScript file in any package, when running `tsc --noEmit`, then strict mode violations are caught
 - Given the base tsconfig, when a package extends it, then it inherits all compiler options unless explicitly overridden
 - Given TypeScript code across the workspace, when running type-check, then all packages are validated
@@ -103,6 +105,7 @@ All TypeScript packages must inherit from a shared base configuration that enfor
 Linting and formatting must be automated and enforceable, preventing inconsistent code from being committed.
 
 **Acceptance Criteria**
+
 - Given any TypeScript file, when running `pnpm lint`, then ESLint validates the code against configured rules
 - Given any code file, when running `pnpm format`, then Prettier reformats it according to style guide
 - Given code with lint errors, when attempting to run CI, then the pipeline fails
@@ -116,6 +119,7 @@ Linting and formatting must be automated and enforceable, preventing inconsisten
 A GitHub Actions workflow must run automated checks on every pull request to prevent broken code from merging.
 
 **Acceptance Criteria**
+
 - Given a pull request, when opened or updated, then CI automatically runs lint and type-check
 - Given CI checks that fail, when reviewing the PR, then merge is blocked until checks pass
 - Given CI checks that pass, when reviewing the PR, then the status is clearly visible
@@ -129,6 +133,7 @@ A GitHub Actions workflow must run automated checks on every pull request to pre
 Clear documentation must exist for onboarding new developers and explaining the repository structure.
 
 **Acceptance Criteria**
+
 - Given a new developer, when reading the README, then they understand how to set up their environment
 - Given the workspace structure, when viewing documentation, then the purpose of each directory is clear
 - Given development scripts, when referencing documentation, then usage is explained with examples
@@ -137,24 +142,28 @@ Clear documentation must exist for onboarding new developers and explaining the 
 
 ## Non-Functional Requirements
 
-List only the non-functional requirements that are relevant *for this sprint*.
+List only the non-functional requirements that are relevant _for this sprint_.
 
 ### Security
+
 - No secrets or credentials stored in repository
 - .gitignore configured to prevent accidental commits of sensitive files
 - Node.js version constrained to LTS for security updates
 
 ### Performance
+
 - `pnpm install` completes in under 60 seconds on first run
 - CI pipeline (lint + type-check) completes in under 3 minutes
 - Workspace commands (pnpm -r) execute efficiently across packages
 
 ### Reliability & Error Handling
+
 - Missing dependencies result in clear error messages
 - Invalid TypeScript configuration produces actionable errors
 - CI failures provide specific file and line information
 
 ### Developer Experience
+
 - One-command setup: `pnpm install`
 - VS Code recommended extensions auto-prompt on workspace open
 - Scripts use consistent naming (lint, format, type-check, test)
@@ -168,6 +177,7 @@ List only the non-functional requirements that are relevant *for this sprint*.
 Describe any changes to persisted data or system state.
 
 **File System Structure Created:**
+
 ```
 /
 ├── .github/
@@ -219,6 +229,7 @@ Include this section only if APIs or integrations are affected.
 Describe how correctness will be validated for this sprint.
 
 ### Manual Verification
+
 - Clone repository to fresh directory
 - Run `pnpm install` and verify clean completion
 - Run `pnpm lint` and verify it executes
@@ -227,6 +238,7 @@ Describe how correctness will be validated for this sprint.
 - Create a test PR and verify CI runs automatically
 
 ### CI Pipeline Tests
+
 - Lint check must pass on valid code
 - Lint check must fail on code with violations
 - Type-check must pass on valid TypeScript
@@ -234,12 +246,14 @@ Describe how correctness will be validated for this sprint.
 - Format check must detect unformatted code
 
 ### Edge Cases
+
 - Empty package added to workspace
 - Package with no TypeScript files
 - Circular dependency between workspace packages (should error)
 - Missing peer dependencies (should error with clear message)
 
 ### Definition of Done
+
 - All FR acceptance criteria pass
 - Documentation is complete and accurate
 - CI runs successfully on a test PR
@@ -252,11 +266,13 @@ Describe how correctness will be validated for this sprint.
 If relevant, describe expectations for visibility into system behavior.
 
 ### Logging
+
 - pnpm commands show progress for multi-package operations
 - ESLint outputs file paths and line numbers for violations
 - TypeScript compiler shows clear error locations
 
 ### CI Visibility
+
 - GitHub Actions workflow logs are accessible for all checks
 - Failed checks show specific errors, not just "failed"
 - Job summaries indicate which package or file caused failure
@@ -268,18 +284,21 @@ If relevant, describe expectations for visibility into system behavior.
 Capture known uncertainties without blocking progress.
 
 ### Q1: ESLint Rule Strictness
+
 **Question**: Should we enforce zero warnings in CI, or only errors?
 **Decision**: Start with errors-only enforcement. Warnings allowed but visible. Can be tightened in future sprints.
 **Owner**: Team decision during sprint
 **Status**: Recommend errors-only for v1
 
 ### Q2: Pre-commit Hooks
+
 **Question**: Should we use Husky/lint-staged for pre-commit validation?
 **Decision**: Defer to Sprint 1. CI enforcement is sufficient for Sprint 0.
 **Owner**: Deferred
 **Status**: Out of scope for Sprint 0
 
 ### Q3: Package Versioning Strategy
+
 **Question**: How do we version workspace packages?
 **Decision**: All packages start at 0.1.0. No publishing in v1. Defer to post-launch.
 **Owner**: Deferred
@@ -308,21 +327,25 @@ Restate the conditions under which this sprint is considered complete.
 ## Notes
 
 ### Reference Documentation
+
 - TypeScript standards: [docs/standards/code/typescript.md](../standards/code/typescript.md)
 - CI/CD standards: [docs/standards/process/cicd.md](../standards/process/cicd.md)
 - Git workflow: [docs/standards/process/git-workflow.md](../standards/process/git-workflow.md)
 
 ### Related Decisions
+
 - Monorepo chosen over polyrepo for simpler dependency management
 - pnpm chosen over npm/yarn for workspace performance and disk efficiency
 - GitHub Actions chosen as CI platform (free for public repos, integrated with GitHub)
 
 ### Technical Debt Accepted
+
 - No test framework yet (added in Sprint 1+)
 - No build tooling yet (added when needed for apps)
 - VS Code specific settings (other editors not supported initially)
 
 ### Future Enhancements (Post-Sprint 0)
+
 - Pre-commit hooks with Husky
 - Automated dependency updates with Renovate/Dependabot
 - Code coverage reporting

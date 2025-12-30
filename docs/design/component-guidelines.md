@@ -6,13 +6,13 @@ This document defines how components are selected, composed, implemented, and ex
 
 ## **1. Component Philosophy**
 
-The application follows a *component-first* design strategy using **Shadcn/UI** as the foundation. Components must be:
+The application follows a _component-first_ design strategy using **Shadcn/UI** as the foundation. Components must be:
 
-* **Consistent** in structure, behavior, and visual tone
-* **Composable**, supporting a modular UI architecture
-* **Accessible**, preserving Radix behaviors and ARIA standards
-* **Reusable**, avoiding duplication of patterns
-* **Minimal**, avoiding unnecessary props, complexity, or visual ornamentation
+- **Consistent** in structure, behavior, and visual tone
+- **Composable**, supporting a modular UI architecture
+- **Accessible**, preserving Radix behaviors and ARIA standards
+- **Reusable**, avoiding duplication of patterns
+- **Minimal**, avoiding unnecessary props, complexity, or visual ornamentation
 
 A component is introduced only when it delivers clear functional value.
 
@@ -22,15 +22,15 @@ A component is introduced only when it delivers clear functional value.
 
 Atomic components are the smallest building blocks of the UI. They include:
 
-* Buttons
-* Inputs and Textareas
-* Cards
-* Dropdowns and Popovers
-* Dialogs / Sheets
-* Tabs
-* Navigation elements
-* Avatars
-* Icons
+- Buttons
+- Inputs and Textareas
+- Cards
+- Dropdowns and Popovers
+- Dialogs / Sheets
+- Tabs
+- Navigation elements
+- Avatars
+- Icons
 
 ### **Rules for Atomic Components**
 
@@ -39,9 +39,8 @@ Atomic components are the smallest building blocks of the UI. They include:
 
 2. **Do not create custom atomic components unless unavoidable.**
    Custom components should be built only when:
-
-   * A needed atomic element does not exist in Shadcn.
-   * A functional requirement cannot be met by composition.
+   - A needed atomic element does not exist in Shadcn.
+   - A functional requirement cannot be met by composition.
 
 3. **No inline styling except for layout scaffolding.**
    Use Tailwind utility classes following Shadcn conventions.
@@ -55,11 +54,11 @@ Atomic components are the smallest building blocks of the UI. They include:
 
 Composite components are built from atomic components. Examples include:
 
-* Task list rows
-* Task creation controls
-* Time-block cards
-* Navigation sidebar
-* User menu inside the avatar popover
+- Task list rows
+- Task creation controls
+- Time-block cards
+- Navigation sidebar
+- User menu inside the avatar popover
 
 ### **Rules for Composite Components**
 
@@ -87,11 +86,11 @@ Composite components are built from atomic components. Examples include:
 
 Layout components structure content but do not encode business meaning. Examples:
 
-* Page container
-* Section wrapper
-* Two-column layout
-* Header bar
-* Left navigation drawer
+- Page container
+- Section wrapper
+- Two-column layout
+- Header bar
+- Left navigation drawer
 
 ### **Rules for Layout Components**
 
@@ -130,15 +129,15 @@ To keep components predictable and maintainable, adhere to the following:
 
 All interactive components must:
 
-* Provide clear hover, active, and focus states
-* Respond immediately to user input
-* Avoid relying solely on color to indicate meaning
-* Use animations sparingly and purposefully
+- Provide clear hover, active, and focus states
+- Respond immediately to user input
+- Avoid relying solely on color to indicate meaning
+- Use animations sparingly and purposefully
 
 **Confirmation patterns:**
 
-* Prefer *undo* over confirmation dialogs.
-* If a destructive action requires confirmation, use a modal or alert dialog based on Shadcn.
+- Prefer _undo_ over confirmation dialogs.
+- If a destructive action requires confirmation, use a modal or alert dialog based on Shadcn.
 
 ---
 
@@ -169,10 +168,10 @@ Do not mix unrelated components in the same directory.
 
 These guidelines work in conjunction with the application’s separate color palette and style guide. Components must:
 
-* Respect light/dark theme variables
-* Never hardcode colors
-* Use consistent padding, margin, and radius
-* Avoid shadows unless used for elevation
+- Respect light/dark theme variables
+- Never hardcode colors
+- Use consistent padding, margin, and radius
+- Avoid shadows unless used for elevation
 
 ---
 

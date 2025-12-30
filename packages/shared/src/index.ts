@@ -16,6 +16,6 @@ export type TaskId = string;
  * Base interface for entities with timestamps
  */
 export interface TimestampedEntity {
-    createdAt: Date;
-    updatedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

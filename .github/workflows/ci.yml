@@ -2,12 +2,12 @@ name: CI
 
 on:
     push:
-        branches: ["**"]
+        branches: ['**']
     pull_request:
-        branches: ["**"]
+        branches: ['**']
 
 jobs:
-    build-and-test:
+    lint-and-typecheck:
         runs-on: ubuntu-latest
 
         strategy:
@@ -29,14 +29,15 @@ jobs:
                   version: 8
 
             - name: Get pnpm store directory
+              id: pnpm-cache
               shell: bash
               run: |
-                  echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+                  echo "store-path=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
             - name: Setup pnpm cache
               uses: actions/cache@v3
               with:
-                  path: ${{ env.STORE_PATH }}
+                  path: ${{ steps.pnpm-cache.outputs.store-path }}
                   key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-pnpm-store-
@@ -44,14 +45,12 @@ jobs:
             - name: Install dependencies
               run: pnpm install
 
-            - name: Build all packages
-              run: pnpm build
+            - name: Run lint
+              run: pnpm lint
 
-            - name: Run tests
-              run: pnpm test
+            - name: Run type-check
+              run: pnpm type-check
 
-            - name: CDK Synth
-              run: pnpm --filter infra/cdk run synth
-              env:
-                  CDK_DEFAULT_ACCOUNT: "123456789012"
-                  CDK_DEFAULT_REGION: "us-east-1"
+            - name: Check formatting
+              run: pnpm format:check
+

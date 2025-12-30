@@ -1,33 +1,22 @@
 {
-    "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "dist",
-        "rootDir": ".",
-        "lib": [
-            "ES2020"
-        ],
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "noEmit": false,
-        "declaration": true,
-        "declarationMap": true,
-        "sourceMap": true,
-        "inlineSources": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "resolveJsonModule": true,
-        "types": [
-            "node"
-        ]
-    },
-    "include": [
-        "bin/**/*",
-        "lib/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "cdk.out",
-        "dist"
-    ]
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "lib": ["ES2020"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "types": ["node"]
+  },
+  "include": ["bin/**/*", "lib/**/*"],
+  "exclude": ["node_modules", "cdk.out", "dist"]
 }

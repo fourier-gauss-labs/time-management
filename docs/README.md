@@ -1,6 +1,6 @@
 # Preface: A System, Not an App
 
-This project begins with a belief: productivity is not a matter of tools, and it is not a matter of discipline alone. Productivity is the outcome of a system—a deliberate process for deciding *what matters*, *why it matters*, and *what to do today* in service of that understanding.
+This project begins with a belief: productivity is not a matter of tools, and it is not a matter of discipline alone. Productivity is the outcome of a system—a deliberate process for deciding _what matters_, _why it matters_, and _what to do today_ in service of that understanding.
 
 The application described in this guide is not the product itself. It is the instrument. The product is the productivity system it supports.
 
@@ -20,7 +20,7 @@ This system exists to address those failures directly.
 
 The daily to-do list is the execution layer of productivity—but execution without context quickly becomes noise.
 
-What matters is not merely *what* you do today, but *why* you are doing it.
+What matters is not merely _what_ you do today, but _why_ you are doing it.
 
 Most systems focus on ranking tasks. This system ranks **drivers**—the goals, habits, and identity-level outcomes you are actively pursuing. Tasks only exist to serve those drivers.
 
@@ -34,9 +34,9 @@ The system is composed of three primary elements:
 
 Drivers represent what you are trying to become or accomplish. They may be:
 
-* Goals (e.g., “Develop a productivity system”)
-* Habits or behaviors (e.g., “Be a great father”)
-* Skills or identities you want to embody
+- Goals (e.g., “Develop a productivity system”)
+- Habits or behaviors (e.g., “Be a great father”)
+- Skills or identities you want to embody
 
 Drivers are reviewed and refined weekly. They are intentionally limited in number to encourage focus, with six being an ideal target and ten a practical upper bound.
 
@@ -44,7 +44,7 @@ Drivers are reviewed and refined weekly. They are intentionally limited in numbe
 
 Actions are the concrete things you do. They include both traditional tasks and recurring habits. An action must be small enough to be completed within a portion of a single day and specific enough that you know how to begin.
 
-To reflect this broader meaning, the system avoids the word *task* and instead uses **action**—because action implies intent and movement.
+To reflect this broader meaning, the system avoids the word _task_ and instead uses **action**—because action implies intent and movement.
 
 Some actions benefit from **triggers**: explicit, concrete starting steps. Triggers are especially important for actions that are repeatedly rolled over or resisted.
 
@@ -76,9 +76,9 @@ Each day begins with reviewing actions from the previous day. Incomplete actions
 
 Actions are classified into three categories:
 
-* **Urgent**: must be done today
-* **Important**: should be done today
-* **Other**: discretionary or opportunistic
+- **Urgent**: must be done today
+- **Important**: should be done today
+- **Other**: discretionary or opportunistic
 
 Time is explicitly allocated for actions, reinforcing honest planning and realistic expectations.
 

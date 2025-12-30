@@ -6,8 +6,8 @@ import { TimeManagementStack } from '../lib/time-management-stack';
 const app = new cdk.App();
 
 new TimeManagementStack(app, 'TimeManagementStack-Dev', {
-    tags: {
-        'project-name': 'time-management',
-        'environment': 'dev'
-    }
+  tags: {
+    'project-name': 'time-management',
+    environment: 'dev',
+  },
 });

@@ -277,12 +277,14 @@ jobs:
 Configure environments in GitHub repository settings:
 
 **Development Environment:**
+
 - Name: `development`
 - URL: `https://dev.timemanagement.example.com`
 - Protection rules: None
 - Secrets: Dev-specific secrets
 
 **Production Environment:**
+
 - Name: `production`
 - URL: `https://timemanagement.example.com`
 - Protection rules:
@@ -406,7 +408,7 @@ describe('API Integration Tests', () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${testToken}`,
+        Authorization: `Bearer ${testToken}`,
       },
       body: JSON.stringify({
         title: 'Test task',
@@ -443,7 +445,8 @@ async function runSmokeTests() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: 'test@example.com', password: 'test' }),
   });
-  if (authResponse.status !== 401) { // Expected for invalid creds
+  if (authResponse.status !== 401) {
+    // Expected for invalid creds
     throw new Error('Auth endpoint check failed');
   }
 
@@ -480,6 +483,7 @@ module.exports = {
 ### Pipeline Quality Gates
 
 **Fail pipeline if:**
+
 - ESLint errors > 0
 - TypeScript errors > 0
 - Test coverage < 80%
@@ -569,9 +573,7 @@ const topic = new sns.Topic(this, 'AlertTopic', {
   displayName: 'TimeManagement Alerts',
 });
 
-topic.addSubscription(
-  new sns_subscriptions.EmailSubscription('team@example.com')
-);
+topic.addSubscription(new sns_subscriptions.EmailSubscription('team@example.com'));
 
 // Attach to alarms
 alarm.addAlarmAction(new cloudwatch_actions.SnsAction(topic));
@@ -626,7 +628,7 @@ rule.addTarget(new targets.SnsTopic(alertTopic));
 - uses: actions/setup-node@v4
   with:
     node-version: ${{ env.NODE_VERSION }}
-    cache: 'pnpm'  # Cache pnpm dependencies
+    cache: 'pnpm' # Cache pnpm dependencies
 ```
 
 ### 4. Fail Fast

@@ -2,11 +2,11 @@
 
 ## Overview
 
-* Primary UX is **grayscale**
-* Backgrounds are clean and neutral
-* Foreground colors focus on contrast and readability
-* Only accents use color (blue/green/orange/red if needed)
-* Matches ChatGPT’s vibe: modern, calm, minimal
+- Primary UX is **grayscale**
+- Backgrounds are clean and neutral
+- Foreground colors focus on contrast and readability
+- Only accents use color (blue/green/orange/red if needed)
+- Matches ChatGPT’s vibe: modern, calm, minimal
 
 ---
 
@@ -69,30 +69,30 @@ If using Tailwind, you can map them like:
 ```ts
 export const colors = {
   light: {
-    background: "#F9FAFB",
-    backgroundSubtle: "#F3F4F6",
-    foreground: "#111827",
-    foregroundMuted: "#4B5563",
-    border: "#E5E7EB",
-    overlay: "rgba(0,0,0,0.45)",
+    background: '#F9FAFB',
+    backgroundSubtle: '#F3F4F6',
+    foreground: '#111827',
+    foregroundMuted: '#4B5563',
+    border: '#E5E7EB',
+    overlay: 'rgba(0,0,0,0.45)',
 
-    primary: "#2563EB",
-    success: "#059669",
-    warning: "#F59E0B",
-    danger: "#DC2626",
+    primary: '#2563EB',
+    success: '#059669',
+    warning: '#F59E0B',
+    danger: '#DC2626',
   },
   dark: {
-    background: "#0D0D0D",
-    backgroundSubtle: "#1A1A1A",
-    foreground: "#E5E7EB",
-    foregroundMuted: "#9CA3AF",
-    border: "#2D2D2D",
-    overlay: "rgba(0,0,0,0.65)",
+    background: '#0D0D0D',
+    backgroundSubtle: '#1A1A1A',
+    foreground: '#E5E7EB',
+    foregroundMuted: '#9CA3AF',
+    border: '#2D2D2D',
+    overlay: 'rgba(0,0,0,0.65)',
 
-    primary: "#3B82F6",
-    success: "#34D399",
-    warning: "#FBBF24",
-    danger: "#F87171",
-  }
-}
+    primary: '#3B82F6',
+    success: '#34D399',
+    warning: '#FBBF24',
+    danger: '#F87171',
+  },
+};
 ```

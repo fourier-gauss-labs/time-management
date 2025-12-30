@@ -10,11 +10,11 @@ This document defines the navigation hierarchy, interaction model, component usa
 
 Navigation must be:
 
-* **Clear** — Users should always understand where they are and where they can go.
-* **Predictable** — Navigation patterns remain stable across the app.
-* **Minimal** — No unnecessary nesting or visual clutter.
-* **Responsive** — Works elegantly across desktop, tablet, and mobile.
-* **Accessible** — Fully operable via keyboard and screen readers.
+- **Clear** — Users should always understand where they are and where they can go.
+- **Predictable** — Navigation patterns remain stable across the app.
+- **Minimal** — No unnecessary nesting or visual clutter.
+- **Responsive** — Works elegantly across desktop, tablet, and mobile.
+- **Accessible** — Fully operable via keyboard and screen readers.
 
 The system leverages the established **top banner** and **left navigation panel** layout pattern.
 
@@ -28,12 +28,12 @@ The application organizes navigation into two layers:
 
 Represents the main feature areas of the application, such as:
 
-* Dashboard / Today
-* Tasks
-* Calendar
-* Time Blocks
-* Insights / Reports
-* Settings
+- Dashboard / Today
+- Tasks
+- Calendar
+- Time Blocks
+- Insights / Reports
+- Settings
 
 This list must remain short, stable, and high-level.
 
@@ -41,10 +41,10 @@ This list must remain short, stable, and high-level.
 
 Within a page, secondary navigation may take the form of:
 
-* Tabs
-* Subsections
-* Filters
-* Breadcrumbs (rare; only for hierarchical content)
+- Tabs
+- Subsections
+- Filters
+- Breadcrumbs (rare; only for hierarchical content)
 
 Secondary navigation must never appear in the left panel unless it represents a top-level concept.
 
@@ -56,9 +56,9 @@ Secondary navigation must never appear in the left panel unless it represents a 
 
 Each navigation item consists of:
 
-* An icon (optional but recommended for scannability)
-* A label (required)
-* An active-state indicator
+- An icon (optional but recommended for scannability)
+- A label (required)
+- An active-state indicator
 
 Example:
 
@@ -72,37 +72,37 @@ Example:
 
 Navigation items support:
 
-* **default**
-* **hover**
-* **active / selected**
-* **disabled** (sparingly used)
+- **default**
+- **hover**
+- **active / selected**
+- **disabled** (sparingly used)
 
 Active state should be clear but subtle, using tone instead of heavy color.
 
 ### **Behavior**
 
-* Clicking an item navigates immediately.
-* The panel collapses when toggled by the hamburger icon.
-* The panel auto-collapses on narrow screens.
-* Collapsed mode may show icons-only or become hidden.
-* Expand/collapse state should persist across page loads when reasonable.
+- Clicking an item navigates immediately.
+- The panel collapses when toggled by the hamburger icon.
+- The panel auto-collapses on narrow screens.
+- Collapsed mode may show icons-only or become hidden.
+- Expand/collapse state should persist across page loads when reasonable.
 
 ### **Interactions**
 
-* Keyboard support:
+- Keyboard support:
+  - Arrow keys move between items
+  - Enter selects
+  - Escape closes the drawer in mobile mode
 
-  * Arrow keys move between items
-  * Enter selects
-  * Escape closes the drawer in mobile mode
-* Screen reader support for landmark roles and labels
+- Screen reader support for landmark roles and labels
 
 ### **Component Implementation**
 
 Use Shadcn components such as:
 
-* `NavigationMenu` or custom list built on Radix primitives
-* `Sheet` for mobile drawer behavior
-* Tailwind classes for spacing, hover, and active states
+- `NavigationMenu` or custom list built on Radix primitives
+- `Sheet` for mobile drawer behavior
+- Tailwind classes for spacing, hover, and active states
 
 ---
 
@@ -110,25 +110,25 @@ Use Shadcn components such as:
 
 The top banner contains:
 
-* **Branding block**
-* **Hamburger button**
-* **User avatar + dropdown menu**
+- **Branding block**
+- **Hamburger button**
+- **User avatar + dropdown menu**
 
 ### Hamburger Menu Behavior
 
-* Toggles the left navigation panel (desktop)
-* Opens the navigation drawer (mobile)
-* Should animate smoothly with no disorienting motion
-* Should not overlap or obscure the avatar menu
+- Toggles the left navigation panel (desktop)
+- Opens the navigation drawer (mobile)
+- Should animate smoothly with no disorienting motion
+- Should not overlap or obscure the avatar menu
 
 ### User Avatar Menu
 
 Provides access to:
 
-* Profile
-* Settings
-* User-specific actions
-* Sign-out
+- Profile
+- Settings
+- User-specific actions
+- Sign-out
 
 This menu must align visually with the design system and open within safe viewport boundaries.
 
@@ -151,10 +151,10 @@ Routing follows a simple, flat hierarchy where possible.
 
 Rules:
 
-* Avoid deep nesting.
-* Avoid multiple meanings for the same route.
-* Preserve route stability over time to prevent bookmark breakage.
-* All pages must include the global layout (header + nav + content).
+- Avoid deep nesting.
+- Avoid multiple meanings for the same route.
+- Preserve route stability over time to prevent bookmark breakage.
+- All pages must include the global layout (header + nav + content).
 
 ---
 
@@ -164,31 +164,30 @@ Navigation behavior adapts based on viewport width:
 
 ### **Desktop (≥ 1025px)**
 
-* Left navigation panel is visible by default.
-* Collapsible via hamburger button.
-* Content area adjusts width accordingly.
+- Left navigation panel is visible by default.
+- Collapsible via hamburger button.
+- Content area adjusts width accordingly.
 
 ### **Tablet (641–1024px)**
 
-* Panel collapses by default.
-* User opens navigation when needed.
-* Main content takes priority.
+- Panel collapses by default.
+- User opens navigation when needed.
+- Main content takes priority.
 
 ### **Mobile (≤ 640px)**
 
-* Panel becomes a full-height drawer.
-* Drawer uses overlay scrim (darkened background).
-* Close actions include:
-
-  * Tapping outside
-  * Swiping (if enabled)
-  * Pressing Escape
-  * Tapping hamburger button
+- Panel becomes a full-height drawer.
+- Drawer uses overlay scrim (darkened background).
+- Close actions include:
+  - Tapping outside
+  - Swiping (if enabled)
+  - Pressing Escape
+  - Tapping hamburger button
 
 ### **Motion Requirements**
 
-* Motion must be subtle.
-* Drawer transitions use small, consistent easing.
+- Motion must be subtle.
+- Drawer transitions use small, consistent easing.
 
 ---
 
@@ -196,25 +195,25 @@ Navigation behavior adapts based on viewport width:
 
 ### **Labels**
 
-* Use clear, action-neutral labels (e.g., “Tasks,” not “My Tasks”).
-* Keep labels short to avoid truncation.
+- Use clear, action-neutral labels (e.g., “Tasks,” not “My Tasks”).
+- Keep labels short to avoid truncation.
 
 ### **Icons**
 
 Icons must be:
 
-* Simple
-* Consistent in stroke weight
-* Semantically meaningful
-* Optional but recommended for quick recognition
+- Simple
+- Consistent in stroke weight
+- Semantically meaningful
+- Optional but recommended for quick recognition
 
 ### **Active State Indicators**
 
 Indicate current location using:
 
-* Subtle background tone
-* A left-edge highlight bar (for desktop)
-* Bold or high-contrast text
+- Subtle background tone
+- A left-edge highlight bar (for desktop)
+- Bold or high-contrast text
 
 Avoid excessive color in navigation.
 
@@ -224,13 +223,13 @@ Avoid excessive color in navigation.
 
 Navigation must comply with WCAG and Radix defaults:
 
-* Provide ARIA roles:
+- Provide ARIA roles:
+  - `role="navigation"` for the nav panel
+  - `role="menu"` and `role="menuitem"` when appropriate
 
-  * `role="navigation"` for the nav panel
-  * `role="menu"` and `role="menuitem"` when appropriate
-* Ensure tab order is logical (header → nav → content).
-* Focus trap enabled in mobile drawer mode.
-* Each item must have an accessible name (icon-only mode still requires text for screen readers).
+- Ensure tab order is logical (header → nav → content).
+- Focus trap enabled in mobile drawer mode.
+- Each item must have an accessible name (icon-only mode still requires text for screen readers).
 
 ---
 

@@ -13,6 +13,7 @@ This document defines React coding standards for the time-management platform, a
 ## Component Philosophy
 
 Components must be:
+
 - **Consistent** in structure, behavior, and visual tone
 - **Composable** supporting modular architecture
 - **Accessible** preserving keyboard navigation and screen reader support
@@ -41,6 +42,7 @@ components/ui/
 ```
 
 **Rules:**
+
 - Use `npx shadcn-ui add <component>` to add atomic components
 - Do NOT create custom atomic components unless absolutely necessary
 - Never modify Shadcn component internals - customize through composition
@@ -53,16 +55,12 @@ Layout components structure content but don't encode business meaning:
 ```tsx
 // ✅ Good: Layout component
 export function PageContainer({ children }: { children: React.ReactNode }) {
-  return (
-    <main className="flex-1 px-4 py-6 md:px-8 lg:px-12">
-      {children}
-    </main>
-  );
+  return <main className="flex-1 px-4 py-6 md:px-8 lg:px-12">{children}</main>;
 }
 
 export function TwoColumnLayout({
   sidebar,
-  main
+  main,
 }: {
   sidebar: React.ReactNode;
   main: React.ReactNode;
@@ -77,6 +75,7 @@ export function TwoColumnLayout({
 ```
 
 **Rules:**
+
 - Layout components control structure, not content
 - Never fetch data or include business logic in layouts
 - Use consistent spacing and alignment from design system
@@ -109,24 +108,15 @@ export function TaskRow({
   completed,
   priority,
   onToggleComplete,
-  onEdit
+  onEdit,
 }: TaskRowProps) {
   return (
     <Card>
       <CardContent className="flex items-center gap-4 p-4">
-        <Checkbox
-          checked={completed}
-          onCheckedChange={() => onToggleComplete(id)}
-        />
+        <Checkbox checked={completed} onCheckedChange={() => onToggleComplete(id)} />
         <div className="flex-1">
-          <h3 className={completed ? 'line-through text-muted-foreground' : ''}>
-            {title}
-          </h3>
-          {dueDate && (
-            <p className="text-sm text-muted-foreground">
-              Due: {formatDate(dueDate)}
-            </p>
-          )}
+          <h3 className={completed ? 'line-through text-muted-foreground' : ''}>{title}</h3>
+          {dueDate && <p className="text-sm text-muted-foreground">Due: {formatDate(dueDate)}</p>}
         </div>
         <Button variant="ghost" size="sm" onClick={() => onEdit(id)}>
           Edit
@@ -138,6 +128,7 @@ export function TaskRow({
 ```
 
 **Rules:**
+
 - Compose from existing Shadcn primitives
 - Keep props minimal and explicit - avoid opaque objects
 - Encapsulate component-specific behavior
@@ -195,27 +186,15 @@ interface TaskListProps {
  * @param onTaskComplete - Callback when task is marked complete
  * @param className - Optional additional CSS classes
  */
-export function TaskList({
-  tasks,
-  onTaskComplete,
-  className
-}: TaskListProps) {
+export function TaskList({ tasks, onTaskComplete, className }: TaskListProps) {
   if (tasks.length === 0) {
-    return (
-      <div className="text-center text-muted-foreground py-8">
-        No tasks found
-      </div>
-    );
+    return <div className="text-center text-muted-foreground py-8">No tasks found</div>;
   }
 
   return (
     <div className={className}>
       {tasks.map(task => (
-        <TaskRow
-          key={task.id}
-          {...task}
-          onToggleComplete={onTaskComplete}
-        />
+        <TaskRow key={task.id} {...task} onToggleComplete={onTaskComplete} />
       ))}
     </div>
   );
@@ -227,6 +206,7 @@ export function TaskList({
 ### Explicit Prop Types
 
 **✅ Good:**
+
 ```tsx
 interface ButtonProps {
   label: string;
@@ -241,13 +221,14 @@ export function CustomButton({
   onClick,
   variant = 'primary',
   disabled = false,
-  icon
+  icon,
 }: ButtonProps) {
   // ...
 }
 ```
 
 **❌ Avoid:**
+
 ```tsx
 // No type definition
 export function CustomButton(props: any) {
@@ -296,7 +277,7 @@ interface TaskFormProps {
   initialData?: Task;
 
   // Optional with default
-  showPriorityField?: boolean;  // defaults to true
+  showPriorityField?: boolean; // defaults to true
 }
 ```
 
@@ -321,17 +302,14 @@ export function TaskForm({ onSave }: TaskFormProps) {
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      {/* ... */}
-    </form>
-  );
+  return <form onSubmit={handleSubmit}>{/* ... */}</form>;
 }
 ```
 
 ### Keep State Shallow
 
 **✅ Good:**
+
 ```tsx
 const [title, setTitle] = useState('');
 const [dueDate, setDueDate] = useState<Date | null>(null);
@@ -339,14 +317,15 @@ const [priority, setPriority] = useState<Priority>('medium');
 ```
 
 **❌ Avoid (deep nested state):**
+
 ```tsx
 const [form, setForm] = useState({
   task: {
     details: {
       title: '',
-      description: ''
-    }
-  }
+      description: '',
+    },
+  },
 });
 ```
 
@@ -366,7 +345,9 @@ export function TaskList({ tasks }: TaskListProps) {
   return (
     <div>
       <p>{completedCount} completed</p>
-      {pendingTasks.map(task => <TaskRow key={task.id} {...task} />)}
+      {pendingTasks.map(task => (
+        <TaskRow key={task.id} {...task} />
+      ))}
     </div>
   );
 }
@@ -380,7 +361,11 @@ For complex forms, consider using a form library:
 import { useForm } from 'react-hook-form';
 
 export function TaskForm({ onSave }: TaskFormProps) {
-  const { register, handleSubmit, formState: { errors } } = useForm<TaskInput>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TaskInput>();
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -500,12 +485,14 @@ function NavigationPanel() {
 ### Use Effects Sparingly
 
 **✅ Good use cases:**
+
 - Data fetching
 - Subscribing to external events
 - DOM manipulation (rare)
 - Setting up timers
 
 **❌ Avoid:**
+
 - Updating state based on props (use derived state instead)
 - Triggering renders unnecessarily
 
@@ -520,7 +507,7 @@ useEffect(() => {
   async function loadData() {
     try {
       const data = await fetch('/api/tasks', {
-        signal: controller.signal
+        signal: controller.signal,
       });
       setTasks(await data.json());
     } catch (err) {
@@ -563,12 +550,14 @@ export function TaskCard({ title, priority }: TaskCardProps) {
   return (
     <div className="rounded-lg border bg-card p-4 shadow-sm">
       <h3 className="font-semibold text-foreground">{title}</h3>
-      <span className={cn(
-        "text-sm",
-        priority === 'high' && "text-red-500",
-        priority === 'medium' && "text-amber-500",
-        priority === 'low' && "text-green-500"
-      )}>
+      <span
+        className={cn(
+          'text-sm',
+          priority === 'high' && 'text-red-500',
+          priority === 'medium' && 'text-amber-500',
+          priority === 'low' && 'text-green-500'
+        )}
+      >
         {priority}
       </span>
     </div>
@@ -599,20 +588,16 @@ Use `cn` utility for conditional classes:
 ```tsx
 import { cn } from '@/lib/utils';
 
-export function Button({
-  variant = 'default',
-  size = 'md',
-  className
-}: ButtonProps) {
+export function Button({ variant = 'default', size = 'md', className }: ButtonProps) {
   return (
     <button
       className={cn(
-        "rounded-md font-medium transition-colors",
-        variant === 'default' && "bg-primary text-primary-foreground",
-        variant === 'ghost' && "hover:bg-accent",
-        size === 'sm' && "px-3 py-1 text-sm",
-        size === 'md' && "px-4 py-2",
-        size === 'lg' && "px-6 py-3 text-lg",
+        'rounded-md font-medium transition-colors',
+        variant === 'default' && 'bg-primary text-primary-foreground',
+        variant === 'ghost' && 'hover:bg-accent',
+        size === 'sm' && 'px-3 py-1 text-sm',
+        size === 'md' && 'px-4 py-2',
+        size === 'lg' && 'px-6 py-3 text-lg',
         className
       )}
     >
@@ -628,12 +613,8 @@ Use Tailwind breakpoints:
 
 ```tsx
 <div className="px-4 py-6 md:px-8 lg:px-12">
-  <h1 className="text-2xl md:text-3xl lg:text-4xl">
-    Time Management
-  </h1>
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    {/* ... */}
-  </div>
+  <h1 className="text-2xl md:text-3xl lg:text-4xl">Time Management</h1>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{/* ... */}</div>
 </div>
 ```
 
@@ -651,15 +632,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <TopBanner onToggleNav={() => setNavOpen(!navOpen)} />
 
       <div className="flex">
-        <NavigationPanel
-          isOpen={navOpen}
-          isMobile={isMobile}
-          onClose={() => setNavOpen(false)}
-        />
+        <NavigationPanel isOpen={navOpen} isMobile={isMobile} onClose={() => setNavOpen(false)} />
 
-        <PageContainer>
-          {children}
-        </PageContainer>
+        <PageContainer>{children}</PageContainer>
       </div>
     </div>
   );
@@ -688,11 +663,7 @@ export function TopBanner({ onToggleNav }: { onToggleNav: () => void }) {
 ### Navigation Panel
 
 ```tsx
-export function NavigationPanel({
-  isOpen,
-  isMobile,
-  onClose
-}: NavigationPanelProps) {
+export function NavigationPanel({ isOpen, isMobile, onClose }: NavigationPanelProps) {
   const items = [
     { label: 'Today', href: '/today', icon: <CalendarIcon /> },
     { label: 'Tasks', href: '/tasks', icon: <TaskIcon /> },
@@ -711,10 +682,12 @@ export function NavigationPanel({
   }
 
   return (
-    <aside className={cn(
-      "h-[calc(100vh-64px)] border-r bg-background transition-all",
-      isOpen ? "w-64" : "w-0 overflow-hidden"
-    )}>
+    <aside
+      className={cn(
+        'h-[calc(100vh-64px)] border-r bg-background transition-all',
+        isOpen ? 'w-64' : 'w-0 overflow-hidden'
+      )}
+    >
       <NavigationItems items={items} />
     </aside>
   );
@@ -824,14 +797,14 @@ Use `useMemo` for expensive computations:
 ```tsx
 export function TaskList({ tasks }: TaskListProps) {
   const sortedTasks = useMemo(() => {
-    return [...tasks].sort((a, b) =>
-      a.dueDate.getTime() - b.dueDate.getTime()
-    );
+    return [...tasks].sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
   }, [tasks]);
 
   return (
     <div>
-      {sortedTasks.map(task => <TaskRow key={task.id} {...task} />)}
+      {sortedTasks.map(task => (
+        <TaskRow key={task.id} {...task} />
+      ))}
     </div>
   );
 }
@@ -841,9 +814,12 @@ Use `useCallback` for stable function references:
 
 ```tsx
 export function TaskForm({ onSave }: TaskFormProps) {
-  const handleSubmit = useCallback(async (data: TaskInput) => {
-    await onSave(data);
-  }, [onSave]);
+  const handleSubmit = useCallback(
+    async (data: TaskInput) => {
+      await onSave(data);
+    },
+    [onSave]
+  );
 
   return <form onSubmit={handleSubmit}>{/* ... */}</form>;
 }
@@ -854,10 +830,7 @@ export function TaskForm({ onSave }: TaskFormProps) {
 Memoize components that receive stable props:
 
 ```tsx
-export const TaskRow = React.memo(function TaskRow({
-  task,
-  onComplete
-}: TaskRowProps) {
+export const TaskRow = React.memo(function TaskRow({ task, onComplete }: TaskRowProps) {
   return (
     <div>
       {task.title}
@@ -916,15 +889,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   render() {
     if (this.state.hasError) {
-      return this.props.fallback || (
-        <div className="p-8 text-center">
-          <h2 className="text-xl font-semibold text-destructive">
-            Something went wrong
-          </h2>
-          <p className="text-muted-foreground mt-2">
-            {this.state.error?.message}
-          </p>
-        </div>
+      return (
+        this.props.fallback || (
+          <div className="p-8 text-center">
+            <h2 className="text-xl font-semibold text-destructive">Something went wrong</h2>
+            <p className="text-muted-foreground mt-2">{this.state.error?.message}</p>
+          </div>
+        )
       );
     }
 
@@ -964,7 +935,9 @@ export function TaskList() {
 
   return (
     <div>
-      {tasks.map(task => <TaskRow key={task.id} {...task} />)}
+      {tasks.map(task => (
+        <TaskRow key={task.id} {...task} />
+      ))}
     </div>
   );
 }
@@ -984,7 +957,7 @@ describe('TaskRow', () => {
       id: '1',
       title: 'Buy groceries',
       completed: false,
-      priority: 'medium' as const
+      priority: 'medium' as const,
     };
 
     render(<TaskRow {...task} onToggleComplete={() => {}} />);
@@ -998,7 +971,7 @@ describe('TaskRow', () => {
       id: '1',
       title: 'Buy groceries',
       completed: false,
-      priority: 'medium' as const
+      priority: 'medium' as const,
     };
 
     render(<TaskRow {...task} onToggleComplete={onToggleComplete} />);
@@ -1048,9 +1021,7 @@ export function EmptyTaskList() {
     <div className="flex flex-col items-center justify-center py-12 text-center">
       <TaskIcon className="h-12 w-12 text-muted-foreground mb-4" />
       <h3 className="text-lg font-semibold">No tasks yet</h3>
-      <p className="text-muted-foreground mt-2 mb-4">
-        Create your first task to get started
-      </p>
+      <p className="text-muted-foreground mt-2 mb-4">Create your first task to get started</p>
       <Button onClick={onCreateTask}>Create Task</Button>
     </div>
   );
@@ -1060,25 +1031,17 @@ export function EmptyTaskList() {
 ### Confirmation Dialogs
 
 ```tsx
-export function DeleteTaskDialog({
-  isOpen,
-  onClose,
-  onConfirm
-}: DeleteTaskDialogProps) {
+export function DeleteTaskDialog({ isOpen, onClose, onConfirm }: DeleteTaskDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete task?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone.
-          </AlertDialogDescription>
+          <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>
-            Delete
-          </AlertDialogAction>
+          <AlertDialogAction onClick={onConfirm}>Delete</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -1100,6 +1063,7 @@ export function DeleteTaskDialog({
 - Handle errors gracefully with boundaries and loading states
 
 Refer to the design documents for:
+
 - [Component Guidelines](../../design/component-guidelines.md)
 - [Design Principles](../../design/design-principles.md)
 - [Layout Specifications](../../design/layout-specifications.md)

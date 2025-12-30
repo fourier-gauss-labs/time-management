@@ -10,11 +10,11 @@ The interface prioritizes usability above ornamentation. Visual elements exist o
 
 **Principles:**
 
-* Avoid unnecessary visual clutter or dense information layouts.
-* Prefer scrollable surfaces over cramped, multi-column designs.
-* Use whitespace as a core structural tool.
-* Maintain clean, well-organized views that allow rapid scanning.
-* Let functionality dictate design rather than the reverse.
+- Avoid unnecessary visual clutter or dense information layouts.
+- Prefer scrollable surfaces over cramped, multi-column designs.
+- Use whitespace as a core structural tool.
+- Maintain clean, well-organized views that allow rapid scanning.
+- Let functionality dictate design rather than the reverse.
 
 ---
 
@@ -25,10 +25,10 @@ The visual tone aligns with a grayscale-first design, using color sparingly for 
 
 **Principles:**
 
-* Maintain visual calm through neutral surfaces and simple composition.
-* Use accent colors only to draw attention to meaning, not decoration.
-* Avoid harsh transitions; theme changes should feel smooth and unobtrusive.
-* Ensure legibility and contrast across themes.
+- Maintain visual calm through neutral surfaces and simple composition.
+- Use accent colors only to draw attention to meaning, not decoration.
+- Avoid harsh transitions; theme changes should feel smooth and unobtrusive.
+- Ensure legibility and contrast across themes.
 
 ---
 
@@ -38,10 +38,10 @@ Typography and spacing work together to create a clear, accessible hierarchy. Th
 
 **Principles:**
 
-* Use predictable spacing to reinforce structure and rhythm.
-* Emphasize hierarchy through typography, not color.
-* Reserve shadows for elevation and subtle depth.
-* Keep line lengths comfortable for reading on all device sizes.
+- Use predictable spacing to reinforce structure and rhythm.
+- Emphasize hierarchy through typography, not color.
+- Reserve shadows for elevation and subtle depth.
+- Keep line lengths comfortable for reading on all device sizes.
 
 ---
 
@@ -51,10 +51,10 @@ Shadcn/UI is the foundation of the application’s component system. All UI elem
 
 **Principles:**
 
-* Atomic components must come from Shadcn/UI whenever possible.
-* Custom components must be composable, reusable, and follow Shadcn patterns.
-* Accessibility rules from Radix (focus handling, keyboard navigation) must be preserved.
-* Avoid creating bespoke components unless there is a strong functional need.
+- Atomic components must come from Shadcn/UI whenever possible.
+- Custom components must be composable, reusable, and follow Shadcn patterns.
+- Accessibility rules from Radix (focus handling, keyboard navigation) must be preserved.
+- Avoid creating bespoke components unless there is a strong functional need.
 
 ---
 
@@ -66,24 +66,24 @@ The application uses a consistent global layout composed of a **top banner** and
 
 The top banner appears on every page and includes:
 
-* Application branding
-* A hamburger button for toggling navigation
-* The user avatar (initial-based unless user uploads an image)
+- Application branding
+- A hamburger button for toggling navigation
+- The user avatar (initial-based unless user uploads an image)
 
 The avatar menu provides access to:
 
-* Profile settings
-* User-specific features
-* Account actions including sign-out
+- Profile settings
+- User-specific features
+- Account actions including sign-out
 
 ### **Left Navigation Panel**
 
 The side panel provides primary navigation and must:
 
-* Collapse on smaller screens or when toggled via the hamburger menu
-* Use clear labels with minimal iconography
-* Remain predictable and consistent across the app
-* Never obstruct core tasks or content
+- Collapse on smaller screens or when toggled via the hamburger menu
+- Use clear labels with minimal iconography
+- Remain predictable and consistent across the app
+- Never obstruct core tasks or content
 
 ---
 
@@ -93,10 +93,10 @@ The interface should be intuitive without requiring tutorials or training. Users
 
 **Principles:**
 
-* Use clear labels over ambiguous icons.
-* Favor inline hints over modal walkthroughs.
-* Avoid hiding essential functionality behind nested menus.
-* Ensure new features appear where users expect them.
+- Use clear labels over ambiguous icons.
+- Favor inline hints over modal walkthroughs.
+- Avoid hiding essential functionality behind nested menus.
+- Ensure new features appear where users expect them.
 
 ---
 
@@ -106,10 +106,10 @@ Interactions must be smooth, predictable, and reversible.
 
 **Principles:**
 
-* Provide subtle visual feedback (hover, focus, active, disabled states).
-* Use toasts or inline confirmations for background actions.
-* Favor “undo” actions where possible instead of confirmation dialogs.
-* Keep animations functional, brief, and non-distracting.
+- Provide subtle visual feedback (hover, focus, active, disabled states).
+- Use toasts or inline confirmations for background actions.
+- Favor “undo” actions where possible instead of confirmation dialogs.
+- Keep animations functional, brief, and non-distracting.
 
 ---
 
@@ -119,10 +119,10 @@ Accessibility is a core requirement and shapes every component and layout decisi
 
 **Principles:**
 
-* Maintain accessible contrast ratios in both themes.
-* Ensure full keyboard navigation across all interactive elements.
-* Support screen readers through ARIA labels and semantic structure.
-* Respect user preferences such as reduced motion.
+- Maintain accessible contrast ratios in both themes.
+- Ensure full keyboard navigation across all interactive elements.
+- Support screen readers through ARIA labels and semantic structure.
+- Respect user preferences such as reduced motion.
 
 ---
 

@@ -33,6 +33,7 @@ chore/*           → Maintenance tasks (deps, docs, etc.)
 **Pattern:** `<type>/<ticket-number>-<short-description>`
 
 **✅ Good:**
+
 ```bash
 feature/TM-123-add-task-filtering
 fix/TM-456-date-picker-bug
@@ -41,6 +42,7 @@ chore/TM-012-update-dependencies
 ```
 
 **❌ Avoid:**
+
 ```bash
 new-feature          # No type or ticket
 fix                  # Not descriptive
@@ -81,6 +83,7 @@ git branch -d feature/TM-123-add-task-filtering
 Use the [Conventional Commits](https://www.conventionalcommits.org/) specification:
 
 **Format:**
+
 ```
 <type>(<scope>): <subject>
 
@@ -158,6 +161,7 @@ git commit -m "Fixed the thing John mentioned" # No context
 ### Creating a Pull Request
 
 **PR Title:** Should match commit message format
+
 ```
 feat(api): add task filtering endpoint
 fix(web): correct date picker timezone handling
@@ -167,33 +171,40 @@ fix(web): correct date picker timezone handling
 
 ```markdown
 ## Description
+
 Brief description of what this PR does and why.
 
 ## Type of Change
+
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] Documentation update
 
 ## Related Issue
+
 Fixes #123
 Relates to #456
 
 ## Changes Made
+
 - Added task filtering by priority
 - Updated API documentation
 - Added unit tests for filtering logic
 
 ## Testing
+
 - [ ] Unit tests pass locally
 - [ ] Integration tests pass
 - [ ] Manual testing completed
 - [ ] No console errors or warnings
 
 ## Screenshots (if applicable)
+
 [Add screenshots here]
 
 ## Checklist
+
 - [ ] My code follows the project's coding standards
 - [ ] I have performed a self-review of my code
 - [ ] I have commented my code, particularly in hard-to-understand areas
@@ -206,6 +217,7 @@ Relates to #456
 ### PR Review Guidelines
 
 **As a PR author:**
+
 - Keep PRs small (< 400 lines of code changes)
 - Provide clear description and context
 - Self-review before requesting review
@@ -213,6 +225,7 @@ Relates to #456
 - Keep PR up-to-date with base branch
 
 **As a reviewer:**
+
 - Review within 24 hours
 - Be constructive and respectful
 - Ask questions, don't demand changes
@@ -242,6 +255,7 @@ Relates to #456
 ### Merge Requirements
 
 Before merging, ensure:
+
 - [ ] All CI checks pass (lint, tests, build)
 - [ ] At least 1 approval from code owner
 - [ ] All conversations resolved
@@ -258,11 +272,13 @@ Before merging, ensure:
 ```
 
 **Benefits:**
+
 - Clean commit history
 - Each PR = one commit on main
 - Easy to revert entire features
 
 **Don't use:**
+
 - ❌ Merge commit (creates merge bubbles)
 - ❌ Rebase and merge (loses PR association)
 
@@ -271,6 +287,7 @@ Before merging, ensure:
 ### Main Branch Protection
 
 Settings for `main` branch:
+
 - ✅ Require pull request before merging
 - ✅ Require 1 approval
 - ✅ Require status checks to pass
@@ -287,6 +304,7 @@ Settings for `main` branch:
 ### Develop Branch Protection
 
 Settings for `develop` branch:
+
 - ✅ Require pull request before merging
 - ✅ Require status checks to pass
 - ✅ Require branches to be up to date
@@ -507,13 +525,8 @@ pnpm exec husky init
 // package.json
 {
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md}": [
-      "prettier --write"
-    ]
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md}": ["prettier --write"]
   }
 }
 ```
@@ -546,18 +559,7 @@ module.exports = {
     'type-enum': [
       2,
       'always',
-      [
-        'feat',
-        'fix',
-        'docs',
-        'style',
-        'refactor',
-        'perf',
-        'test',
-        'chore',
-        'ci',
-        'build',
-      ],
+      ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'chore', 'ci', 'build'],
     ],
     'subject-case': [2, 'never', ['upper-case']],
   },
@@ -617,16 +619,19 @@ git push origin revert-bad-change
 ### Force Push Guidelines
 
 **⚠️ Only force push to:**
+
 - Your own feature branches
 - After rebasing to update with develop
 
 **❌ NEVER force push to:**
+
 - `main` branch
 - `develop` branch
 - Someone else's branch
 - After PR is approved (before merge)
 
 **Safe force push:**
+
 ```bash
 # Use --force-with-lease (safer than --force)
 git push --force-with-lease origin feature/TM-123

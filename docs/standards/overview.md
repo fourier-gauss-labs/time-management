@@ -1,6 +1,7 @@
 # Overview
 
 <!-- High-level principles and philosophy that apply across all code -->
+
 ## Development Principles of this app
 
 1. Code shall be easy to maintain

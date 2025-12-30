@@ -73,9 +73,7 @@ import type { CreateTaskInput, Task } from '@time-management/shared';
  * @param event - API Gateway event with user context and request body
  * @returns Task creation response with 201 status
  */
-export async function handler(
-  event: APIGatewayProxyEventV2
-): Promise<APIGatewayProxyResultV2> {
+export async function handler(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
   try {
     // 1. Extract user ID from authorizer context
     const userId = event.requestContext.authorizer?.jwt?.claims?.sub as string;
@@ -92,7 +90,6 @@ export async function handler(
 
     // 4. Return success response
     return success(task, 201);
-
   } catch (err) {
     logger.error('Failed to create task', { error: err });
 
@@ -108,6 +105,7 @@ export async function handler(
 ### Handler Best Practices
 
 **✅ Good:**
+
 ```typescript
 export async function handler(event: APIGatewayProxyEventV2) {
   // Extract user from authorizer
@@ -128,22 +126,28 @@ export async function handler(event: APIGatewayProxyEventV2) {
 ```
 
 **❌ Avoid:**
+
 ```typescript
-export async function handler(event: any) {  // Untyped
+export async function handler(event: any) {
+  // Untyped
   // Multiple try-catches
   try {
-    const userId = event.requestContext.authorizer.jwt.claims.sub;  // No null check
+    const userId = event.requestContext.authorizer.jwt.claims.sub; // No null check
 
     // Inline business logic
-    const task = await dynamoClient.put({
-      TableName: 'tasks',
-      Item: { /* ... */ }
-    }).promise();
+    const task = await dynamoClient
+      .put({
+        TableName: 'tasks',
+        Item: {
+          /* ... */
+        },
+      })
+      .promise();
 
     // Inconsistent response format
     return { statusCode: 200, body: task };
   } catch (e) {
-    return { statusCode: 500 };  // No error details
+    return { statusCode: 500 }; // No error details
   }
 }
 ```
@@ -207,6 +211,7 @@ export function notFound(resource: string, id: string): APIGatewayProxyResultV2 
 ### Standard Response Formats
 
 **Success Response:**
+
 ```json
 {
   "id": "task_123",
@@ -217,6 +222,7 @@ export function notFound(resource: string, id: string): APIGatewayProxyResultV2 
 ```
 
 **Error Response:**
+
 ```json
 {
   "error": "Invalid input",
@@ -229,6 +235,7 @@ export function notFound(resource: string, id: string): APIGatewayProxyResultV2 
 ```
 
 **List Response:**
+
 ```json
 {
   "items": [...],
@@ -267,7 +274,8 @@ export function extractUserEmail(event: APIGatewayProxyEventV2): string {
 }
 
 export function hasRole(event: APIGatewayProxyEventV2, role: string): boolean {
-  const groups = event.requestContext.authorizer?.jwt?.claims?.['cognito:groups'] as string[] || [];
+  const groups =
+    (event.requestContext.authorizer?.jwt?.claims?.['cognito:groups'] as string[]) || [];
   return groups.includes(role);
 }
 ```
@@ -394,7 +402,12 @@ USER#<sub>            TIMEBLOCK#<blockId>       { startTime, endTime, ... }
 ```typescript
 // repositories/task-repository.ts
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand, QueryCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommand,
+  DeleteCommand,
+} from '@aws-sdk/lib-dynamodb';
 import type { Task, TaskId, UserId } from '@time-management/shared';
 
 const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
@@ -402,45 +415,54 @@ const TABLE_NAME = process.env.TABLE_NAME!;
 
 export class TaskRepository {
   async create(task: Task): Promise<Task> {
-    await client.send(new PutCommand({
-      TableName: TABLE_NAME,
-      Item: {
-        PK: `USER#${task.userId}`,
-        SK: `TASK#${task.id}`,
-        ...task,
-        createdAt: task.createdAt.toISOString(),
-        updatedAt: task.updatedAt.toISOString(),
-      },
-    }));
+    await client.send(
+      new PutCommand({
+        TableName: TABLE_NAME,
+        Item: {
+          PK: `USER#${task.userId}`,
+          SK: `TASK#${task.id}`,
+          ...task,
+          createdAt: task.createdAt.toISOString(),
+          updatedAt: task.updatedAt.toISOString(),
+        },
+      })
+    );
 
     return task;
   }
 
   async findByUserId(userId: UserId): Promise<Task[]> {
-    const response = await client.send(new QueryCommand({
-      TableName: TABLE_NAME,
-      KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
-      ExpressionAttributeValues: {
-        ':pk': `USER#${userId}`,
-        ':sk': 'TASK#',
-      },
-    }));
+    const response = await client.send(
+      new QueryCommand({
+        TableName: TABLE_NAME,
+        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+        ExpressionAttributeValues: {
+          ':pk': `USER#${userId}`,
+          ':sk': 'TASK#',
+        },
+      })
+    );
 
-    return (response.Items || []).map(item => ({
-      ...item,
-      createdAt: new Date(item.createdAt),
-      updatedAt: new Date(item.updatedAt),
-    } as Task));
+    return (response.Items || []).map(
+      item =>
+        ({
+          ...item,
+          createdAt: new Date(item.createdAt),
+          updatedAt: new Date(item.updatedAt),
+        }) as Task
+    );
   }
 
   async findById(taskId: TaskId, userId: UserId): Promise<Task | null> {
-    const response = await client.send(new GetCommand({
-      TableName: TABLE_NAME,
-      Key: {
-        PK: `USER#${userId}`,
-        SK: `TASK#${taskId}`,
-      },
-    }));
+    const response = await client.send(
+      new GetCommand({
+        TableName: TABLE_NAME,
+        Key: {
+          PK: `USER#${userId}`,
+          SK: `TASK#${taskId}`,
+        },
+      })
+    );
 
     if (!response.Item) {
       return null;
@@ -454,13 +476,15 @@ export class TaskRepository {
   }
 
   async delete(taskId: TaskId, userId: UserId): Promise<void> {
-    await client.send(new DeleteCommand({
-      TableName: TABLE_NAME,
-      Key: {
-        PK: `USER#${userId}`,
-        SK: `TASK#${taskId}`,
-      },
-    }));
+    await client.send(
+      new DeleteCommand({
+        TableName: TABLE_NAME,
+        Key: {
+          PK: `USER#${userId}`,
+          SK: `TASK#${taskId}`,
+        },
+      })
+    );
   }
 }
 
@@ -470,6 +494,7 @@ export const taskRepository = new TaskRepository();
 ### Best Practices for DynamoDB
 
 **✅ Good:**
+
 ```typescript
 // Use consistent PK/SK patterns
 const pk = `USER#${userId}`;
@@ -491,6 +516,7 @@ if (response.LastEvaluatedKey) {
 ```
 
 **❌ Avoid:**
+
 ```typescript
 // Scan operations (expensive!)
 const response = await client.scan({ TableName: TABLE_NAME });
@@ -548,7 +574,7 @@ export class TaskService {
     }
 
     if (task.userId !== userId) {
-      throw new ForbiddenError('Cannot modify another user\'s task');
+      throw new ForbiddenError("Cannot modify another user's task");
     }
 
     task.completed = true;
@@ -711,38 +737,42 @@ export const logger = new Logger();
 ### Logging Best Practices
 
 **✅ Good:**
+
 ```typescript
 logger.info('Task created', {
   userId,
   taskId: task.id,
-  priority: task.priority
+  priority: task.priority,
 });
 
 logger.error('Failed to save task', {
   error: err instanceof Error ? err.message : 'Unknown error',
   userId,
-  input
+  input,
 });
 ```
 
 **❌ Avoid:**
-```typescript
-console.log('Task created');  // Not structured
-console.log(task);  // May contain sensitive data
 
-logger.info('Error', { error: err });  // Don't log entire error objects
-logger.info('User data', { user });  // May contain PII
+```typescript
+console.log('Task created'); // Not structured
+console.log(task); // May contain sensitive data
+
+logger.info('Error', { error: err }); // Don't log entire error objects
+logger.info('User data', { user }); // May contain PII
 ```
 
 ### What to Log
 
 **DO log:**
+
 - Request/response metadata (user ID, endpoint, status)
 - Business events (task created, event synced)
 - Errors with context
 - Performance metrics (execution time)
 
 **DON'T log:**
+
 - Passwords or secrets
 - Full JWT tokens
 - Personally identifiable information (PII) in production
@@ -782,10 +812,12 @@ export function validateConfig() {
 import { config } from '@/utils/config';
 
 export async function handler(event: APIGatewayProxyEventV2) {
-  const response = await client.send(new QueryCommand({
-    TableName: config.tableName,
-    // ...
-  }));
+  const response = await client.send(
+    new QueryCommand({
+      TableName: config.tableName,
+      // ...
+    })
+  );
 
   return success(response.Items);
 }
@@ -836,15 +868,12 @@ describe('create-task handler', () => {
 
     expect(response.statusCode).toBe(201);
     expect(JSON.parse(response.body!)).toEqual(mockTask);
-    expect(taskService.createTask).toHaveBeenCalledWith(
-      'user_456',
-      { title: 'Buy groceries' }
-    );
+    expect(taskService.createTask).toHaveBeenCalledWith('user_456', { title: 'Buy groceries' });
   });
 
   it('returns 400 for invalid input', async () => {
     const event = {
-      body: JSON.stringify({ title: '' }),  // Invalid: empty title
+      body: JSON.stringify({ title: '' }), // Invalid: empty title
       requestContext: {
         authorizer: {
           jwt: {
@@ -898,7 +927,7 @@ describe('TaskService', () => {
       id: 'task_456',
       userId,
       title: input.title,
-      priority: 'medium',  // Default
+      priority: 'medium', // Default
       completed: false,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -914,9 +943,7 @@ describe('TaskService', () => {
   it('throws NotFoundError when completing non-existent task', async () => {
     vi.mocked(taskRepository.findById).mockResolvedValue(null);
 
-    await expect(
-      service.completeTask('task_123', 'user_456')
-    ).rejects.toThrow('Task not found');
+    await expect(service.completeTask('task_123', 'user_456')).rejects.toThrow('Task not found');
   });
 });
 ```
@@ -957,9 +984,7 @@ describe('Tasks API Integration', () => {
     expect(getResponse.statusCode).toBe(200);
     const tasks = JSON.parse(getResponse.body!);
 
-    expect(tasks).toContainEqual(
-      expect.objectContaining({ id: createdTask.id })
-    );
+    expect(tasks).toContainEqual(expect.objectContaining({ id: createdTask.id }));
   });
 });
 ```
@@ -972,7 +997,7 @@ describe('Tasks API Integration', () => {
 // ✅ Good: Initialize clients outside handler
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 
-const client = new DynamoDBClient({});  // Reused across invocations
+const client = new DynamoDBClient({}); // Reused across invocations
 
 export async function handler(event: APIGatewayProxyEventV2) {
   // Handler logic
@@ -980,7 +1005,7 @@ export async function handler(event: APIGatewayProxyEventV2) {
 
 // ❌ Avoid: Creating clients inside handler
 export async function handler(event: APIGatewayProxyEventV2) {
-  const client = new DynamoDBClient({});  // Created every invocation
+  const client = new DynamoDBClient({}); // Created every invocation
   // ...
 }
 ```
@@ -1016,8 +1041,8 @@ import * as AWS from 'aws-sdk';
 function sanitizeInput(input: string): string {
   return input
     .trim()
-    .replace(/[<>]/g, '')  // Remove potential HTML
-    .substring(0, 1000);   // Limit length
+    .replace(/[<>]/g, '') // Remove potential HTML
+    .substring(0, 1000); // Limit length
 }
 ```
 
@@ -1026,14 +1051,16 @@ function sanitizeInput(input: string): string {
 ```typescript
 // Always scope queries by user ID
 export async function getUserTasks(userId: UserId) {
-  return await client.send(new QueryCommand({
-    TableName: TABLE_NAME,
-    KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
-    ExpressionAttributeValues: {
-      ':pk': `USER#${userId}`,  // User can only see their data
-      ':sk': 'TASK#',
-    },
-  }));
+  return await client.send(
+    new QueryCommand({
+      TableName: TABLE_NAME,
+      KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+      ExpressionAttributeValues: {
+        ':pk': `USER#${userId}`, // User can only see their data
+        ':sk': 'TASK#',
+      },
+    })
+  );
 }
 ```
 
@@ -1046,9 +1073,7 @@ import { GetSecretValueCommand, SecretsManagerClient } from '@aws-sdk/client-sec
 const client = new SecretsManagerClient({});
 
 export async function getSecret(secretName: string): Promise<string> {
-  const response = await client.send(
-    new GetSecretValueCommand({ SecretId: secretName })
-  );
+  const response = await client.send(new GetSecretValueCommand({ SecretId: secretName }));
 
   return response.SecretString!;
 }
@@ -1134,6 +1159,7 @@ const headers = {
 - **Security first** - Validate auth, isolate data, sanitize input, use secrets manager
 
 Refer to related standards:
+
 - [TypeScript Standards](./typescript.md)
 - [Security Standards](../infrastructure/security.md)
 - [Testing Standards](../process/testing.md)

@@ -45,6 +45,7 @@ All packages extend from the root `tsconfig.base.json`:
 ### Use Explicit Types for Function Signatures
 
 **✅ Good:**
+
 ```typescript
 function calculateDuration(startTime: Date, endTime: Date): number {
   return endTime.getTime() - startTime.getTime();
@@ -56,8 +57,10 @@ async function fetchUserTasks(userId: UserId): Promise<Task[]> {
 ```
 
 **❌ Avoid:**
+
 ```typescript
-function calculateDuration(startTime, endTime) {  // No types
+function calculateDuration(startTime, endTime) {
+  // No types
   return endTime.getTime() - startTime.getTime();
 }
 ```
@@ -65,21 +68,24 @@ function calculateDuration(startTime, endTime) {  // No types
 ### Allow Type Inference for Simple Variables
 
 **✅ Good:**
+
 ```typescript
-const count = 5;  // number inferred
-const items = tasks.filter(t => t.completed);  // Task[] inferred
-const message = `Found ${count} items`;  // string inferred
+const count = 5; // number inferred
+const items = tasks.filter(t => t.completed); // Task[] inferred
+const message = `Found ${count} items`; // string inferred
 ```
 
 **❌ Avoid (over-specification):**
+
 ```typescript
-const count: number = 5;  // Redundant
-const message: string = `Found ${count} items`;  // Redundant
+const count: number = 5; // Redundant
+const message: string = `Found ${count} items`; // Redundant
 ```
 
 ### Use Type Aliases for Domain Concepts
 
 **✅ Good:**
+
 ```typescript
 // In packages/shared/src/types.ts
 export type UserId = string;
@@ -93,6 +99,7 @@ function deleteTask(userId: UserId, taskId: TaskId): Promise<void> {
 ```
 
 **❌ Avoid:**
+
 ```typescript
 function deleteTask(userId: string, taskId: string): Promise<void> {
   // Less semantic meaning
@@ -102,6 +109,7 @@ function deleteTask(userId: string, taskId: string): Promise<void> {
 ### Use Interfaces for Object Shapes
 
 **✅ Good:**
+
 ```typescript
 export interface Task {
   id: TaskId;
@@ -128,12 +136,14 @@ export interface CreateTaskInput {
 Prefer union types over enums for most cases:
 
 **✅ Good:**
+
 ```typescript
 export type Priority = 'low' | 'medium' | 'high';
 export type TaskStatus = 'pending' | 'in-progress' | 'completed' | 'cancelled';
 ```
 
 **Use enums only when you need reverse mapping or namespace grouping:**
+
 ```typescript
 export enum HttpStatus {
   OK = 200,
@@ -141,7 +151,7 @@ export enum HttpStatus {
   BadRequest = 400,
   Unauthorized = 401,
   NotFound = 404,
-  InternalServerError = 500
+  InternalServerError = 500,
 }
 ```
 
@@ -150,11 +160,12 @@ export enum HttpStatus {
 ### Use Optional Properties and Parameters
 
 **✅ Good:**
+
 ```typescript
 interface UpdateTaskInput {
   title?: string;
   description?: string;
-  dueDate?: Date | null;  // Explicit null for clearing
+  dueDate?: Date | null; // Explicit null for clearing
 }
 
 function formatDate(date?: Date): string {
@@ -165,11 +176,13 @@ function formatDate(date?: Date): string {
 ### Avoid Non-Null Assertions
 
 **❌ Avoid:**
+
 ```typescript
-const user = users.find(u => u.id === userId)!;  // Dangerous!
+const user = users.find(u => u.id === userId)!; // Dangerous!
 ```
 
 **✅ Good:**
+
 ```typescript
 const user = users.find(u => u.id === userId);
 if (!user) {
@@ -180,6 +193,7 @@ if (!user) {
 ### Use Nullish Coalescing and Optional Chaining
 
 **✅ Good:**
+
 ```typescript
 const displayName = user.name ?? 'Anonymous';
 const city = user.address?.city ?? 'Unknown';
@@ -191,6 +205,7 @@ const count = options?.maxResults ?? 10;
 ### Always Use Async/Await Over Promises
 
 **✅ Good:**
+
 ```typescript
 async function fetchUserData(userId: UserId): Promise<User> {
   const user = await userRepository.findById(userId);
@@ -200,17 +215,19 @@ async function fetchUserData(userId: UserId): Promise<User> {
 ```
 
 **❌ Avoid:**
+
 ```typescript
 function fetchUserData(userId: UserId): Promise<User> {
-  return userRepository.findById(userId)
-    .then(user => taskRepository.findByUserId(userId)
-      .then(tasks => ({ ...user, tasks })));
+  return userRepository
+    .findById(userId)
+    .then(user => taskRepository.findByUserId(userId).then(tasks => ({ ...user, tasks })));
 }
 ```
 
 ### Handle Errors Explicitly
 
 **✅ Good:**
+
 ```typescript
 async function saveTask(task: Task): Promise<void> {
   try {
@@ -228,6 +245,7 @@ async function saveTask(task: Task): Promise<void> {
 ### Use Custom Error Classes
 
 **✅ Good:**
+
 ```typescript
 // In packages/shared/src/errors.ts
 export class NotFoundError extends Error {
@@ -238,7 +256,10 @@ export class NotFoundError extends Error {
 }
 
 export class ValidationError extends Error {
-  constructor(message: string, public readonly fields: Record<string, string>) {
+  constructor(
+    message: string,
+    public readonly fields: Record<string, string>
+  ) {
     super(message);
     this.name = 'ValidationError';
   }
@@ -254,6 +275,7 @@ throw new ValidationError('Invalid input', { title: 'Title is required' });
 ### Use Named Exports
 
 **✅ Good:**
+
 ```typescript
 // user-service.ts
 export async function createUser(input: CreateUserInput): Promise<User> {
@@ -266,6 +288,7 @@ export async function deleteUser(userId: UserId): Promise<void> {
 ```
 
 **⚠️ Default exports only for React components:**
+
 ```typescript
 // App.tsx
 function App() {
@@ -311,6 +334,7 @@ But prefer explicit relative paths for co-located code.
 ### Use Modern Array Methods
 
 **✅ Good:**
+
 ```typescript
 const completedTasks = tasks.filter(t => t.completed);
 const taskIds = tasks.map(t => t.id);
@@ -321,6 +345,7 @@ const allCompleted = tasks.every(t => t.completed);
 ### Use Spread Operators
 
 **✅ Good:**
+
 ```typescript
 const updatedTask = { ...task, completed: true, updatedAt: new Date() };
 const allTasks = [...userTasks, ...sharedTasks];
@@ -329,6 +354,7 @@ const allTasks = [...userTasks, ...sharedTasks];
 ### Use Object Destructuring
 
 **✅ Good:**
+
 ```typescript
 function displayTask({ title, dueDate, priority }: Task): string {
   return `${title} (${priority}) - Due: ${dueDate}`;
@@ -342,35 +368,31 @@ const { id, userId, ...taskData } = request.body;
 ### Use Type Guards for Runtime Checks
 
 **✅ Good:**
+
 ```typescript
 function isTask(obj: unknown): obj is Task {
   return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    'id' in obj &&
-    'title' in obj &&
-    'completed' in obj
+    typeof obj === 'object' && obj !== null && 'id' in obj && 'title' in obj && 'completed' in obj
   );
 }
 
 if (isTask(data)) {
-  console.log(data.title);  // TypeScript knows it's a Task
+  console.log(data.title); // TypeScript knows it's a Task
 }
 ```
 
 ### Use Discriminated Unions
 
 **✅ Good:**
+
 ```typescript
-type ApiResponse<T> =
-  | { success: true; data: T }
-  | { success: false; error: string };
+type ApiResponse<T> = { success: true; data: T } | { success: false; error: string };
 
 function handleResponse<T>(response: ApiResponse<T>): T {
   if (response.success) {
-    return response.data;  // TypeScript knows this exists
+    return response.data; // TypeScript knows this exists
   } else {
-    throw new Error(response.error);  // TypeScript knows this exists
+    throw new Error(response.error); // TypeScript knows this exists
   }
 }
 ```
@@ -399,7 +421,7 @@ type CompletedStatus = Extract<TaskStatus, 'completed'>;
 type IncompleteStatus = Exclude<TaskStatus, 'completed'>;
 
 // Non-nullable
-type DefinedValue = NonNullable<string | null | undefined>;  // string
+type DefinedValue = NonNullable<string | null | undefined>; // string
 
 // Return type of function
 type Result = ReturnType<typeof fetchUserTasks>;
@@ -413,6 +435,7 @@ type Params = Parameters<typeof createTask>;
 ### Don't Use `any`
 
 **❌ Avoid:**
+
 ```typescript
 function processData(data: any): any {
   return data.value;
@@ -420,6 +443,7 @@ function processData(data: any): any {
 ```
 
 **✅ Good:**
+
 ```typescript
 function processData<T>(data: T): T {
   return data;
@@ -437,13 +461,15 @@ function processTaskData(data: unknown): Task {
 ### Don't Use `as` Casts Excessively
 
 **❌ Avoid:**
+
 ```typescript
-const task = response.data as Task;  // No runtime validation!
+const task = response.data as Task; // No runtime validation!
 ```
 
 **✅ Good:**
+
 ```typescript
-const task = parseTask(response.data);  // Validates and returns Task
+const task = parseTask(response.data); // Validates and returns Task
 
 function parseTask(data: unknown): Task {
   if (!isTask(data)) {
@@ -456,6 +482,7 @@ function parseTask(data: unknown): Task {
 ### Don't Mix Promises and Callbacks
 
 **❌ Avoid:**
+
 ```typescript
 function loadData(callback: (error: Error | null, data?: Data) => void) {
   // Callback style
@@ -463,6 +490,7 @@ function loadData(callback: (error: Error | null, data?: Data) => void) {
 ```
 
 **✅ Good:**
+
 ```typescript
 async function loadData(): Promise<Data> {
   // Promise/async style
@@ -474,6 +502,7 @@ async function loadData(): Promise<Data> {
 ### Use JSDoc for Public APIs
 
 **✅ Good:**
+
 ```typescript
 /**
  * Fetches all tasks for a given user.
@@ -483,10 +512,7 @@ async function loadData(): Promise<Data> {
  * @returns A promise that resolves to an array of tasks
  * @throws {NotFoundError} If the user does not exist
  */
-export async function fetchUserTasks(
-  userId: UserId,
-  options?: TaskQueryOptions
-): Promise<Task[]> {
+export async function fetchUserTasks(userId: UserId, options?: TaskQueryOptions): Promise<Task[]> {
   // ...
 }
 ```
@@ -494,6 +520,7 @@ export async function fetchUserTasks(
 ### Avoid Obvious Comments
 
 **❌ Avoid:**
+
 ```typescript
 // Increment count
 count++;
@@ -503,6 +530,7 @@ return task;
 ```
 
 **✅ Good (explain why, not what):**
+
 ```typescript
 // Force re-fetch to ensure we have the latest OAuth tokens
 await refreshUserSession(userId);
