@@ -54,3 +54,5 @@ jobs:
             - name: Check formatting
               run: pnpm format:check
 
+            - name: CDK synth validation
+              run: pnpm --filter @time-management/infra-cdk run synth

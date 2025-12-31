@@ -180,48 +180,80 @@ This project is designed to explore and teach modern software engineering practi
 
 ## 📦 **Getting Started**
 
-> _Setup instructions will evolve as the project is scaffolded._
+### Prerequisites
 
-### 1. Clone the repo
+- Node.js 20.x LTS
+- pnpm 8.x or later
+- AWS CLI configured (for deploying infrastructure)
+
+### Quick Start
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/fourier-gauss-labs/time-management.git
+   cd time-management
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Run quality checks**
+
+   ```bash
+   pnpm lint
+   pnpm type-check
+   pnpm format:check
+   ```
+
+### Sprint 1: Authentication Setup
+
+Sprint 1 implements authentication with AWS Cognito. To use the application:
+
+1. **Deploy infrastructure to AWS**
+
+   ```bash
+   cd infra/cdk
+   pnpm run deploy
+   ```
+
+   Save the output values (UserPoolId, UserPoolClientId, UserPoolDomain, ApiUrl)
+
+2. **Configure the frontend**
+
+   Create `apps/web/.env` with your deployment values:
+
+   ```bash
+   cd apps/web
+   cp .env.example .env
+   # Edit .env with values from CDK deployment
+   ```
+
+3. **Start the development server**
+
+   ```bash
+   pnpm --filter @time-management/web dev
+   ```
+
+   Open [http://localhost:5173](http://localhost:5173)
+
+For detailed setup and troubleshooting, see [Sprint 1 Development Guide](docs/version%201/sprint-1-dev-guide.md).
+
+### Development Workflow
 
 ```bash
-git clone https://github.com/<your-username>/time-manager.git
-cd time-manager
-```
+# Run all quality checks
+pnpm lint          # ESLint
+pnpm type-check    # TypeScript
+pnpm format        # Prettier auto-fix
+pnpm format:check  # Prettier check only
 
-### 2. Update corepack (if needed)
-
-If you encounter a corepack signature verification error, update corepack:
-
-```bash
-npm install -g corepack@latest
-corepack enable
-```
-
-### 3. Install dependencies
-
-```bash
-pnpm install
-```
-
-### 4. Start the frontend (local dev)
-
-```bash
-pnpm --filter web dev
-```
-
-The frontend will be available at [http://localhost:5173/](http://localhost:5173/)
-
-### 5. Run local backend tests
-
-```bash
-pnpm --filter api test
-```
-
-_(Note: The API service is not yet implemented)_
-
-### 6. Synthesize infrastructure (no deploy yet)
-
-```bash
+# Test infrastructure changes
 pnpm --filter @time-management/infra-cdk run synth
+
+# Deploy infrastructure changes
+pnpm --filter @time-management/infra-cdk run deploy
 ```
