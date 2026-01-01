@@ -294,7 +294,7 @@ Capture known uncertainties without blocking progress.
 
 - **Decision:** Use CloudFront default domain or custom domain?
   - **Resolution:** Use CloudFront default for Sprint 2; custom domain can be added in future sprint
-  
+
 - **Decision:** Enable DynamoDB point-in-time recovery for all environments?
   - **Resolution:** Enable for prod only to reduce costs; dev/QA can be recreated
 
