@@ -5,12 +5,16 @@ import * as apigatewayIntegrations from 'aws-cdk-lib/aws-apigatewayv2-integratio
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambdaNodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as cdk from 'aws-cdk-lib';
 import * as path from 'path';
 
 export interface ApiConstructProps {
   readonly userPool: cognito.UserPool;
   readonly userPoolClient: cognito.UserPoolClient;
+  readonly dataTable?: dynamodb.Table;
+  readonly appSecrets?: secretsmanager.Secret;
 }
 
 /**
@@ -56,10 +60,22 @@ export class ApiConstruct extends Construct {
       entry: path.join(__dirname, '../../../../services/api/src/handlers/auth/verify.ts'),
       environment: {
         NODE_ENV: process.env.NODE_ENV || 'development',
+        TABLE_NAME: props.dataTable?.tableName || '',
+        SECRETS_ARN: props.appSecrets?.secretArn || '',
       },
       timeout: cdk.Duration.seconds(10),
       memorySize: 256,
     });
+
+    // Grant DynamoDB permissions if table provided
+    if (props.dataTable) {
+      props.dataTable.grantReadWriteData(authVerifyHandler);
+    }
+
+    // Grant Secrets Manager permissions if secrets provided
+    if (props.appSecrets) {
+      props.appSecrets.grantRead(authVerifyHandler);
+    }
 
     // Create Lambda integration
     const authVerifyIntegration = new apigatewayIntegrations.HttpLambdaIntegration(
