@@ -332,7 +332,7 @@ Restate the conditions under which this sprint is considered complete.
 
 ---
 
-## Notes
+## Sprint Notes
 
 - Sprint 2 establishes the infrastructure foundation for all future application features
 - DynamoDB single-table design chosen for simplicity and cost efficiency in early stages
