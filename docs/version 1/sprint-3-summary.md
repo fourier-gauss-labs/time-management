@@ -1,8 +1,8 @@
 # Sprint 3 Summary - CI/CD Automation
 
-**Sprint**: 3  
-**Focus**: CI/CD Automation with GitHub Actions  
-**Status**: ✅ **COMPLETE**  
+**Sprint**: 3
+**Focus**: CI/CD Automation with GitHub Actions
+**Status**: ✅ **COMPLETE**
 **Branch**: `sprint-3-cicd`
 
 ---
@@ -20,6 +20,7 @@ Establish a complete CI/CD pipeline using GitHub Actions for all environments (d
 **File**: [.github/workflows/ci.yml](../../.github/workflows/ci.yml)
 
 **Features**:
+
 - Runs on every pull request and push
 - Executes linting, type checking, format validation
 - **Runs all tests** (frontend + backend)
@@ -27,6 +28,7 @@ Establish a complete CI/CD pipeline using GitHub Actions for all environments (d
 - Blocks merges when checks fail (requires branch protection)
 
 **Test Results**:
+
 ```
 ✓ Frontend Tests: 8 tests passed
   - Component tests (App.test.tsx)
@@ -49,13 +51,15 @@ Total: 21 tests passed across 5 test files
 **Trigger**: Automatic on merge to `main` branch
 
 **Workflow**:
+
 1. Run CI tests
 2. Deploy infrastructure via AWS CDK
 3. Build React frontend
 4. Upload to S3
 5. Invalidate CloudFront cache
 
-**Environment**: 
+**Environment**:
+
 - Region: `us-east-2`
 - Auto-deploy: Yes
 - Manual approval: No
@@ -67,12 +71,14 @@ Total: 21 tests passed across 5 test files
 **File**: [.github/workflows/deploy-qa.yml](../../.github/workflows/deploy-qa.yml)
 
 **Triggers**:
+
 - Version tags (e.g., `v1.0.0-qa.1`)
 - Manual workflow dispatch
 
 **Workflow**: Same as dev, but targets QA environment
 
 **Environment**:
+
 - Region: `us-east-1`
 - Auto-deploy: No (tag or manual only)
 - Manual approval: Optional
@@ -86,6 +92,7 @@ Total: 21 tests passed across 5 test files
 **Trigger**: Manual workflow dispatch only
 
 **Workflow**:
+
 1. Generate CDK diff preview
 2. **Require manual approval** (via GitHub environment)
 3. Deploy infrastructure
@@ -93,6 +100,7 @@ Total: 21 tests passed across 5 test files
 5. **Verify deployment** with health check
 
 **Environment**:
+
 - Region: `us-east-1`
 - Auto-deploy: No
 - Manual approval: **Required**
@@ -103,16 +111,19 @@ Total: 21 tests passed across 5 test files
 ### 5. Test Infrastructure
 
 **Frontend Tests** (Vitest + React Testing Library):
+
 - [apps/web/src/App.test.tsx](../../apps/web/src/App.test.tsx) - Component tests
 - [apps/web/src/services/auth.test.ts](../../apps/web/src/services/auth.test.ts) - Service layer tests
 - [apps/web/src/test/ci-validation.test.ts](../../apps/web/src/test/ci-validation.test.ts) - CI enforcement validation
 
 **Backend Tests** (Vitest + Node):
+
 - [services/api/vitest.config.ts](../../services/api/vitest.config.ts) - Vitest configuration
 - [services/api/src/handlers/auth/verify.test.ts](../../services/api/src/handlers/auth/verify.test.ts) - Lambda handler tests
 - [services/api/src/utils/response.test.ts](../../services/api/src/utils/response.test.ts) - Utility function tests
 
 **Test Scripts** (package.json):
+
 ```json
 {
   "test": "pnpm -r --filter './apps/**' --filter './packages/**' test run"
@@ -124,12 +135,14 @@ Total: 21 tests passed across 5 test files
 ### 6. Documentation
 
 **Technical Specification**: [sprint-3-techspec.md](sprint-3-techspec.md)
+
 - Problem statement and objectives
 - Technical approach
 - 12 exit criteria
 - Risk assessment
 
 **Deployment Guide**: [sprint-3-deployment.md](sprint-3-deployment.md)
+
 - Workflow explanations
 - GitHub secrets configuration
 - Environment setup instructions
@@ -137,6 +150,7 @@ Total: 21 tests passed across 5 test files
 - Troubleshooting guide
 
 **Exit Criteria Verification**: [sprint-3-verification.md](sprint-3-verification.md)
+
 - Evidence for each exit criterion
 - Configuration requirements
 - Testing procedures
@@ -148,20 +162,20 @@ Total: 21 tests passed across 5 test files
 
 All 12 exit criteria have been met:
 
-| # | Criterion | Status |
-|---|-----------|--------|
-| 1 | CI pipeline runs on every PR | ✅ Complete |
-| 2 | Failed CI blocks merges | ✅ Complete (requires branch protection) |
-| 3 | Main branch auto-deploys to dev | ✅ Complete |
-| 4 | Dev deployment updates infra + frontend | ✅ Complete |
-| 5 | QA deploys on manual/tag trigger | ✅ Complete |
-| 6 | Production requires manual approval | ✅ Complete (requires environment config) |
-| 7 | Vitest configured for frontend + backend | ✅ Complete |
-| 8 | Example tests demonstrate CI enforcement | ✅ Complete |
-| 9 | AWS credentials managed as secrets | ✅ Complete (documented) |
-| 10 | Workflow logs provide clear status | ✅ Complete |
-| 11 | Deployment process documented | ✅ Complete |
-| 12 | Deployment process is repeatable | ✅ Complete |
+| #   | Criterion                                | Status                                    |
+| --- | ---------------------------------------- | ----------------------------------------- |
+| 1   | CI pipeline runs on every PR             | ✅ Complete                               |
+| 2   | Failed CI blocks merges                  | ✅ Complete (requires branch protection)  |
+| 3   | Main branch auto-deploys to dev          | ✅ Complete                               |
+| 4   | Dev deployment updates infra + frontend  | ✅ Complete                               |
+| 5   | QA deploys on manual/tag trigger         | ✅ Complete                               |
+| 6   | Production requires manual approval      | ✅ Complete (requires environment config) |
+| 7   | Vitest configured for frontend + backend | ✅ Complete                               |
+| 8   | Example tests demonstrate CI enforcement | ✅ Complete                               |
+| 9   | AWS credentials managed as secrets       | ✅ Complete (documented)                  |
+| 10  | Workflow logs provide clear status       | ✅ Complete                               |
+| 11  | Deployment process documented            | ✅ Complete                               |
+| 12  | Deployment process is repeatable         | ✅ Complete                               |
 
 ---
 
@@ -174,6 +188,7 @@ To activate the CI/CD pipeline, configure the following in GitHub:
 Navigate to: **Settings → Secrets and variables → Actions**
 
 **Required Secrets** (per environment):
+
 ```
 # Development
 AWS_ACCESS_KEY_ID
@@ -223,6 +238,7 @@ Navigate to: **Settings → Environments**
 Navigate to: **Settings → Branches → Add rule**
 
 **Protect `main` branch**:
+
 - ✅ Require pull request before merging
 - ✅ Require status checks to pass (select `ci`)
 - ✅ Require branches to be up to date
@@ -282,12 +298,14 @@ git push origin v1.0.0-qa.1
 ## 📁 Files Created/Modified
 
 ### GitHub Actions Workflows (4 files)
+
 - `.github/workflows/ci.yml` - **Updated** (added test execution)
 - `.github/workflows/deploy-dev.yml` - **Created**
 - `.github/workflows/deploy-qa.yml` - **Created**
 - `.github/workflows/deploy-prod.yml` - **Created**
 
 ### Test Files (6 files)
+
 - `apps/web/src/App.test.tsx` - **Created**
 - `apps/web/src/services/auth.test.ts` - **Created**
 - `apps/web/src/test/ci-validation.test.ts` - **Created**
@@ -296,9 +314,11 @@ git push origin v1.0.0-qa.1
 - `services/api/src/utils/response.test.ts` - **Created**
 
 ### Configuration (1 file)
+
 - `package.json` - **Updated** (test scripts)
 
 ### Documentation (4 files)
+
 - `docs/version 1/sprint-3-techspec.md` - **Created**
 - `docs/version 1/sprint-3-deployment.md` - **Created**
 - `docs/version 1/sprint-3-verification.md` - **Created**
@@ -311,6 +331,7 @@ git push origin v1.0.0-qa.1
 ## 🎓 Key Learnings
 
 ### What Worked Well
+
 1. **GitHub Actions Integration**: Native GitHub integration simplifies workflow management
 2. **Environment-based Deployments**: Separate workflows per environment provide clear separation
 3. **CDK Output Extraction**: Using `--outputs-file` makes deployment values accessible
@@ -318,12 +339,14 @@ git push origin v1.0.0-qa.1
 5. **Comprehensive Documentation**: Detailed docs reduce future configuration errors
 
 ### Challenges Overcome
+
 1. **Test Import Paths**: Fixed relative import paths in test files
 2. **Test Assertions**: Aligned test expectations with actual component behavior
 3. **Environment Configuration**: Documented GitHub-side configuration requirements
 4. **Secret Management**: Designed secure secrets structure for multi-environment deployments
 
 ### Future Improvements
+
 1. **Deployment Rollbacks**: Add automated rollback on deployment failure
 2. **Smoke Tests**: Add post-deployment smoke tests to verify application health
 3. **Deployment Notifications**: Add Slack/email notifications for deployment status
@@ -347,6 +370,7 @@ git push origin v1.0.0-qa.1
 ## ➡️ Next Steps
 
 ### Immediate (Before Next Sprint)
+
 1. Configure GitHub secrets for all environments
 2. Create GitHub environments (dev, qa, production)
 3. Enable branch protection for `main` branch
@@ -358,6 +382,7 @@ git push origin v1.0.0-qa.1
 9. Test production manual approval workflow
 
 ### Sprint 4 Preparation
+
 1. Review Sprint 4 plan and objectives
 2. Ensure CI/CD pipeline is fully operational
 3. Use established pipeline for Sprint 4 feature development
@@ -367,9 +392,10 @@ git push origin v1.0.0-qa.1
 
 ## 🏆 Sprint 3 Success
 
-**All objectives achieved!** 
+**All objectives achieved!**
 
 Sprint 3 has successfully established a robust, production-ready CI/CD pipeline with:
+
 - ✅ Automated testing on every change
 - ✅ Environment-specific deployment workflows
 - ✅ Manual approval gates for production

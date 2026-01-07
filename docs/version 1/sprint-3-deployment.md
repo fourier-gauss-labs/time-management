@@ -21,21 +21,25 @@ Sprint 3 establishes automated continuous integration and deployment pipelines u
 ### Workflows
 
 **1. CI Pipeline** (`.github/workflows/ci.yml`)
+
 - Triggers: All branch pushes and pull requests
 - Actions: Lint, type check, format check, tests, CDK synth validation
 - Purpose: Quality gates before merge
 
 **2. Dev Deployment** (`.github/workflows/deploy-dev.yml`)
+
 - Triggers: Push to `main` branch
 - Actions: Deploy infrastructure and frontend to dev environment
 - Purpose: Automatic deployment for development testing
 
 **3. QA Deployment** (`.github/workflows/deploy-qa.yml`)
+
 - Triggers: Version tags matching `v*-qa.*` or manual dispatch
 - Actions: Deploy infrastructure and frontend to QA environment
 - Purpose: Staging environment for pre-production testing
 
 **4. Production Deployment** (`.github/workflows/deploy-prod.yml`)
+
 - Triggers: Version tags matching `v[0-9]+.[0-9]+.[0-9]+` or manual dispatch
 - Actions: Deploy infrastructure and frontend to production
 - Purpose: Production releases with manual approval
@@ -94,33 +98,33 @@ Navigate to: **Repository Settings → Secrets and variables → Actions**
 
 ### Development Environment
 
-| Secret Name | Description | Example Value |
-|------------|-------------|---------------|
-| `AWS_ACCESS_KEY_ID` | AWS access key for dev | `AKIAIOSFODNN7EXAMPLE` |
-| `AWS_SECRET_ACCESS_KEY` | AWS secret key for dev | `wJalrXUtnFEMI/K7MDENG/...` |
-| `DEV_USER_POOL_ID` | Cognito User Pool ID | `us-east-2_1gfhK8wz1` |
-| `DEV_USER_POOL_CLIENT_ID` | Cognito Client ID | `66icsi28j2ggmrd1ac9ti3a5sn` |
-| `DEV_USER_POOL_DOMAIN` | Cognito Domain | `timemanagementstack-dev-users` |
+| Secret Name               | Description            | Example Value                   |
+| ------------------------- | ---------------------- | ------------------------------- |
+| `AWS_ACCESS_KEY_ID`       | AWS access key for dev | `AKIAIOSFODNN7EXAMPLE`          |
+| `AWS_SECRET_ACCESS_KEY`   | AWS secret key for dev | `wJalrXUtnFEMI/K7MDENG/...`     |
+| `DEV_USER_POOL_ID`        | Cognito User Pool ID   | `us-east-2_1gfhK8wz1`           |
+| `DEV_USER_POOL_CLIENT_ID` | Cognito Client ID      | `66icsi28j2ggmrd1ac9ti3a5sn`    |
+| `DEV_USER_POOL_DOMAIN`    | Cognito Domain         | `timemanagementstack-dev-users` |
 
 ### QA Environment
 
-| Secret Name | Description |
-|------------|-------------|
-| `AWS_ACCESS_KEY_ID_QA` | AWS access key for QA |
+| Secret Name                | Description           |
+| -------------------------- | --------------------- |
+| `AWS_ACCESS_KEY_ID_QA`     | AWS access key for QA |
 | `AWS_SECRET_ACCESS_KEY_QA` | AWS secret key for QA |
-| `QA_USER_POOL_ID` | Cognito User Pool ID |
-| `QA_USER_POOL_CLIENT_ID` | Cognito Client ID |
-| `QA_USER_POOL_DOMAIN` | Cognito Domain |
+| `QA_USER_POOL_ID`          | Cognito User Pool ID  |
+| `QA_USER_POOL_CLIENT_ID`   | Cognito Client ID     |
+| `QA_USER_POOL_DOMAIN`      | Cognito Domain        |
 
 ### Production Environment
 
-| Secret Name | Description |
-|------------|-------------|
-| `AWS_ACCESS_KEY_ID_PROD` | AWS access key for production |
+| Secret Name                  | Description                   |
+| ---------------------------- | ----------------------------- |
+| `AWS_ACCESS_KEY_ID_PROD`     | AWS access key for production |
 | `AWS_SECRET_ACCESS_KEY_PROD` | AWS secret key for production |
-| `PROD_USER_POOL_ID` | Cognito User Pool ID |
-| `PROD_USER_POOL_CLIENT_ID` | Cognito Client ID |
-| `PROD_USER_POOL_DOMAIN` | Cognito Domain |
+| `PROD_USER_POOL_ID`          | Cognito User Pool ID          |
+| `PROD_USER_POOL_CLIENT_ID`   | Cognito Client ID             |
+| `PROD_USER_POOL_DOMAIN`      | Cognito Domain                |
 
 ---
 
@@ -147,13 +151,14 @@ Configure environments in **Repository Settings → Environments**.
 #### Production Environment
 
 - **Name**: `production`
-- **Protection rules**: 
+- **Protection rules**:
   - ✅ Required reviewers: At least 1
   - ✅ Wait timer: 5 minutes
   - ✅ Deployment branches: Tags only (or main)
 - **Secrets**: Production-specific secrets
 
 **To configure protection rules:**
+
 1. Navigate to Settings → Environments → production
 2. Click "Add protection rule"
 3. Enable "Required reviewers" and add yourself
@@ -180,6 +185,7 @@ git push origin main
 **Manual deployment:**
 
 Use GitHub Actions UI:
+
 1. Go to Actions → Deploy to Dev
 2. Click "Run workflow"
 3. Select branch
@@ -264,10 +270,12 @@ A special test file exists to verify CI enforcement:
 ### Test Coverage
 
 Tests are located in:
+
 - `apps/web/src/**/*.test.{ts,tsx}` - Frontend tests
 - `services/api/src/**/*.test.ts` - Backend tests
 
 **Current test suite includes:**
+
 - React component tests (App.tsx)
 - Service tests (auth.test.ts)
 - Lambda handler tests (verify.test.ts)
@@ -281,18 +289,21 @@ Tests are located in:
 ### CI Failures
 
 **Linting errors:**
+
 ```bash
 # Fix automatically
 pnpm lint:fix
 ```
 
 **Type errors:**
+
 ```bash
 # Check types locally
 pnpm type-check
 ```
 
 **Test failures:**
+
 ```bash
 # Run tests locally
 pnpm test
@@ -302,6 +313,7 @@ pnpm --filter @time-management/web test src/App.test.tsx
 ```
 
 **CDK synth errors:**
+
 ```bash
 # Test CDK synth locally
 cd infra/cdk
@@ -311,26 +323,31 @@ npx cdk synth
 ### Deployment Failures
 
 **AWS credential errors:**
+
 - Verify GitHub secrets are set correctly
 - Check IAM user has necessary permissions
 - Ensure AWS region is correct
 
 **CDK deployment errors:**
+
 - Check CloudFormation console for detailed error
 - Review CDK diff before deployment
 - Verify all required resources exist
 
 **Frontend build errors:**
+
 - Ensure all environment variables are set
 - Check for TypeScript errors
 - Verify Vite configuration
 
 **S3 upload errors:**
+
 - Verify S3 bucket exists
 - Check IAM permissions for S3 operations
 - Ensure bucket name is correct
 
 **CloudFront invalidation errors:**
+
 - Verify CloudFront distribution ID
 - Check IAM permissions for CloudFront operations
 - Ensure distribution is in "Deployed" state
@@ -366,7 +383,7 @@ Update `NODE_VERSION` in all workflow files:
 
 ```yaml
 env:
-  NODE_VERSION: '20.x'  # Update this
+  NODE_VERSION: '20.x' # Update this
 ```
 
 ### Changing AWS Region
@@ -391,18 +408,21 @@ Update `AWS_REGION` in workflow files and ensure infrastructure is deployed to t
 ## Quick Reference
 
 ### Deploy to Dev
+
 ```bash
 git push origin main
 # Automatic deployment
 ```
 
 ### Deploy to QA
+
 ```bash
 git tag v1.0.0-qa.1
 git push origin v1.0.0-qa.1
 ```
 
 ### Deploy to Production
+
 ```bash
 git tag v1.0.0
 git push origin v1.0.0
@@ -410,11 +430,13 @@ git push origin v1.0.0
 ```
 
 ### Run Tests
+
 ```bash
 pnpm test
 ```
 
 ### Check CI Locally
+
 ```bash
 pnpm lint
 pnpm type-check

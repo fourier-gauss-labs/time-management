@@ -92,7 +92,7 @@ jobs:
           FRONTEND_BUCKET=$(jq -r '.["TimeManagementStack-Prod"].FrontendBucket' cdk-outputs.json)
           DISTRIBUTION_ID=$(jq -r '.["TimeManagementStack-Prod"].FrontendDistributionId6CBC2EDF' cdk-outputs.json)
           API_URL=$(jq -r '.["TimeManagementStack-Prod"].ApiApiUrlF2D81078' cdk-outputs.json)
-          
+
           echo "cloudfront_url=$CLOUDFRONT_URL" >> $GITHUB_OUTPUT
           echo "frontend_bucket=$FRONTEND_BUCKET" >> $GITHUB_OUTPUT
           echo "distribution_id=$DISTRIBUTION_ID" >> $GITHUB_OUTPUT
@@ -126,7 +126,7 @@ jobs:
         run: |
           echo "Waiting for CloudFront invalidation to complete..."
           sleep 30
-          
+
           # Test CloudFront URL returns 200
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.deploy-outputs.outputs.cloudfront_url }})
           if [ "$HTTP_STATUS" != "200" ]; then

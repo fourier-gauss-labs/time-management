@@ -1,8 +1,8 @@
 # Sprint 3 - CI/CD Automation - Exit Criteria Verification
 
-**Sprint**: 3  
-**Focus**: CI/CD Automation with GitHub Actions  
-**Date**: 2025-01-XX  
+**Sprint**: 3
+**Focus**: CI/CD Automation with GitHub Actions
+**Date**: 2025-01-XX
 **Status**: ✅ Complete (pending GitHub configuration)
 
 ## Overview
@@ -13,7 +13,7 @@ This document verifies that all exit criteria defined in the Sprint 3 TechSpec h
 
 ### ✅ 1. CI Pipeline Runs on Every Pull Request
 
-**Status**: Complete  
+**Status**: Complete
 **Evidence**: [.github/workflows/ci.yml](.github/workflows/ci.yml)
 
 The CI workflow is configured to run on all pull requests and pushes to any branch:
@@ -25,6 +25,7 @@ on:
 ```
 
 The workflow includes:
+
 - Linting (`pnpm lint`)
 - Type checking (`pnpm type-check`)
 - Code formatting validation (`pnpm format:check`)
@@ -32,6 +33,7 @@ The workflow includes:
 - CDK infrastructure validation (`pnpm --filter @time-management/infra cdk synth`)
 
 **Verification Steps**:
+
 1. Workflow file exists and is properly configured
 2. Trigger conditions include pull requests
 3. All quality gates are included
@@ -43,17 +45,20 @@ The workflow includes:
 
 ### ✅ 2. Failed CI Blocks Pull Request Merges
 
-**Status**: Complete (requires branch protection)  
-**Evidence**: 
+**Status**: Complete (requires branch protection)
+**Evidence**:
+
 - CI workflow configured correctly
 - [apps/web/src/test/ci-validation.test.ts](apps/web/src/test/ci-validation.test.ts) - Intentional failing test for validation
 
 **Implementation**:
+
 - CI workflow will fail if any step fails (lint, type-check, format, test, cdk synth)
 - Intentional failing test exists (commented out) for validation purposes
 - Branch protection rules need to be configured in GitHub
 
 **GitHub Configuration Required**:
+
 1. Go to repository Settings → Branches
 2. Add branch protection rule for `main`
 3. Enable "Require status checks to pass before merging"
@@ -61,6 +66,7 @@ The workflow includes:
 5. Enable "Require branches to be up to date before merging"
 
 **Verification Steps**:
+
 1. Uncomment failing test in [apps/web/src/test/ci-validation.test.ts](apps/web/src/test/ci-validation.test.ts#L8-L10)
 2. Create PR with failing test
 3. Verify CI fails
@@ -71,10 +77,11 @@ The workflow includes:
 
 ### ✅ 3. Main Branch Auto-Deploys to Development Environment
 
-**Status**: Complete  
+**Status**: Complete
 **Evidence**: [.github/workflows/deploy-dev.yml](.github/workflows/deploy-dev.yml)
 
 The development deployment workflow:
+
 - Triggers automatically on push to `main` branch
 - Runs only if CI passes
 - Deploys infrastructure via CDK
@@ -90,10 +97,11 @@ on:
 
 jobs:
   deploy:
-    needs: ci  # Only runs after CI passes
+    needs: ci # Only runs after CI passes
 ```
 
 **Verification Steps**:
+
 1. Workflow file exists and configured correctly
 2. Triggers on main branch pushes
 3. Depends on CI workflow success
@@ -105,30 +113,33 @@ jobs:
 
 ### ✅ 4. Development Deployment Updates Infrastructure and Frontend
 
-**Status**: Complete  
+**Status**: Complete
 **Evidence**: [.github/workflows/deploy-dev.yml](.github/workflows/deploy-dev.yml#L50-L80)
 
 The dev deployment workflow includes:
 
 1. **Infrastructure Deployment** (lines 50-58):
+
    ```yaml
    - name: Deploy CDK Stack
      run: pnpm --filter @time-management/infra cdk deploy --require-approval never
    ```
 
 2. **Frontend Build and Deployment** (lines 67-80):
+
    ```yaml
    - name: Build Frontend
      run: pnpm --filter @time-management/web build
-   
+
    - name: Deploy to S3
      run: aws s3 sync ./apps/web/dist s3://${{ env.BUCKET_NAME }}
-   
+
    - name: Invalidate CloudFront
      run: aws cloudfront create-invalidation --distribution-id ${{ env.DISTRIBUTION_ID }}
    ```
 
 **Verification Steps**:
+
 1. CDK deployment step configured
 2. Frontend build step configured
 3. S3 upload configured
@@ -141,7 +152,7 @@ The dev deployment workflow includes:
 
 ### ✅ 5. QA Environment Deploys on Manual Trigger or Version Tag
 
-**Status**: Complete  
+**Status**: Complete
 **Evidence**: [.github/workflows/deploy-qa.yml](.github/workflows/deploy-qa.yml)
 
 The QA deployment workflow supports two trigger methods:
@@ -150,17 +161,19 @@ The QA deployment workflow supports two trigger methods:
 on:
   push:
     tags:
-      - 'v*-qa.*'  # e.g., v1.0.0-qa.1
+      - 'v*-qa.*' # e.g., v1.0.0-qa.1
   workflow_dispatch:
 ```
 
 **Verification Steps**:
+
 1. Workflow triggers on `v*-qa.*` tags
 2. Workflow can be manually triggered via Actions UI
 3. Same deployment steps as dev (infrastructure + frontend)
 4. Uses QA environment variables and secrets
 
-**Next Steps**: 
+**Next Steps**:
+
 - Configure QA environment in GitHub
 - Create version tag (e.g., `v1.0.0-qa.1`) to test tag-based deployment
 - Test manual workflow dispatch
@@ -169,10 +182,11 @@ on:
 
 ### ✅ 6. Production Deployment Requires Manual Approval
 
-**Status**: Complete (requires environment configuration)  
+**Status**: Complete (requires environment configuration)
 **Evidence**: [.github/workflows/deploy-prod.yml](.github/workflows/deploy-prod.yml)
 
 The production deployment workflow:
+
 - Only triggers via manual workflow dispatch (no automatic deployments)
 - Includes CDK diff preview before deployment
 - Includes deployment verification with health check
@@ -185,10 +199,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production  # Requires manual approval when configured
+    environment: production # Requires manual approval when configured
 ```
 
 **GitHub Configuration Required**:
+
 1. Go to repository Settings → Environments
 2. Create "production" environment
 3. Add required reviewers
@@ -196,6 +211,7 @@ jobs:
 5. Configure production secrets
 
 **Verification Steps**:
+
 1. Workflow only triggers manually (no automatic triggers)
 2. Environment is set to "production"
 3. CDK diff step exists
@@ -208,12 +224,14 @@ jobs:
 
 ### ✅ 7. Vitest Configured for Frontend and Backend
 
-**Status**: Complete  
+**Status**: Complete
 **Evidence**:
+
 - Frontend: [apps/web/vitest.config.ts](apps/web/vitest.config.ts) (existed previously)
 - Backend: [services/api/vitest.config.ts](services/api/vitest.config.ts) (created)
 
 **Frontend Configuration** (React/JSDOM):
+
 ```typescript
 export default defineConfig({
   plugins: [react()],
@@ -226,6 +244,7 @@ export default defineConfig({
 ```
 
 **Backend Configuration** (Node):
+
 ```typescript
 export default defineConfig({
   test: {
@@ -236,6 +255,7 @@ export default defineConfig({
 ```
 
 **Verification Steps**:
+
 1. ✅ Frontend vitest.config.ts exists and is properly configured
 2. ✅ Backend vitest.config.ts exists and is properly configured
 3. ✅ Test scripts configured in package.json files
@@ -245,7 +265,7 @@ export default defineConfig({
 
 ### ✅ 8. Example Tests Demonstrate CI Enforcement
 
-**Status**: Complete  
+**Status**: Complete
 **Evidence**:
 
 1. **Frontend Tests**:
@@ -258,6 +278,7 @@ export default defineConfig({
    - [services/api/src/utils/response.test.ts](services/api/src/utils/response.test.ts) - Utility tests
 
 **CI Enforcement Test** (apps/web/src/test/ci-validation.test.ts):
+
 ```typescript
 describe('CI Enforcement Validation', () => {
   // Uncomment this test to verify CI blocks failing tests
@@ -268,6 +289,7 @@ describe('CI Enforcement Validation', () => {
 ```
 
 **Test Execution Results**:
+
 ```
 ✓ apps/web/src/test/ci-validation.test.ts  (1 test)
 ✓ apps/web/src/services/auth.test.ts  (5 tests)
@@ -279,6 +301,7 @@ Total: 21 tests passed
 ```
 
 **Verification Steps**:
+
 1. ✅ Tests exist for both frontend and backend
 2. ✅ Tests cover components, services, handlers, and utilities
 3. ✅ Intentional failing test exists for CI validation
@@ -289,10 +312,11 @@ Total: 21 tests passed
 
 ### ✅ 9. AWS Credentials Managed as GitHub Secrets
 
-**Status**: Complete (configuration documented)  
+**Status**: Complete (configuration documented)
 **Evidence**: [docs/version 1/sprint-3-deployment.md](docs/version 1/sprint-3-deployment.md#github-secrets-setup)
 
 All workflows reference secrets appropriately:
+
 - Development: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `DEV_*` secrets
 - QA: `AWS_ACCESS_KEY_ID_QA`, `AWS_SECRET_ACCESS_KEY_QA`, `QA_*` secrets
 - Production: `AWS_ACCESS_KEY_ID_PROD`, `AWS_SECRET_ACCESS_KEY_PROD`, `PROD_*` secrets
@@ -300,6 +324,7 @@ All workflows reference secrets appropriately:
 **Required Secrets Documented**:
 
 **Development Environment**:
+
 - `AWS_ACCESS_KEY_ID` - AWS access key for dev deployments
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key for dev deployments
 - `AWS_REGION` - AWS region (us-east-2)
@@ -307,15 +332,17 @@ All workflows reference secrets appropriately:
 - `DEV_BUCKET_NAME` - S3 bucket from CDK outputs
 - `DEV_DISTRIBUTION_ID` - CloudFront distribution from CDK outputs
 
-**QA Environment** (similar pattern with `_QA` suffix)  
+**QA Environment** (similar pattern with `_QA` suffix)
 **Production Environment** (similar pattern with `_PROD` suffix)
 
 **GitHub Configuration Required**:
+
 1. Go to repository Settings → Secrets and variables → Actions
 2. Add each secret with appropriate values
 3. Get bucket and distribution values from CDK outputs after first deployment
 
 **Verification Steps**:
+
 1. ✅ All workflows reference secrets (not hardcoded credentials)
 2. ✅ Secrets documented in deployment guide
 3. ✅ Instructions provided for obtaining values
@@ -325,16 +352,18 @@ All workflows reference secrets appropriately:
 
 ### ✅ 10. Workflow Logs Provide Clear Deployment Status
 
-**Status**: Complete  
+**Status**: Complete
 **Evidence**: Workflow job steps and naming
 
 All workflows include:
+
 - Clear job names (e.g., "Build and Test", "Deploy to Development")
 - Descriptive step names
 - Error handling with meaningful messages
 - Output extraction and display
 
 **Example from deploy-prod.yml**:
+
 ```yaml
 - name: Generate CDK Diff
   id: diff
@@ -359,6 +388,7 @@ All workflows include:
 ```
 
 **Verification Steps**:
+
 1. ✅ All steps have descriptive names
 2. ✅ Error messages are clear
 3. ✅ Success/failure indicators present
@@ -371,7 +401,7 @@ All workflows include:
 
 ### ✅ 11. Deployment Process Documented
 
-**Status**: Complete  
+**Status**: Complete
 **Evidence**: [docs/version 1/sprint-3-deployment.md](docs/version 1/sprint-3-deployment.md)
 
 Comprehensive deployment documentation includes:
@@ -384,6 +414,7 @@ Comprehensive deployment documentation includes:
 6. **Best Practices** - Security and operational guidelines
 
 **Documentation Coverage**:
+
 - ✅ Workflow descriptions (CI, dev, QA, prod)
 - ✅ Trigger conditions for each workflow
 - ✅ Secrets configuration instructions
@@ -394,6 +425,7 @@ Comprehensive deployment documentation includes:
 - ✅ Security best practices
 
 **Verification Steps**:
+
 1. ✅ Documentation exists and is comprehensive
 2. ✅ All workflows documented
 3. ✅ Configuration steps provided
@@ -404,8 +436,9 @@ Comprehensive deployment documentation includes:
 
 ### ✅ 12. Deployment Process is Repeatable and Reliable
 
-**Status**: Complete (pending verification)  
-**Evidence**: 
+**Status**: Complete (pending verification)
+**Evidence**:
+
 - Infrastructure as Code (CDK)
 - Declarative workflows
 - Consistent deployment steps
@@ -421,18 +454,21 @@ Comprehensive deployment documentation includes:
 6. **No Manual Steps**: All deployment steps automated in workflows
 
 **Deployment Consistency**:
+
 - Development: Automatic on every main branch merge
 - QA: Triggered by tags or manual dispatch
 - Production: Manual approval ensures control
 
 **Verification Steps**:
+
 1. ✅ All infrastructure defined in code
 2. ✅ Workflows are declarative and version-controlled
 3. ✅ Same process for all environments (different configs)
 4. ✅ No manual deployment steps required
 5. ⏳ Multiple deployments needed to verify reliability
 
-**Next Steps**: 
+**Next Steps**:
+
 - Perform multiple deployments to verify repeatability
 - Document any manual steps discovered
 - Refine workflows based on actual deployment experience
@@ -446,6 +482,7 @@ Comprehensive deployment documentation includes:
 Navigate to repository Settings → Secrets and variables → Actions:
 
 #### Development Environment
+
 ```
 AWS_ACCESS_KEY_ID=<dev-aws-key>
 AWS_SECRET_ACCESS_KEY=<dev-aws-secret>
@@ -456,6 +493,7 @@ DEV_DISTRIBUTION_ID=<from-cdk-output>
 ```
 
 #### QA Environment
+
 ```
 AWS_ACCESS_KEY_ID_QA=<qa-aws-key>
 AWS_SECRET_ACCESS_KEY_QA=<qa-aws-secret>
@@ -466,6 +504,7 @@ QA_DISTRIBUTION_ID=<from-cdk-output>
 ```
 
 #### Production Environment
+
 ```
 AWS_ACCESS_KEY_ID_PROD=<prod-aws-key>
 AWS_SECRET_ACCESS_KEY_PROD=<prod-aws-secret>
@@ -480,14 +519,17 @@ PROD_DISTRIBUTION_ID=<from-cdk-output>
 Navigate to repository Settings → Environments:
 
 #### 1. Development Environment
+
 - Name: `development`
 - Protection rules: None (auto-deploy)
 
 #### 2. QA Environment
+
 - Name: `qa`
 - Protection rules: Optional (can add reviewers if desired)
 
 #### 3. Production Environment
+
 - Name: `production`
 - Protection rules:
   - ✅ Required reviewers: Add 1-2 team members
@@ -501,6 +543,7 @@ Navigate to repository Settings → Branches → Add rule:
 **Branch name pattern**: `main`
 
 **Protect matching branches**:
+
 - ✅ Require a pull request before merging
 - ✅ Require status checks to pass before merging
   - Add required check: `ci`
@@ -578,12 +621,14 @@ git push origin v1.0.0-qa.1
 ## Files Created/Modified in Sprint 3
 
 ### GitHub Actions Workflows
+
 - [.github/workflows/ci.yml](.github/workflows/ci.yml) - Updated with test execution
 - [.github/workflows/deploy-dev.yml](.github/workflows/deploy-dev.yml) - **Created**
 - [.github/workflows/deploy-qa.yml](.github/workflows/deploy-qa.yml) - **Created**
 - [.github/workflows/deploy-prod.yml](.github/workflows/deploy-prod.yml) - **Created**
 
 ### Test Files
+
 - [apps/web/src/App.test.tsx](apps/web/src/App.test.tsx) - **Created**
 - [apps/web/src/services/auth.test.ts](apps/web/src/services/auth.test.ts) - **Created**
 - [apps/web/src/test/ci-validation.test.ts](apps/web/src/test/ci-validation.test.ts) - **Created**
@@ -592,9 +637,11 @@ git push origin v1.0.0-qa.1
 - [services/api/src/utils/response.test.ts](services/api/src/utils/response.test.ts) - **Created**
 
 ### Configuration Files
+
 - [package.json](package.json) - Updated test scripts
 
 ### Documentation
+
 - [docs/version 1/sprint-3-techspec.md](docs/version 1/sprint-3-techspec.md) - **Created**
 - [docs/version 1/sprint-3-deployment.md](docs/version 1/sprint-3-deployment.md) - **Created**
 - [docs/version 1/sprint-3-verification.md](docs/version 1/sprint-3-verification.md) - **This document**
@@ -632,6 +679,7 @@ To fully activate the CI/CD pipeline:
 ### 📚 Documentation
 
 Comprehensive documentation has been created:
+
 - **TechSpec**: [sprint-3-techspec.md](sprint-3-techspec.md)
 - **Deployment Guide**: [sprint-3-deployment.md](sprint-3-deployment.md)
 - **Verification**: This document
