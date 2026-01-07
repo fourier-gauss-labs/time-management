@@ -1,5 +1,15 @@
 name: Deploy to QA
 
+# ⚠️  CONFIGURATION REQUIRED BEFORE FIRST RUN:
+# 1. Create 'qa' environment: Settings → Environments → New environment
+# 2. Add required secrets: Settings → Secrets and variables → Actions
+#    - AWS_ACCESS_KEY_ID_QA, AWS_SECRET_ACCESS_KEY_QA, AWS_REGION_QA
+#    - QA_CDK_STACK_NAME, QA_BUCKET_NAME, QA_DISTRIBUTION_ID
+#    - QA_USER_POOL_ID, QA_USER_POOL_CLIENT_ID, QA_USER_POOL_DOMAIN
+# 3. See docs/version 1/sprint-3-deployment.md for setup instructions
+#
+# Note: VS Code warnings about missing environments/secrets are expected until configured.
+
 on:
   push:
     tags:

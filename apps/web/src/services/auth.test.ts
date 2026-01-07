@@ -48,8 +48,8 @@ describe('AuthService', () => {
       localStorage.setItem('auth_tokens', JSON.stringify({ idToken: 'token' }));
 
       // Mock window.location.href to prevent actual redirect in test
-      delete (window as { location?: { href: string } }).location;
-      window.location = { href: '' } as Location;
+      delete (window as any).location;
+      window.location = { href: '' } as any;
 
       authService.logout();
 

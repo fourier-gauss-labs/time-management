@@ -1,5 +1,18 @@
 name: Deploy to Production
 
+# ⚠️  CONFIGURATION REQUIRED BEFORE FIRST RUN:
+# 1. Create 'production' environment: Settings → Environments → New environment
+#    ⚠️  CRITICAL: Add required reviewers for manual approval
+#    ⚠️  CRITICAL: Set wait timer to 5 minutes minimum
+# 2. Add required secrets: Settings → Secrets and variables → Actions
+#    - AWS_ACCESS_KEY_ID_PROD, AWS_SECRET_ACCESS_KEY_PROD, AWS_REGION_PROD
+#    - PROD_CDK_STACK_NAME, PROD_BUCKET_NAME, PROD_DISTRIBUTION_ID
+#    - PROD_USER_POOL_ID, PROD_USER_POOL_CLIENT_ID, PROD_USER_POOL_DOMAIN
+# 3. See docs/version 1/sprint-3-deployment.md for setup instructions
+#
+# Note: VS Code warnings about missing environments/secrets are expected until configured.
+# This workflow REQUIRES manual approval - configure production environment protection rules.
+
 on:
   push:
     tags:

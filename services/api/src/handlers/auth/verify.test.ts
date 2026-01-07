@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect } from 'vitest';
 import { handler } from './verify';
 import type { APIGatewayProxyEventV2 } from 'aws-lambda';
@@ -19,8 +20,8 @@ describe('Auth Verify Handler', () => {
 
     const response = await handler(mockEvent);
 
-    expect(response.statusCode).toBe(200);
-    const body = JSON.parse(response.body as string);
+    expect((response as any).statusCode).toBe(200);
+    const body = JSON.parse((response as any).body as string);
     expect(body.userId).toBe('test-user-123');
     expect(body.email).toBe('test@example.com');
     expect(body.message).toBe('Authentication verified successfully');
@@ -39,8 +40,8 @@ describe('Auth Verify Handler', () => {
 
     const response = await handler(mockEvent);
 
-    expect(response.statusCode).toBe(401);
-    const body = JSON.parse(response.body as string);
+    expect((response as any).statusCode).toBe(401);
+    const body = JSON.parse((response as any).body as string);
     expect(body.error).toBe('Unauthorized - missing user identity');
   });
 
@@ -51,6 +52,6 @@ describe('Auth Verify Handler', () => {
 
     const response = await handler(mockEvent);
 
-    expect(response.statusCode).toBe(401);
+    expect((response as any).statusCode).toBe(401);
   });
 });
