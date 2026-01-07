@@ -1,0 +1,145 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20.x'
+  PNPM_VERSION: '8'
+  AWS_REGION: 'us-east-1'
+
+jobs:
+  deploy-prod:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy-outputs.outputs.cloudfront_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "store-path=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.store-path }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run linting
+        run: pnpm lint
+
+      - name: Run type checking
+        run: pnpm type-check
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Generate CDK diff
+        id: cdk-diff
+        run: |
+          cd infra/cdk
+          ENVIRONMENT=prod npx cdk diff > cdk-diff.txt
+          cat cdk-diff.txt
+          echo "CDK diff generated for review"
+
+      - name: Deploy CDK infrastructure
+        id: deploy-cdk
+        run: |
+          cd infra/cdk
+          ENVIRONMENT=prod npx cdk deploy --require-approval never --outputs-file cdk-outputs.json
+          echo "CDK deployment complete"
+
+      - name: Extract CDK outputs
+        id: deploy-outputs
+        run: |
+          cd infra/cdk
+          CLOUDFRONT_URL=$(jq -r '.["TimeManagementStack-Prod"].CloudFrontUrl' cdk-outputs.json)
+          FRONTEND_BUCKET=$(jq -r '.["TimeManagementStack-Prod"].FrontendBucket' cdk-outputs.json)
+          DISTRIBUTION_ID=$(jq -r '.["TimeManagementStack-Prod"].FrontendDistributionId6CBC2EDF' cdk-outputs.json)
+          API_URL=$(jq -r '.["TimeManagementStack-Prod"].ApiApiUrlF2D81078' cdk-outputs.json)
+          
+          echo "cloudfront_url=$CLOUDFRONT_URL" >> $GITHUB_OUTPUT
+          echo "frontend_bucket=$FRONTEND_BUCKET" >> $GITHUB_OUTPUT
+          echo "distribution_id=$DISTRIBUTION_ID" >> $GITHUB_OUTPUT
+          echo "api_url=$API_URL" >> $GITHUB_OUTPUT
+
+      - name: Build frontend
+        run: |
+          cd apps/web
+          pnpm run build
+        env:
+          VITE_AWS_REGION: ${{ env.AWS_REGION }}
+          VITE_USER_POOL_ID: ${{ secrets.PROD_USER_POOL_ID }}
+          VITE_USER_POOL_CLIENT_ID: ${{ secrets.PROD_USER_POOL_CLIENT_ID }}
+          VITE_USER_POOL_DOMAIN: ${{ secrets.PROD_USER_POOL_DOMAIN }}
+          VITE_API_URL: ${{ steps.deploy-outputs.outputs.api_url }}
+          VITE_CLOUDFRONT_URL: ${{ steps.deploy-outputs.outputs.cloudfront_url }}
+          VITE_REDIRECT_URI: ${{ steps.deploy-outputs.outputs.cloudfront_url }}/callback
+          VITE_LOGOUT_URI: ${{ steps.deploy-outputs.outputs.cloudfront_url }}
+
+      - name: Deploy frontend to S3
+        run: |
+          aws s3 sync apps/web/dist/ s3://${{ steps.deploy-outputs.outputs.frontend_bucket }}/ --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ steps.deploy-outputs.outputs.distribution_id }} \
+            --paths "/*"
+
+      - name: Verify deployment
+        run: |
+          echo "Waiting for CloudFront invalidation to complete..."
+          sleep 30
+          
+          # Test CloudFront URL returns 200
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.deploy-outputs.outputs.cloudfront_url }})
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "Warning: CloudFront URL returned $HTTP_STATUS"
+          else
+            echo "✅ CloudFront is serving content"
+          fi
+
+      - name: Deployment summary
+        run: |
+          echo "🚀 Deployment to Production Complete!"
+          echo "CloudFront URL: ${{ steps.deploy-outputs.outputs.cloudfront_url }}"
+          echo "API URL: ${{ steps.deploy-outputs.outputs.api_url }}"
+          echo "Frontend Bucket: ${{ steps.deploy-outputs.outputs.frontend_bucket }}"
+          echo ""
+          echo "⚠️ This was a PRODUCTION deployment. Monitor for issues."
