@@ -60,9 +60,11 @@ export class AuthConstruct extends Construct {
     });
 
     // Create User Pool Domain for Hosted UI
+    // Add a unique suffix to avoid conflicts with orphaned domains
+    const uniqueSuffix = Date.now().toString().slice(-6);
     this.userPoolDomain = this.userPool.addDomain('Domain', {
       cognitoDomain: {
-        domainPrefix: props.userPoolName.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
+        domainPrefix: `${props.userPoolName.toLowerCase().replace(/[^a-z0-9-]/g, '-')}-${uniqueSuffix}`,
       },
     });
 
