@@ -1,0 +1,20 @@
+{
+  "TimeManagementStack-Dev": {
+    "AuthHostedUIUrlD130ED3C": "https://timemanagementstack-dev-users-991843.auth.us-east-2.amazoncognito.com",
+    "CloudFrontUrl": "https://d3ku1muxj7x416.cloudfront.net",
+    "FrontendBucketName47F7E0AE": "timemanagementstack-dev-frontend",
+    "DatabaseTableArn3F8FD890": "arn:aws:dynamodb:us-east-2:798128976501:table/TimeManagementStack-Dev-data",
+    "FrontendDistributionId6CBC2EDF": "E3O4ZMRC3YCCEY",
+    "AuthUserPoolDomainCE038363": "timemanagementstack-dev-users-991843",
+    "AuthUserPoolIdC0605E59": "us-east-2_0mK6NTNlr",
+    "DatabaseTableName64177828": "TimeManagementStack-Dev-data",
+    "FrontendDistributionDomainName8B9BA5CB": "d3ku1muxj7x416.cloudfront.net",
+    "DynamoDBTableName": "TimeManagementStack-Dev-data",
+    "Environment": "dev",
+    "FrontendDistributionUrlD92A0E31": "https://d3ku1muxj7x416.cloudfront.net",
+    "SecretsSecretsArn719B982A": "arn:aws:secretsmanager:us-east-2:798128976501:secret:TimeManagementStack-Dev/app-secrets-2wvWp0",
+    "AuthUserPoolClientId8216BF9A": "60pvscd3rbdejmqu2aq39b3q1q",
+    "FrontendBucket": "timemanagementstack-dev-frontend",
+    "ApiApiUrlF2D81078": "https://1slwyru9lk.execute-api.us-east-2.amazonaws.com"
+  }
+}
