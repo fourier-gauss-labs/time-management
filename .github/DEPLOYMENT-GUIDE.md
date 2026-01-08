@@ -39,13 +39,13 @@ Before deploying to any environment, ensure:
   ```bash
   # Check CloudFormation stacks
   aws cloudformation list-stacks --region us-east-2 --query 'StackSummaries[?StackName==`TimeManagementStack-Dev`]'
-  
+
   # Check S3 buckets
   aws s3 ls | grep timemanagementstack
-  
+
   # Check DynamoDB tables
   aws dynamodb list-tables --region us-east-2 | grep TimeManagementStack
-  
+
   # Check Cognito user pools
   aws cognito-idp list-user-pools --max-results 60 --region us-east-2
   ```
@@ -71,7 +71,7 @@ Before deploying to any environment, ensure:
    ```bash
    pnpm cdk deploy --outputs-file cdk-outputs.json --require-approval never
    ```
-   
+
    **Note**: For production, remove `--require-approval never` to review changes.
 
 4. **Wait for deployment** (5-10 minutes)
@@ -83,7 +83,7 @@ Before deploying to any environment, ensure:
    ```bash
    # Check that outputs file was created
    ls -la cdk-outputs.json
-   
+
    # View outputs
    cat cdk-outputs.json
    ```
