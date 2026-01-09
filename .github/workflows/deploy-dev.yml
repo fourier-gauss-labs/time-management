@@ -78,6 +78,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Clean up failed stack if exists
+        continue-on-error: true
+        run: |
+          STACK_STATUS=$(aws cloudformation describe-stacks --stack-name TimeManagementStack-Dev --region us-east-2 --query 'Stacks[0].StackStatus' --output text 2>/dev/null || echo "DOES_NOT_EXIST")
+          if [[ "$STACK_STATUS" == *"ROLLBACK"* ]] || [[ "$STACK_STATUS" == *"FAILED"* ]]; then
+            echo "Stack in failed state ($STACK_STATUS), deleting..."
+            aws cloudformation delete-stack --stack-name TimeManagementStack-Dev --region us-east-2
+            aws cloudformation wait stack-delete-complete --stack-name TimeManagementStack-Dev --region us-east-2
+            echo "Failed stack deleted"
+          else
+            echo "Stack status: $STACK_STATUS (no cleanup needed)"
+          fi
+
       - name: Deploy CDK infrastructure
         id: deploy-cdk
         env:
