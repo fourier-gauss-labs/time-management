@@ -40,6 +40,7 @@ export class TimeManagementStack extends cdk.Stack {
     // Authentication with Cognito
     const auth = new AuthConstruct(this, 'Auth', {
       userPoolName: `${id}-users`,
+      environment: environment,
       callbackUrls: [
         'http://localhost:5173/callback',
         `https://${frontend.distribution.distributionDomainName}/callback`,
