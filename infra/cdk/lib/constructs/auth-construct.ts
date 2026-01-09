@@ -61,10 +61,10 @@ export class AuthConstruct extends Construct {
     });
 
     // Create User Pool Domain for Hosted UI
-    // Use environment as suffix for consistent domain across deployments
+    // Use environment with version suffix for consistent domain across deployments
     this.userPoolDomain = this.userPool.addDomain('Domain', {
       cognitoDomain: {
-        domainPrefix: `${props.userPoolName.toLowerCase().replace(/[^a-z0-9-]/g, '-')}-${props.environment}`,
+        domainPrefix: `${props.userPoolName.toLowerCase().replace(/[^a-z0-9-]/g, '-')}-${props.environment}-v1`,
       },
     });
 
