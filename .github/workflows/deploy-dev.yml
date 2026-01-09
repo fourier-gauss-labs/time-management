@@ -80,6 +80,8 @@ jobs:
 
       - name: Deploy CDK infrastructure
         id: deploy-cdk
+        env:
+          ENVIRONMENT: dev
         run: |
           cd infra/cdk
           npx cdk deploy --require-approval never --outputs-file cdk-outputs.json
