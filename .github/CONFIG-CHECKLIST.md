@@ -89,14 +89,16 @@ Use this file to track your GitHub configuration progress. Check off items as yo
 ## 🛡️ Branch Protection Rules
 
 ### Main Branch Protection
-- [ ] Created branch protection rule for `main`
-- [ ] ✅ Require pull request before merging
-- [ ] ✅ Require approvals: 1
-- [ ] ✅ Require status checks to pass before merging
-- [ ] ✅ Require branches to be up to date
-- [ ] ✅ Added required check: `ci`
-- [ ] ✅ Do not allow bypassing settings
+- [x] Created branch protection rule for `main`
+- [x] ✅ Require pull request before merging
+- [x] ✅ Require approvals: 1
+- [x] ✅ Require status checks to pass before merging
+- [x] ✅ Require branches to be up to date
+- [x] ✅ Added required check: `ci`
+- [x] ✅ Do not allow bypassing settings
 - [ ] Optional: Include administrators
+
+**⚠️ Note**: Rules configured but **not enforced** on private repos with GitHub Free. Rules will auto-enforce when upgraded to GitHub Team or repo made public.
 
 ---
 
@@ -170,7 +172,7 @@ Use this file to track your GitHub configuration progress. Check off items as yo
 - **Dev Secrets**: ✅ (9/9 configured)
 - **QA Secrets**: ⬜ (0/9 configured)
 - **Prod Secrets**: ⬜ (0/9 configured)
-- **Branch Protection**: ⬜ (not configured)
+- **Branch Protection**: 🟡 (configured but not enforced - private repo)
 - **CDK Bootstrap**: 🟡 (1/3 regions - dev complete)
 - **Verification Tests**: 🟢 (Dev complete - GitHub Actions deployment successful)
 - **Dev Cleanup**: ✅ (Orphaned resources removed)
@@ -185,9 +187,9 @@ Use this file to track your GitHub configuration progress. Check off items as yo
 4. ✅ ~~Deploy to dev to get CDK outputs~~
 5. ✅ ~~Add remaining dev secrets from CDK outputs~~
 6. ✅ ~~Clean up orphaned resources~~
-7. **Next**: Test CI workflow with a code change
-8. **Then**: Enable branch protection rules
-9. **Finally**: Repeat for QA and Production environments
+7. ✅ ~~Configure branch protection rules (not enforced - private repo)~~
+8. **Next**: Test CI workflow with a code change
+9. **Then**: Repeat for QA and Production environments
 
 ---
 
