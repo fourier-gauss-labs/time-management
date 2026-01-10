@@ -19,7 +19,7 @@ const region = regionMap[environment] || 'us-east-2';
 
 new TimeManagementStack(
   app,
-  `TimeManagementStack-${environment.charAt(0).toUpperCase() + environment.slice(1)}`,
+  `TimeManagementApp-${environment.charAt(0).toUpperCase() + environment.slice(1)}`,
   {
     env: {
       account: process.env.CDK_DEFAULT_ACCOUNT,
