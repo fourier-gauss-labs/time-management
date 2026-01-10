@@ -81,11 +81,11 @@ jobs:
       - name: Clean up failed stack if exists
         continue-on-error: true
         run: |
-          STACK_STATUS=$(aws cloudformation describe-stacks --stack-name TimeManagementStack-Dev --region us-east-2 --query 'Stacks[0].StackStatus' --output text 2>/dev/null || echo "DOES_NOT_EXIST")
+          STACK_STATUS=$(aws cloudformation describe-stacks --stack-name TimeManagementApp-Dev --region us-east-2 --query 'Stacks[0].StackStatus' --output text 2>/dev/null || echo "DOES_NOT_EXIST")
           if [[ "$STACK_STATUS" == *"ROLLBACK"* ]] || [[ "$STACK_STATUS" == *"FAILED"* ]]; then
             echo "Stack in failed state ($STACK_STATUS), deleting..."
-            aws cloudformation delete-stack --stack-name TimeManagementStack-Dev --region us-east-2
-            aws cloudformation wait stack-delete-complete --stack-name TimeManagementStack-Dev --region us-east-2
+            aws cloudformation delete-stack --stack-name TimeManagementApp-Dev --region us-east-2
+            aws cloudformation wait stack-delete-complete --stack-name TimeManagementApp-Dev --region us-east-2
             echo "Failed stack deleted"
           else
             echo "Stack status: $STACK_STATUS (no cleanup needed)"
@@ -104,10 +104,10 @@ jobs:
         id: deploy-outputs
         run: |
           cd infra/cdk
-          CLOUDFRONT_URL=$(jq -r '.["TimeManagementStack-Dev"].CloudFrontUrl' cdk-outputs.json)
-          FRONTEND_BUCKET=$(jq -r '.["TimeManagementStack-Dev"].FrontendBucket' cdk-outputs.json)
-          DISTRIBUTION_ID=$(jq -r '.["TimeManagementStack-Dev"].FrontendDistributionId6CBC2EDF' cdk-outputs.json)
-          API_URL=$(jq -r '.["TimeManagementStack-Dev"].ApiApiUrlF2D81078' cdk-outputs.json)
+          CLOUDFRONT_URL=$(jq -r '."TimeManagementApp-Dev".CloudFrontUrl' cdk-outputs.json)
+          FRONTEND_BUCKET=$(jq -r '."TimeManagementApp-Dev".FrontendBucket' cdk-outputs.json)
+          DISTRIBUTION_ID=$(jq -r '."TimeManagementApp-Dev".FrontendDistributionId6CBC2EDF' cdk-outputs.json)
+          API_URL=$(jq -r '."TimeManagementApp-Dev".ApiApiUrlF2D81078' cdk-outputs.json)
 
           echo "cloudfront_url=$CLOUDFRONT_URL" >> $GITHUB_OUTPUT
           echo "frontend_bucket=$FRONTEND_BUCKET" >> $GITHUB_OUTPUT
