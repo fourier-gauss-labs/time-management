@@ -77,12 +77,12 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Bootstrap CDK (if needed)
         run: |
           cd infra/cdk
-          npx cdk bootstrap aws://$(aws sts get-caller-identity --query Account --output text)/${{ secrets.AWS_REGION }} || echo "Bootstrap already exists or failed, continuing..."
+          npx cdk bootstrap aws://$(aws sts get-caller-identity --query Account --output text)/${{ env.AWS_REGION }} || echo "Bootstrap already exists or failed, continuing..."
 
       - name: Deploy CDK infrastructure
         id: deploy-cdk
