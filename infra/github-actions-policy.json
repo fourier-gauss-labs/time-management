@@ -1,0 +1,37 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "S3BucketAccess",
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket", "s3:GetBucketLocation"],
+      "Resource": [
+        "arn:aws:s3:::timemanagementapp-dev-frontend",
+        "arn:aws:s3:::timemanagementapp-qa-frontend",
+        "arn:aws:s3:::timemanagementapp-prod-frontend"
+      ]
+    },
+    {
+      "Sid": "S3ObjectAccess",
+      "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject", "s3:DeleteObject", "s3:PutObjectAcl"],
+      "Resource": [
+        "arn:aws:s3:::timemanagementapp-dev-frontend/*",
+        "arn:aws:s3:::timemanagementapp-qa-frontend/*",
+        "arn:aws:s3:::timemanagementapp-prod-frontend/*"
+      ]
+    },
+    {
+      "Sid": "CloudFrontInvalidation",
+      "Effect": "Allow",
+      "Action": ["cloudfront:CreateInvalidation", "cloudfront:GetInvalidation"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CloudFormationReadOutputs",
+      "Effect": "Allow",
+      "Action": ["cloudformation:DescribeStacks", "cloudformation:ListStacks"],
+      "Resource": "*"
+    }
+  ]
+}

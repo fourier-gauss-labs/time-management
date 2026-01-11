@@ -2,6 +2,7 @@ import { Construct } from 'constructs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as cloudfrontOrigins from 'aws-cdk-lib/aws-cloudfront-origins';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as cdk from 'aws-cdk-lib';
 
 export interface FrontendConstructProps {
@@ -62,6 +63,22 @@ export class FrontendConstruct extends Construct {
       httpVersion: cloudfront.HttpVersion.HTTP2_AND_3,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
     });
+
+    // Grant GitHub Actions IAM user permissions via bucket policy
+    // This allows the CI/CD pipeline to upload frontend files
+    this.bucket.addToResourcePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        principals: [new iam.AccountPrincipal(cdk.Stack.of(this).account)],
+        actions: ['s3:PutObject', 's3:GetObject', 's3:DeleteObject', 's3:ListBucket'],
+        resources: [this.bucket.bucketArn, `${this.bucket.bucketArn}/*`],
+        conditions: {
+          StringEquals: {
+            'aws:PrincipalArn': `arn:aws:iam::${cdk.Stack.of(this).account}:user/bill.mccann@fouriergauss.com`,
+          },
+        },
+      })
+    );
 
     // Outputs
     new cdk.CfnOutput(this, 'BucketName', {
