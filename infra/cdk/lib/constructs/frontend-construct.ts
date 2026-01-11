@@ -2,6 +2,7 @@ import { Construct } from 'constructs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as cloudfrontOrigins from 'aws-cdk-lib/aws-cloudfront-origins';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as cdk from 'aws-cdk-lib';
 
 export interface FrontendConstructProps {
@@ -62,6 +63,19 @@ export class FrontendConstruct extends Construct {
       httpVersion: cloudfront.HttpVersion.HTTP2_AND_3,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
     });
+
+    // Allow GitHub Actions IAM user to deploy to S3
+    // Bucket policy is needed in addition to user policy for cross-service access
+    const githubActionsUserArn = `arn:aws:iam::${cdk.Stack.of(this).account}:user/bill.mccann@fouriergauss.com`;
+    this.bucket.addToResourcePolicy(
+      new iam.PolicyStatement({
+        sid: 'AllowGitHubActionsDeployment',
+        effect: iam.Effect.ALLOW,
+        principals: [new iam.ArnPrincipal(githubActionsUserArn)],
+        actions: ['s3:PutObject', 's3:GetObject', 's3:DeleteObject', 's3:ListBucket'],
+        resources: [this.bucket.bucketArn, `${this.bucket.bucketArn}/*`],
+      })
+    );
 
     // Outputs
     new cdk.CfnOutput(this, 'BucketName', {
