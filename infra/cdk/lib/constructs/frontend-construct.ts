@@ -67,13 +67,26 @@ export class FrontendConstruct extends Construct {
     // Allow GitHub Actions IAM user to deploy to S3
     // Bucket policy is needed in addition to user policy for cross-service access
     const githubActionsUserArn = `arn:aws:iam::${cdk.Stack.of(this).account}:user/bill.mccann@fouriergauss.com`;
+    
+    // ListBucket permission on the bucket itself
     this.bucket.addToResourcePolicy(
       new iam.PolicyStatement({
-        sid: 'AllowGitHubActionsDeployment',
+        sid: 'AllowGitHubActionsListBucket',
         effect: iam.Effect.ALLOW,
         principals: [new iam.ArnPrincipal(githubActionsUserArn)],
-        actions: ['s3:PutObject', 's3:GetObject', 's3:DeleteObject', 's3:ListBucket'],
-        resources: [this.bucket.bucketArn, `${this.bucket.bucketArn}/*`],
+        actions: ['s3:ListBucket'],
+        resources: [this.bucket.bucketArn],
+      })
+    );
+    
+    // Object permissions on bucket contents
+    this.bucket.addToResourcePolicy(
+      new iam.PolicyStatement({
+        sid: 'AllowGitHubActionsObjectOperations',
+        effect: iam.Effect.ALLOW,
+        principals: [new iam.ArnPrincipal(githubActionsUserArn)],
+        actions: ['s3:PutObject', 's3:GetObject', 's3:DeleteObject'],
+        resources: [`${this.bucket.bucketArn}/*`],
       })
     );
 
