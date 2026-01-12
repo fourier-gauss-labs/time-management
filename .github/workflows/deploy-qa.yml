@@ -119,6 +119,12 @@ jobs:
           VITE_REDIRECT_URI: ${{ steps.deploy-outputs.outputs.cloudfront_url }}/callback
           VITE_LOGOUT_URI: ${{ steps.deploy-outputs.outputs.cloudfront_url }}
 
+      - name: Debug AWS credentials
+        run: |
+          echo "AWS Account: $(aws sts get-caller-identity --query Account --output text)"
+          echo "AWS User: $(aws sts get-caller-identity --query Arn --output text)"
+          echo "AWS Region: $AWS_REGION"
+
       - name: Deploy frontend to S3
         run: |
           aws s3 sync apps/web/dist/ s3://${{ steps.deploy-outputs.outputs.frontend_bucket }}/ --delete
