@@ -2,20 +2,16 @@
  * Shared types and utilities for the time-management application
  */
 
-/**
- * Unique identifier for a user in the system
- */
-export type UserId = string;
+// Domain types
+export * from './types/domain';
 
-/**
- * Unique identifier for a task in the system
- */
-export type TaskId = string;
+// Validation schemas
+export * from './validation/schemas';
 
-/**
- * Base interface for entities with timestamps
- */
-export interface TimestampedEntity {
-  createdAt: Date;
-  updatedAt: Date;
-}
+// Domain logic
+export * from './domain/action-state';
+export * from './domain/recurrence';
+export * from './domain/orphan-detection';
+
+// Database utilities
+export * from './database/dynamodb-keys';
