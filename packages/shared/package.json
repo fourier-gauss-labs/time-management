@@ -6,9 +6,17 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "typescript": "^5.3.3"
+    "@vitest/coverage-v8": "^4.0.17",
+    "typescript": "^5.3.3",
+    "vitest": "^4.0.17"
+  },
+  "dependencies": {
+    "zod": "^4.3.5"
   }
 }
