@@ -101,10 +101,10 @@ jobs:
         id: deploy-outputs
         run: |
           cd infra/cdk
-          CLOUDFRONT_URL=$(jq -r '.["TimeManagementStack-Prod"].CloudFrontUrl' cdk-outputs.json)
-          FRONTEND_BUCKET=$(jq -r '.["TimeManagementStack-Prod"].FrontendBucket' cdk-outputs.json)
-          DISTRIBUTION_ID=$(jq -r '.["TimeManagementStack-Prod"].FrontendDistributionId6CBC2EDF' cdk-outputs.json)
-          API_URL=$(jq -r '.["TimeManagementStack-Prod"].ApiApiUrlF2D81078' cdk-outputs.json)
+          CLOUDFRONT_URL=$(jq -r '.["TimeManagementApp-Prod"].CloudFrontUrl' cdk-outputs.json)
+          FRONTEND_BUCKET=$(jq -r '.["TimeManagementApp-Prod"].FrontendBucket' cdk-outputs.json)
+          DISTRIBUTION_ID=$(jq -r '.["TimeManagementApp-Prod"].FrontendDistributionId6CBC2EDF' cdk-outputs.json)
+          API_URL=$(jq -r '.["TimeManagementApp-Prod"].ApiApiUrlF2D81078' cdk-outputs.json)
 
           echo "cloudfront_url=$CLOUDFRONT_URL" >> $GITHUB_OUTPUT
           echo "frontend_bucket=$FRONTEND_BUCKET" >> $GITHUB_OUTPUT
