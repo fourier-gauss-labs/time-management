@@ -137,12 +137,14 @@ Use this file to track your GitHub configuration progress. Check off items as yo
 - [x] Cleaned up orphaned resources (S3, DynamoDB)
 
 ### QA Deployment
-- [x] Created version tag: `v1.0.0-qa.1`
+- [x] Created version tag: `v1.0.0-qa.5`
 - [x] Deploy to QA workflow triggered
 - [x] Deployment completed successfully
 - [x] Got CDK outputs
 - [x] Updated QA secrets with CDK output values
 - [x] Verified CloudFront URL: https://d192gxr116io77.cloudfront.net
+- [x] Frontend successfully deployed to S3
+- [x] Fixed workflow stack name extraction issue
 
 ### Production Deployment
 - [ ] Triggered manual workflow dispatch
