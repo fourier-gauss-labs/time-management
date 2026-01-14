@@ -31,6 +31,8 @@ Explicitly list what this sprint will cover.
 - Copy that consistently uses "drivers" and "actions" (never "goals" or "tasks")
 - References to the three core problems the system addresses
 - Reinforcement of "meaning before execution" principle
+- **Parameter store for default content configuration** (JSON-based, build-time configurable)
+- Product manager-editable default content without code changes
 
 ---
 
@@ -152,6 +154,22 @@ New users should never see empty states that require explanation—the system sh
 
 ---
 
+### FR-7: Default Content Parameter Store
+
+**Description**
+Default onboarding content (drivers, milestones, actions) is stored in a configurable parameter store as a JSON object, allowing product managers to update content without code changes. Changes require rebuild and deployment.
+
+**Acceptance Criteria**
+
+- Given default content configuration, when stored as JSON, then it includes complete driver, milestone, and action definitions with all required fields
+- Given a product manager updates the parameter store, when the system is rebuilt and deployed, then new users receive the updated default content
+- Given the parameter store JSON, when validated at build time, then malformed JSON or invalid entity structures fail the build with clear error messages
+- Given default content is loaded from parameter store, when onboarding runs, then it creates entities matching the JSON specification
+- Given parameter store contains versioned content, when the onboarding version changes, then existing users are not re-onboarded
+- Given the JSON schema, when developers review it, then the structure is well-documented with examples and comments
+
+---
+
 ## Non-Functional Requirements
 
 List only the non-functional requirements that are relevant _for this sprint_.
@@ -199,16 +217,40 @@ Describe any changes to persisted data or system state.
 - **Driver entities:** Default drivers marked with metadata (e.g., `isDefault: true` or `source: 'onboarding'`) to support future features
 - **Action entities:** Default recurring actions include onboarding metadata for potential cleanup or explanation features
 
+### New Configuration Storage
+
+- **Parameter Store:** JSON configuration file containing default content specification
+  - Location: `infra/cdk/config/onboarding-defaults.json` or AWS Systems Manager Parameter Store
+  - Structure: Array of drivers with nested milestones and actions
+  - Versioned: Includes `version` field to track content iterations
+  - Validated at build time: Schema validation ensures structural correctness
+  - Example structure:
+    ```json
+    {
+      "version": "1.0.0",
+      "drivers": [
+        {
+          "title": "Learn the system",
+          "description": "...",
+          "milestones": [...],
+          "actions": [...]
+        }
+      ]
+    }
+    ```
+
 ### Invariants
 
 - Default drivers must always have associated milestones to demonstrate proper hierarchy
 - Default recurring actions must always link to a driver (no orphan actions)
 - Onboarding status can only transition from `false` to `true`, never backward (unless user explicitly resets)
+- Parameter store JSON must validate against schema before deployment
 
 ### Migration Considerations
 
 - Existing users (pre-Sprint 5) should not be marked as "new" and should not receive default content
 - Onboarding version field supports future onboarding content updates without re-triggering for existing users
+- Parameter store changes require build and deploy cycle (no runtime hot-reloading)
 
 ---
 
@@ -311,9 +353,11 @@ Capture known uncertainties without blocking progress.
 ### Q1: Specific Default Content
 
 **Question:** What are the exact default drivers and actions to create?
-**Owner:** Product/Design
-**Decision Timing:** Before development begins
-**Notes:** Content must align with philosophy document and demonstrate the three core problems
+**Status:** ✅ Resolved
+**Decision:** Default content will be stored in a parameter store as a JSON object, making it product manager-editable without code changes. Initial content will focus on helping users learn the system.
+**Owner:** Product/Design (to populate JSON)
+**Implementation:** Build-time configuration requiring rebuild and deploy for changes
+**Notes:** Content must align with philosophy document and demonstrate the three core problems. JSON schema will be validated at build time.
 
 ### Q2: Onboarding Version Strategy
 
@@ -325,9 +369,10 @@ Capture known uncertainties without blocking progress.
 ### Q3: User Opt-Out
 
 **Question:** Should users be able to skip default content creation?
+**Status:** ✅ Resolved
+**Decision:** No opt-out mechanism. Default content is always created during registration. Users can delete content afterward if they choose to skip the tutorial.
 **Owner:** Product
-**Decision Timing:** Before Sprint 5 begins
-**Notes:** Current philosophy is "no blank screens," which implies no skip option
+**Rationale:** Aligns with "no blank screens" philosophy; deletion provides user control without complicating onboarding flow
 
 ### Q4: Onboarding Timing
 

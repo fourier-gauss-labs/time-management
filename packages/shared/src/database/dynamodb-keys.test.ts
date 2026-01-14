@@ -12,6 +12,8 @@ import {
   getActionSK,
   getSnapshotPK,
   getSnapshotSK,
+  getOnboardingPK,
+  getOnboardingSK,
   getUserEntityPrefix,
   extractEntityId,
   extractUserId,
@@ -20,6 +22,7 @@ import {
   getMilestoneKey,
   getActionKey,
   getSnapshotKey,
+  getOnboardingKey,
 } from '../database/dynamodb-keys';
 
 describe('Driver keys', () => {
@@ -210,11 +213,13 @@ describe('Key consistency', () => {
     const milestoneKey = getMilestoneKey('user1', 'driver1', 'milestone1');
     const actionKey = getActionKey('user1', 'milestone1', 'action1');
     const snapshotKey = getSnapshotKey('user1', '2026-01-13');
+    const onboardingKey = getOnboardingKey('user1');
 
     expect(driverKey.PK).toContain('user1');
     expect(milestoneKey.PK).toContain('user1');
     expect(actionKey.PK).toContain('user1');
     expect(snapshotKey.PK).toContain('user1');
+    expect(onboardingKey.PK).toContain('user1');
   });
 
   it('should ensure SK maintains hierarchical relationships', () => {
@@ -223,5 +228,31 @@ describe('Key consistency', () => {
 
     expect(milestoneKey.SK).toContain('driver1');
     expect(actionKey.SK).toContain('milestone1');
+  });
+});
+
+describe('Onboarding keys', () => {
+  it('should construct onboarding PK correctly', () => {
+    const pk = getOnboardingPK('user123');
+    expect(pk).toBe('USER#user123#ONBOARDING#STATUS');
+  });
+
+  it('should construct onboarding SK correctly', () => {
+    const sk = getOnboardingSK();
+    expect(sk).toBe('METADATA');
+  });
+
+  it('should construct complete onboarding key', () => {
+    const key = getOnboardingKey('user123');
+    expect(key).toEqual({
+      PK: 'USER#user123#ONBOARDING#STATUS',
+      SK: 'METADATA',
+    });
+  });
+
+  it('should extract ONBOARDING entity type', () => {
+    const pk = getOnboardingPK('user123');
+    const entityType = extractEntityType(pk);
+    expect(entityType).toBe('ONBOARDING');
   });
 });
