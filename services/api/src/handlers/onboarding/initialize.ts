@@ -7,12 +7,7 @@
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import {
-  DynamoDBDocumentClient,
-  GetCommand,
-  PutCommand,
-  TransactWriteCommand,
-} from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, GetCommand, TransactWriteCommand } from '@aws-sdk/lib-dynamodb';
 import {
   createDefaultEntities,
   validateOnboardingConfig,
@@ -21,7 +16,6 @@ import {
   getMilestoneKey,
   getActionKey,
   type OnboardingConfig,
-  type OnboardingStatus,
   type UserId,
 } from '@time-management/shared';
 import onboardingDefaults from '../../../infra/cdk/config/onboarding-defaults.json';
