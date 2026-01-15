@@ -166,10 +166,221 @@ export class ApiConstruct extends Construct {
       authorizer: this.authorizer,
     });
 
+    // ========== Settings Handlers ==========
+    const getSettingsHandler = this.createLambdaFunction(
+      'GetSettingsHandler',
+      'settings/get-settings.ts',
+      props.dataTable
+    );
+
+    const updateSettingsHandler = this.createLambdaFunction(
+      'UpdateSettingsHandler',
+      'settings/update-settings.ts',
+      props.dataTable
+    );
+
+    this.httpApi.addRoutes({
+      path: '/api/user/settings',
+      methods: [apigateway.HttpMethod.GET],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'GetSettingsIntegration',
+        getSettingsHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/user/settings',
+      methods: [apigateway.HttpMethod.PUT],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'UpdateSettingsIntegration',
+        updateSettingsHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    // ========== Review Handlers ==========
+    const getReviewStatusHandler = this.createLambdaFunction(
+      'GetReviewStatusHandler',
+      'review/get-status.ts',
+      props.dataTable
+    );
+
+    const completeReviewHandler = this.createLambdaFunction(
+      'CompleteReviewHandler',
+      'review/complete.ts',
+      props.dataTable
+    );
+
+    this.httpApi.addRoutes({
+      path: '/api/review/status',
+      methods: [apigateway.HttpMethod.GET],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'GetReviewStatusIntegration',
+        getReviewStatusHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/review/complete',
+      methods: [apigateway.HttpMethod.POST],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'CompleteReviewIntegration',
+        completeReviewHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    // ========== Driver Handlers ==========
+    const listDriversHandler = this.createLambdaFunction(
+      'ListDriversHandler',
+      'drivers/list-drivers.ts',
+      props.dataTable
+    );
+
+    const createDriverHandler = this.createLambdaFunction(
+      'CreateDriverHandler',
+      'drivers/create-driver.ts',
+      props.dataTable
+    );
+
+    const getDriverHandler = this.createLambdaFunction(
+      'GetDriverHandler',
+      'drivers/get-driver.ts',
+      props.dataTable
+    );
+
+    const updateDriverHandler = this.createLambdaFunction(
+      'UpdateDriverHandler',
+      'drivers/update-driver.ts',
+      props.dataTable
+    );
+
+    const deleteDriverHandler = this.createLambdaFunction(
+      'DeleteDriverHandler',
+      'drivers/delete-driver.ts',
+      props.dataTable
+    );
+
+    this.httpApi.addRoutes({
+      path: '/api/drivers',
+      methods: [apigateway.HttpMethod.GET],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'ListDriversIntegration',
+        listDriversHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/drivers',
+      methods: [apigateway.HttpMethod.POST],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'CreateDriverIntegration',
+        createDriverHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/drivers/{driverId}',
+      methods: [apigateway.HttpMethod.GET],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'GetDriverIntegration',
+        getDriverHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/drivers/{driverId}',
+      methods: [apigateway.HttpMethod.PUT],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'UpdateDriverIntegration',
+        updateDriverHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/drivers/{driverId}',
+      methods: [apigateway.HttpMethod.DELETE],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'DeleteDriverIntegration',
+        deleteDriverHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    // ========== Milestone Handlers ==========
+    const createMilestoneHandler = this.createLambdaFunction(
+      'CreateMilestoneHandler',
+      'milestones/create-milestone.ts',
+      props.dataTable
+    );
+
+    this.httpApi.addRoutes({
+      path: '/api/drivers/{driverId}/milestones',
+      methods: [apigateway.HttpMethod.POST],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'CreateMilestoneIntegration',
+        createMilestoneHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    // ========== Action Handlers ==========
+    const createActionHandler = this.createLambdaFunction(
+      'CreateActionHandler',
+      'actions/create-action.ts',
+      props.dataTable
+    );
+
+    this.httpApi.addRoutes({
+      path: '/api/milestones/{milestoneId}/actions',
+      methods: [apigateway.HttpMethod.POST],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'CreateActionIntegration',
+        createActionHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
     // Outputs
     new cdk.CfnOutput(this, 'ApiUrl', {
       value: this.httpApi.apiEndpoint,
       description: 'API Gateway URL',
     });
+  }
+
+  /**
+   * Helper method to create Lambda functions with consistent configuration
+   */
+  private createLambdaFunction(
+    id: string,
+    handlerPath: string,
+    dataTable?: dynamodb.Table
+  ): lambdaNodejs.NodejsFunction {
+    const fn = new lambdaNodejs.NodejsFunction(this, id, {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      handler: 'handler',
+      entry: path.join(__dirname, `../../../../services/api/src/handlers/${handlerPath}`),
+      environment: {
+        NODE_ENV: process.env.NODE_ENV || 'development',
+        TABLE_NAME: dataTable?.tableName || '',
+      },
+      timeout: cdk.Duration.seconds(10),
+      memorySize: 256,
+      bundling: {
+        externalModules: ['@aws-sdk/*'],
+      },
+    });
+
+    if (dataTable) {
+      dataTable.grantReadWriteData(fn);
+    }
+
+    return fn;
   }
 }

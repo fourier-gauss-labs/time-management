@@ -75,6 +75,7 @@ export function createDefaultEntities(userId: UserId, config: OnboardingConfig):
       title: driverConfig.title,
       description: driverConfig.description,
       isActive: driverConfig.isActive,
+      isArchived: false,
       createdAt: now,
       updatedAt: now,
     };

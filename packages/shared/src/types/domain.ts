@@ -38,9 +38,21 @@ export type ActionState = 'planned' | 'in-progress' | 'completed' | 'deferred' |
 export type RecurrenceFrequency = 'daily' | 'weekly' | 'monthly';
 
 /**
- * Day of week for weekly recurrence (0 = Sunday, 6 = Saturday)
+ * Day of week (0 = Sunday, 6 = Saturday)
  */
 export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+/**
+ * Day of week as string enum for user settings
+ */
+export type DayOfWeekString =
+  | 'sunday'
+  | 'monday'
+  | 'tuesday'
+  | 'wednesday'
+  | 'thursday'
+  | 'friday'
+  | 'saturday';
 
 /**
  * Recurrence pattern for habitual actions
@@ -75,6 +87,7 @@ export interface Driver extends TimestampedEntity {
   title: string;
   description?: string;
   isActive: boolean;
+  isArchived: boolean;
 }
 
 /**
@@ -167,4 +180,43 @@ export interface OrphanDetectionResult {
   orphanedActions: Action[];
   orphanedMilestones: Milestone[];
   orphanedDrivers: Driver[];
+}
+
+/**
+ * User settings - stores user preferences and configuration
+ */
+export interface UserSettings extends TimestampedEntity {
+  userId: UserId;
+  /**
+   * Preferred day of the week for weekly review
+   */
+  reviewDay: DayOfWeekString;
+}
+
+/**
+ * Review status - tracks weekly review completion
+ */
+export interface ReviewStatus extends TimestampedEntity {
+  userId: UserId;
+  /**
+   * ISO 8601 timestamp of last completed review
+   */
+  lastCompletedAt?: ISO8601Date;
+}
+
+/**
+ * Input type for updating user settings
+ */
+export interface UpdateUserSettingsInput {
+  reviewDay?: DayOfWeekString;
+}
+
+/**
+ * Input type for updating a driver
+ */
+export interface UpdateDriverInput {
+  title?: string;
+  description?: string;
+  isActive?: boolean;
+  isArchived?: boolean;
 }
