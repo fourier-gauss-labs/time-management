@@ -1,14 +1,22 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Archive, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Archive, Trash2 } from 'lucide-react';
 import { driverApi } from '../lib/api-client';
 import { Button } from '../components/ui/button';
-import type { Driver } from '@time-management/shared';
+
+interface Driver {
+  id: string;
+  userId: string;
+  title: string;
+  description?: string;
+  isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export function DriversPage() {
   const queryClient = useQueryClient();
   const [showArchived, setShowArchived] = useState(false);
-  const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
   const [newDriverTitle, setNewDriverTitle] = useState('');
   const [newDriverDescription, setNewDriverDescription] = useState('');
   const [isCreating, setIsCreating] = useState(false);
@@ -148,7 +156,7 @@ export function DriversPage() {
                     <p className="text-sm text-muted-foreground mt-1">{driver.description}</p>
                   )}
                   <div className="flex gap-2 mt-3 text-xs text-muted-foreground">
-                    <span>{driver.isActive ? 'Active' : 'Inactive'}</span>
+                    <span>{!driver.isArchived ? 'Active' : 'Archived'}</span>
                     {driver.isArchived && <span>• Archived</span>}
                   </div>
                 </div>

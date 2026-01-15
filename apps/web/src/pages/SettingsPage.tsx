@@ -1,8 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { settingsApi } from '../lib/api-client';
 import { Button } from '../components/ui/button';
-import type { DayOfWeekString } from '@time-management/shared';
+
+type DayOfWeekString =
+  | 'sunday'
+  | 'monday'
+  | 'tuesday'
+  | 'wednesday'
+  | 'thursday'
+  | 'friday'
+  | 'saturday';
+
+interface UserSettings {
+  userId: string;
+  reviewDay: DayOfWeekString;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const DAYS: { value: DayOfWeekString; label: string }[] = [
   { value: 'sunday', label: 'Sunday' },
@@ -18,15 +33,17 @@ export function SettingsPage() {
   const queryClient = useQueryClient();
   const [selectedDay, setSelectedDay] = useState<DayOfWeekString | null>(null);
 
-  const { data: settings, isLoading } = useQuery({
+  const { data: settings, isLoading } = useQuery<UserSettings>({
     queryKey: ['settings'],
     queryFn: () => settingsApi.getSettings(),
-    onSuccess: data => {
-      if (selectedDay === null) {
-        setSelectedDay(data.reviewDay);
-      }
-    },
   });
+
+  // Set initial selected day when settings load
+  useEffect(() => {
+    if (settings && selectedDay === null) {
+      setSelectedDay(settings.reviewDay);
+    }
+  }, [settings, selectedDay]);
 
   const updateMutation = useMutation({
     mutationFn: (reviewDay: DayOfWeekString) => settingsApi.updateSettings({ reviewDay }),

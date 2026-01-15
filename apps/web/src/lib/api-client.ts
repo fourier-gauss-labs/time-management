@@ -2,41 +2,114 @@
  * API client for making authenticated requests to the backend
  */
 
-import type {
-  Driver,
-  Milestone,
-  Action,
-  UserSettings,
-  UpdateUserSettingsInput,
-  CreateDriverInput,
-  UpdateDriverInput,
-  CreateMilestoneInput,
-  CreateActionInput,
-  DayOfWeekString,
-} from '@time-management/shared';
+type DayOfWeekString =
+  | 'sunday'
+  | 'monday'
+  | 'tuesday'
+  | 'wednesday'
+  | 'thursday'
+  | 'friday'
+  | 'saturday';
+
+interface UserSettings {
+  userId: string;
+  reviewDay: DayOfWeekString;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface UpdateUserSettingsInput {
+  reviewDay: DayOfWeekString;
+}
+
+interface Driver {
+  id: string;
+  userId: string;
+  title: string;
+  description?: string;
+  isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CreateDriverInput {
+  title: string;
+  description?: string;
+}
+
+interface UpdateDriverInput {
+  title?: string;
+  description?: string;
+  isArchived?: boolean;
+}
+
+interface Milestone {
+  id: string;
+  userId: string;
+  driverId: string;
+  title: string;
+  description?: string;
+  targetDate?: string;
+  completedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CreateMilestoneInput {
+  driverId: string;
+  title: string;
+  description?: string;
+  targetDate?: string;
+}
+
+interface Action {
+  id: string;
+  userId: string;
+  driverId: string;
+  milestoneId?: string;
+  title: string;
+  description?: string;
+  dueDate?: string;
+  completedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CreateActionInput {
+  driverId: string;
+  milestoneId?: string;
+  title: string;
+  description?: string;
+  dueDate?: string;
+}
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 class ApiError extends Error {
-  constructor(
-    public status: number,
-    message: string
-  ) {
+  public status: number;
+
+  constructor(status: number, message: string) {
     super(message);
     this.name = 'ApiError';
+    this.status = status;
   }
 }
 
-async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+async function fetchWithAuth<T>(
+  endpoint: string,
+  options: Record<string, unknown> = {}
+): Promise<T> {
   const token = localStorage.getItem('authToken');
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(token && { Authorization: `Bearer ${token}` }),
+    ...((options.headers as Record<string, string>) || {}),
+  };
 
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
+    headers,
   });
 
   if (!response.ok) {

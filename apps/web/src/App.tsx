@@ -6,7 +6,7 @@ import { HomePage } from './pages/HomePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { ReviewPage } from './pages/ReviewPage';
 import { DriversPage } from './pages/DriversPage';
-import { authService } from './services/auth';
+import { authService, type User } from './services/auth';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -29,9 +29,13 @@ function App() {
     if (code) {
       authService
         .handleCallback(code)
-        .then(result => {
-          localStorage.setItem('authToken', result.idToken);
-          setIsAuthenticated(true);
+        .then(() => {
+          const tokens = authService.getTokens();
+          const authUser = authService.getUser();
+          if (tokens && authUser) {
+            localStorage.setItem('authToken', tokens.idToken);
+            setUser(authUser);
+          }
           window.history.replaceState({}, '', window.location.pathname);
         })
         .catch(error => {
@@ -39,24 +43,33 @@ function App() {
         })
         .finally(() => setIsLoading(false));
     } else {
-      // Check for existing token
-      const token = localStorage.getItem('authToken');
-      setIsAuthenticated(!!token);
+      // Check for existing authentication
+      const authUser = authService.getUser();
+      const tokens = authService.getTokens();
+      if (authUser && tokens) {
+        localStorage.setItem('authToken', tokens.idToken);
+        setUser(authUser);
+      }
       setIsLoading(false);
     }
   }, []);
+
+  const handleLogout = () => {
+    authService.logout();
+    setUser(null);
+  };
 
   if (isLoading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
-  if (!isAuthenticated) {
+  if (!user) {
     return (
       <div className="flex flex-col items-center justify-center h-screen gap-4">
         <h1 className="text-4xl font-bold">Time Management</h1>
         <p className="text-muted-foreground">Sign in to manage your drivers and weekly reviews</p>
         <button
-          onClick={() => authService.signIn()}
+          onClick={() => authService.login()}
           className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
         >
           Sign In
@@ -68,7 +81,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Layout>
+        <Layout user={user} onLogout={handleLogout}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/settings" element={<SettingsPage />} />

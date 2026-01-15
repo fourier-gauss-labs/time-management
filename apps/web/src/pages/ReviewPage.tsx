@@ -1,9 +1,18 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Check, Plus, Calendar } from 'lucide-react';
+import { Check, Plus } from 'lucide-react';
 import { reviewApi, driverApi, milestoneApi, actionApi } from '../lib/api-client';
 import { Button } from '../components/ui/button';
-import type { Driver } from '@time-management/shared';
+
+interface Driver {
+  id: string;
+  userId: string;
+  title: string;
+  description?: string;
+  isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export function ReviewPage() {
   const queryClient = useQueryClient();
@@ -11,6 +20,7 @@ export function ReviewPage() {
   const [newMilestoneTitle, setNewMilestoneTitle] = useState('');
   const [newActionTitle, setNewActionTitle] = useState('');
   const [newMilestoneId, setNewMilestoneId] = useState<string | null>(null);
+  const [currentDriverId, setCurrentDriverId] = useState<string | null>(null);
   const [editingDriverTitle, setEditingDriverTitle] = useState('');
   const [editingDriverDesc, setEditingDriverDesc] = useState('');
 
@@ -43,20 +53,29 @@ export function ReviewPage() {
 
   const createMilestoneMutation = useMutation({
     mutationFn: ({ driverId, title }: { driverId: string; title: string }) =>
-      milestoneApi.create(driverId, { userId: 'current-user', driverId, title }),
-    onSuccess: data => {
+      milestoneApi.create(driverId, { driverId, title }),
+    onSuccess: (data, variables) => {
       setNewMilestoneTitle('');
       setNewMilestoneId(data.id);
+      setCurrentDriverId(variables.driverId);
       queryClient.invalidateQueries({ queryKey: ['milestones'] });
     },
   });
 
   const createActionMutation = useMutation({
-    mutationFn: ({ milestoneId, title }: { milestoneId: string; title: string }) =>
-      actionApi.create(milestoneId, { userId: 'current-user', milestoneId, title }),
+    mutationFn: ({
+      driverId,
+      milestoneId,
+      title,
+    }: {
+      driverId: string;
+      milestoneId: string;
+      title: string;
+    }) => actionApi.create(milestoneId, { driverId, milestoneId, title }),
     onSuccess: () => {
       setNewActionTitle('');
       setNewMilestoneId(null);
+      setCurrentDriverId(null);
       queryClient.invalidateQueries({ queryKey: ['actions'] });
     },
   });
@@ -84,8 +103,12 @@ export function ReviewPage() {
   };
 
   const handleCreateAction = () => {
-    if (newMilestoneId && newActionTitle.trim()) {
-      createActionMutation.mutate({ milestoneId: newMilestoneId, title: newActionTitle });
+    if (newMilestoneId && currentDriverId && newActionTitle.trim()) {
+      createActionMutation.mutate({
+        driverId: currentDriverId,
+        milestoneId: newMilestoneId,
+        title: newActionTitle,
+      });
     }
   };
 
