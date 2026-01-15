@@ -91,6 +91,81 @@ export class ApiConstruct extends Construct {
       authorizer: this.authorizer,
     });
 
+    // Create onboarding initialize Lambda function
+    const onboardingInitializeHandler = new lambdaNodejs.NodejsFunction(
+      this,
+      'OnboardingInitializeHandler',
+      {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        handler: 'handler',
+        entry: path.join(
+          __dirname,
+          '../../../../services/api/src/handlers/onboarding/initialize.ts'
+        ),
+        environment: {
+          NODE_ENV: process.env.NODE_ENV || 'development',
+          TABLE_NAME: props.dataTable?.tableName || '',
+        },
+        timeout: cdk.Duration.seconds(30),
+        memorySize: 512,
+        bundling: {
+          externalModules: ['@aws-sdk/*'],
+        },
+      }
+    );
+
+    // Create onboarding status Lambda function
+    const onboardingStatusHandler = new lambdaNodejs.NodejsFunction(
+      this,
+      'OnboardingStatusHandler',
+      {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        handler: 'handler',
+        entry: path.join(__dirname, '../../../../services/api/src/handlers/onboarding/status.ts'),
+        environment: {
+          NODE_ENV: process.env.NODE_ENV || 'development',
+          TABLE_NAME: props.dataTable?.tableName || '',
+        },
+        timeout: cdk.Duration.seconds(10),
+        memorySize: 256,
+        bundling: {
+          externalModules: ['@aws-sdk/*'],
+        },
+      }
+    );
+
+    // Grant DynamoDB permissions to onboarding handlers
+    if (props.dataTable) {
+      props.dataTable.grantReadWriteData(onboardingInitializeHandler);
+      props.dataTable.grantReadData(onboardingStatusHandler);
+    }
+
+    // Create Lambda integrations for onboarding
+    const onboardingInitializeIntegration = new apigatewayIntegrations.HttpLambdaIntegration(
+      'OnboardingInitializeIntegration',
+      onboardingInitializeHandler
+    );
+
+    const onboardingStatusIntegration = new apigatewayIntegrations.HttpLambdaIntegration(
+      'OnboardingStatusIntegration',
+      onboardingStatusHandler
+    );
+
+    // Add onboarding routes with Cognito authorizer
+    this.httpApi.addRoutes({
+      path: '/api/user/onboarding/initialize',
+      methods: [apigateway.HttpMethod.POST],
+      integration: onboardingInitializeIntegration,
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/user/onboarding/status',
+      methods: [apigateway.HttpMethod.GET],
+      integration: onboardingStatusIntegration,
+      authorizer: this.authorizer,
+    });
+
     // Outputs
     new cdk.CfnOutput(this, 'ApiUrl', {
       value: this.httpApi.apiEndpoint,

@@ -12,6 +12,7 @@ export * from './validation/schemas';
 export * from './domain/action-state';
 export * from './domain/recurrence';
 export * from './domain/orphan-detection';
+export * from './domain/onboarding';
 
 // Database utilities
 export * from './database/dynamodb-keys';

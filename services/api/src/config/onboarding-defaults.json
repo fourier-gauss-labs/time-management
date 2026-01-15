@@ -1,0 +1,111 @@
+{
+  "$schema": "./onboarding-defaults-schema.json",
+  "version": "1.0.0",
+  "drivers": [
+    {
+      "title": "Learn the system",
+      "description": "Master the driver → milestone → action hierarchy to build meaningful, intentional systems for your life. This driver demonstrates how strategic intent (drivers) connects to temporal targets (milestones) and executable work (actions).",
+      "isActive": true,
+      "milestones": [
+        {
+          "title": "Understand the three core problems",
+          "description": "The system addresses: (1) disconnection between daily actions and meaningful goals, (2) lack of deliberate planning and intentionality, (3) no system for reflection and continuous improvement.",
+          "actions": [
+            {
+              "title": "Review your first driver",
+              "description": "Drivers represent your 'why'—the strategic intent and purpose behind your work. They answer the question: what meaningful outcome am I pursuing?",
+              "state": "planned",
+              "estimatedMinutes": 5
+            },
+            {
+              "title": "Explore this milestone",
+              "description": "Milestones are temporal targets linked to drivers—the 'when' that gives structure to your intent. They create accountability and progress markers.",
+              "state": "planned",
+              "estimatedMinutes": 5
+            },
+            {
+              "title": "Complete this action",
+              "description": "Actions are executable work—the 'what' you actually do. Every action must link to a milestone (no orphan actions). This enforces meaning before execution.",
+              "state": "planned",
+              "estimatedMinutes": 5
+            }
+          ]
+        },
+        {
+          "title": "Set up your first real driver",
+          "description": "Replace these examples with your own strategic intent. What meaningful outcome do you want to pursue?",
+          "actions": [
+            {
+              "title": "Define your driver",
+              "description": "Create a driver that represents something meaningful to you. Remember: drivers are about purpose and strategic intent, not tasks.",
+              "state": "planned",
+              "estimatedMinutes": 10
+            },
+            {
+              "title": "Add a milestone",
+              "description": "Create a milestone with a target date. Milestones provide temporal structure and accountability.",
+              "state": "planned",
+              "estimatedMinutes": 5
+            },
+            {
+              "title": "Create supporting actions",
+              "description": "Add 2-3 actions that move you toward your milestone. Each action should be concrete and executable.",
+              "state": "planned",
+              "estimatedMinutes": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Build sustainable habits",
+      "description": "Develop recurring actions that compound over time. This driver demonstrates how the system supports habit formation through recurrence patterns and daily planning.",
+      "isActive": true,
+      "milestones": [
+        {
+          "title": "Establish daily rhythms",
+          "description": "Create consistency through recurring actions that align with your drivers. Habits work best when connected to meaningful purpose.",
+          "actions": [
+            {
+              "title": "Morning reflection",
+              "description": "Review your drivers and plan your day with intention. Ask: which actions move me toward meaningful outcomes?",
+              "state": "planned",
+              "estimatedMinutes": 10,
+              "recurrencePattern": {
+                "frequency": "daily"
+              },
+              "trigger": "After waking up, before checking email"
+            },
+            {
+              "title": "Evening review",
+              "description": "Reflect on what you completed and why it mattered. This reinforces the connection between daily actions and strategic intent.",
+              "state": "planned",
+              "estimatedMinutes": 10,
+              "recurrencePattern": {
+                "frequency": "daily"
+              },
+              "trigger": "Before bed, after dinner"
+            }
+          ]
+        },
+        {
+          "title": "Practice weekly reflection",
+          "description": "Weekly reviews help you maintain perspective and adjust course. They address the third core problem: lack of reflection and continuous improvement.",
+          "actions": [
+            {
+              "title": "Weekly driver review",
+              "description": "Review your active drivers. Are they still meaningful? Do they need adjustment? Strategic intent evolves—your system should too.",
+              "state": "planned",
+              "estimatedMinutes": 20,
+              "recurrencePattern": {
+                "frequency": "weekly",
+                "interval": [0]
+              },
+              "trigger": "Sunday evening, end of week"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

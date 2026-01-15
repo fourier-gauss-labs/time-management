@@ -116,6 +116,16 @@ export interface DailySnapshot {
 }
 
 /**
+ * Onboarding status - tracks whether a user has completed initial onboarding
+ */
+export interface OnboardingStatus extends TimestampedEntity {
+  userId: UserId;
+  isOnboarded: boolean;
+  onboardingVersion: string;
+  completedAt?: ISO8601Date;
+}
+
+/**
  * Input type for creating a driver
  */
 export interface CreateDriverInput {

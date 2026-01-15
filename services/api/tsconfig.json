@@ -2,13 +2,12 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./src/*"],
       "@time-management/shared": ["../../packages/shared/src"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../../infra/cdk/config/**/*.json"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

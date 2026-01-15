@@ -103,6 +103,18 @@ export const DailySnapshotSchema = z.object({
 });
 
 /**
+ * Onboarding status schema
+ */
+export const OnboardingStatusSchema = z.object({
+  userId: z.string(),
+  isOnboarded: z.boolean(),
+  onboardingVersion: z.string(),
+  completedAt: ISO8601DateSchema.optional(),
+  createdAt: ISO8601DateSchema,
+  updatedAt: ISO8601DateSchema,
+});
+
+/**
  * Create driver input schema
  */
 export const CreateDriverInputSchema = z.object({

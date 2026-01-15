@@ -17,7 +17,7 @@ import { UserId, DriverId, MilestoneId, ActionId } from '../types/domain';
 /**
  * Entity type discriminator
  */
-export type EntityType = 'DRIVER' | 'MILESTONE' | 'ACTION' | 'SNAPSHOT';
+export type EntityType = 'DRIVER' | 'MILESTONE' | 'ACTION' | 'SNAPSHOT' | 'ONBOARDING';
 
 /**
  * DynamoDB key structure
@@ -114,6 +114,25 @@ export function getSnapshotSK(date: string): string {
 }
 
 /**
+ * Constructs a partition key for onboarding status
+ *
+ * @param userId - The user ID
+ * @returns The partition key
+ */
+export function getOnboardingPK(userId: UserId): string {
+  return `USER#${userId}#ONBOARDING#STATUS`;
+}
+
+/**
+ * Constructs a sort key for onboarding status
+ *
+ * @returns The sort key
+ */
+export function getOnboardingSK(): string {
+  return 'METADATA';
+}
+
+/**
  * Constructs a query prefix for all entities of a type for a user
  *
  * @param userId - The user ID
@@ -159,7 +178,7 @@ export function extractEntityType(pk: string): EntityType {
   const parts = pk.split('#');
   if (parts.length >= 3) {
     const type = parts[2];
-    if (['DRIVER', 'MILESTONE', 'ACTION', 'SNAPSHOT'].includes(type)) {
+    if (['DRIVER', 'MILESTONE', 'ACTION', 'SNAPSHOT', 'ONBOARDING'].includes(type)) {
       return type as EntityType;
     }
   }
@@ -211,5 +230,15 @@ export function getSnapshotKey(userId: UserId, date: string): DynamoDBKey {
   return {
     PK: getSnapshotPK(userId, date),
     SK: getSnapshotSK(date),
+  };
+}
+
+/**
+ * Constructs a complete DynamoDB key for onboarding status
+ */
+export function getOnboardingKey(userId: UserId): DynamoDBKey {
+  return {
+    PK: getOnboardingPK(userId),
+    SK: getOnboardingSK(),
   };
 }
