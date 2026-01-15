@@ -5,4 +5,9 @@ export default defineConfig({
     globals: true,
     environment: 'node',
   },
+  resolve: {
+    alias: {
+      '@time-management/shared': '../packages/shared/src',
+    },
+  },
 });

@@ -9,9 +9,9 @@ describe('App', () => {
     expect(headingElement).toBeInTheDocument();
   });
 
-  it('renders the login button when not authenticated', () => {
+  it('renders the signin button when not authenticated', () => {
     render(<App />);
-    const loginButton = testScreen.getByRole('button', { name: /Log In/i });
+    const loginButton = testScreen.getByRole('button', { name: /Sign In/i });
     expect(loginButton).toBeInTheDocument();
   });
 });
