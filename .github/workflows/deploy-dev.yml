@@ -124,8 +124,8 @@ jobs:
           VITE_USER_POOL_CLIENT_ID: ${{ secrets.DEV_USER_POOL_CLIENT_ID }}
           VITE_USER_POOL_DOMAIN: ${{ secrets.DEV_USER_POOL_DOMAIN }}
           VITE_API_URL: ${{ steps.deploy-outputs.outputs.api_url }}
-          VITE_REDIRECT_URI: http://localhost:5173/callback
-          VITE_LOGOUT_URI: http://localhost:5173
+          VITE_REDIRECT_URI: ${{ steps.deploy-outputs.outputs.cloudfront_url }}/callback
+          VITE_LOGOUT_URI: ${{ steps.deploy-outputs.outputs.cloudfront_url }}
 
       - name: Deploy frontend to S3
         run: |
