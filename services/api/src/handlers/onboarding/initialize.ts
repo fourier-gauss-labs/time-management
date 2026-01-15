@@ -18,7 +18,7 @@ import {
   type OnboardingConfig,
   type UserId,
 } from '@time-management/shared';
-import onboardingDefaults from '../../../infra/cdk/config/onboarding-defaults.json';
+import onboardingDefaults from '../../config/onboarding-defaults.json';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);

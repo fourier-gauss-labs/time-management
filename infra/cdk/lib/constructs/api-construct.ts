@@ -109,7 +109,6 @@ export class ApiConstruct extends Construct {
         timeout: cdk.Duration.seconds(30),
         memorySize: 512,
         bundling: {
-          nodeModules: ['@time-management/shared', 'uuid'],
           externalModules: ['@aws-sdk/*'],
         },
       }
@@ -130,7 +129,6 @@ export class ApiConstruct extends Construct {
         timeout: cdk.Duration.seconds(10),
         memorySize: 256,
         bundling: {
-          nodeModules: ['@time-management/shared'],
           externalModules: ['@aws-sdk/*'],
         },
       }
