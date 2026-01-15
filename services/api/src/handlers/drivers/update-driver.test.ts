@@ -1,7 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { mockClient } from 'aws-sdk-client-mock';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import type { APIGatewayProxyEvent } from 'aws-lambda';
+
+// Set env before importing handler
+process.env.TABLE_NAME = 'test-table';
+
 import { handler } from './update-driver';
 
 const ddbMock = mockClient(DynamoDBDocumentClient);
@@ -12,10 +16,14 @@ describe('update-driver handler', () => {
     process.env.TABLE_NAME = 'test-table';
   });
 
-  const createMockEvent = (userId: string, driverId: string, body: any): APIGatewayProxyEvent => ({
+  const createMockEvent = (
+    userId: string,
+    driverId: string,
+    body: Record<string, unknown>
+  ): APIGatewayProxyEvent => ({
     requestContext: {
       authorizer: { claims: { sub: userId } },
-    } as any,
+    } as unknown as APIGatewayProxyEvent['requestContext'],
     pathParameters: { driverId },
     body: JSON.stringify(body),
     headers: {},
@@ -128,7 +136,9 @@ describe('update-driver handler', () => {
 
   it('should handle missing userId', async () => {
     const event = createMockEvent('', 'driver-456', { title: 'Title' });
-    event.requestContext.authorizer = { claims: {} } as any;
+    event.requestContext.authorizer = {
+      claims: {},
+    } as APIGatewayProxyEvent['requestContext']['authorizer'];
 
     const result = await handler(event);
 

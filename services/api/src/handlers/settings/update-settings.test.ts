@@ -1,7 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { mockClient } from 'aws-sdk-client-mock';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import type { APIGatewayProxyEvent } from 'aws-lambda';
+
+// Set env before importing handler
+process.env.TABLE_NAME = 'test-table';
+
 import { handler } from './update-settings';
 
 const ddbMock = mockClient(DynamoDBDocumentClient);
@@ -12,11 +16,14 @@ describe('update-settings handler', () => {
     process.env.TABLE_NAME = 'test-table';
   });
 
-  const createMockEvent = (userId: string, body: any): APIGatewayProxyEvent => ({
+  const createMockEvent = (
+    userId: string,
+    body: Record<string, unknown> | null
+  ): APIGatewayProxyEvent => ({
     requestContext: {
       authorizer: { claims: { sub: userId } },
-    } as any,
-    body: JSON.stringify(body),
+    } as unknown as APIGatewayProxyEvent['requestContext'],
+    body: body ? JSON.stringify(body) : null,
     headers: {},
     isBase64Encoded: false,
     httpMethod: 'PUT',
@@ -84,7 +91,7 @@ describe('update-settings handler', () => {
 
   it('should handle missing body', async () => {
     const event = createMockEvent('user-123', null);
-    event.body = undefined;
+    event.body = null;
 
     const result = await handler(event);
 
@@ -95,7 +102,9 @@ describe('update-settings handler', () => {
 
   it('should handle missing userId', async () => {
     const event = createMockEvent('', { reviewDay: 'monday' });
-    event.requestContext.authorizer = { claims: {} } as any;
+    event.requestContext.authorizer = {
+      claims: {},
+    } as APIGatewayProxyEvent['requestContext']['authorizer'];
 
     const result = await handler(event);
 

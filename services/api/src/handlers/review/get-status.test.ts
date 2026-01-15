@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mockClient } from 'aws-sdk-client-mock';
 import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb';
 import type { APIGatewayProxyEvent } from 'aws-lambda';
+// Set env before importing handler
+process.env.TABLE_NAME = 'test-table';
 import { handler } from './get-status';
 
 const ddbMock = mockClient(DynamoDBDocumentClient);
@@ -16,7 +18,7 @@ describe('get-review-status handler', () => {
   const createMockEvent = (userId: string): APIGatewayProxyEvent => ({
     requestContext: {
       authorizer: { claims: { sub: userId } },
-    } as any,
+    } as unknown as APIGatewayProxyEvent['requestContext'],
     headers: {},
     body: null,
     isBase64Encoded: false,
@@ -144,7 +146,9 @@ describe('get-review-status handler', () => {
 
   it('should handle missing userId', async () => {
     const event = createMockEvent('');
-    event.requestContext.authorizer = { claims: {} } as any;
+    event.requestContext.authorizer = {
+      claims: {},
+    } as APIGatewayProxyEvent['requestContext']['authorizer'];
 
     const result = await handler(event);
 

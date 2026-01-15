@@ -1,7 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { mockClient } from 'aws-sdk-client-mock';
 import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import type { APIGatewayProxyEvent } from 'aws-lambda';
+
+// Set env before importing handler
+process.env.TABLE_NAME = 'test-table';
+
 import { handler } from './list-drivers';
 
 const ddbMock = mockClient(DynamoDBDocumentClient);
@@ -15,7 +19,7 @@ describe('list-drivers handler', () => {
   const createMockEvent = (userId: string, includeArchived?: string): APIGatewayProxyEvent => ({
     requestContext: {
       authorizer: { claims: { sub: userId } },
-    } as any,
+    } as unknown as APIGatewayProxyEvent['requestContext'],
     queryStringParameters: includeArchived ? { includeArchived } : null,
     headers: {},
     body: null,
@@ -80,7 +84,7 @@ describe('list-drivers handler', () => {
     expect(result.statusCode).toBe(200);
     const body = JSON.parse(result.body);
     expect(body.drivers).toHaveLength(2);
-    expect(body.drivers.every((d: any) => !d.isArchived)).toBe(true);
+    expect(body.drivers.every((d: { isArchived: boolean }) => !d.isArchived)).toBe(true);
   });
 
   it('should return empty list when no drivers exist', async () => {
@@ -97,7 +101,9 @@ describe('list-drivers handler', () => {
 
   it('should handle missing userId', async () => {
     const event = createMockEvent('');
-    event.requestContext.authorizer = { claims: {} } as any;
+    event.requestContext.authorizer = {
+      claims: {},
+    } as APIGatewayProxyEvent['requestContext']['authorizer'];
 
     const result = await handler(event);
 
@@ -123,8 +129,10 @@ describe('list-drivers handler', () => {
 
     const call = ddbMock.calls()[0];
     expect(call.args[0].input).toMatchObject({
-      TableName: 'test-table',
-      KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+      KeyConditionExpression: 'begins_with(PK, :pkPrefix)',
+      ExpressionAttributeValues: {
+        ':pkPrefix': `USER#${userId}#DRIVER#`,
+      },
     });
   });
 });

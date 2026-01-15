@@ -10,7 +10,6 @@ import { DynamoDBDocumentClient, PutCommand, QueryCommand } from '@aws-sdk/lib-d
 import { randomUUID } from 'crypto';
 import {
   getActionKey,
-  getMilestoneKey,
   type UserId,
   type MilestoneId,
   type ActionId,
