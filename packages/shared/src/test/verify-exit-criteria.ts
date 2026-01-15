@@ -125,6 +125,7 @@ try {
     userId: 'user-123',
     title: 'Test Driver',
     isActive: true,
+    isArchived: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };

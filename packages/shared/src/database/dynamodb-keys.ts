@@ -17,7 +17,14 @@ import { UserId, DriverId, MilestoneId, ActionId } from '../types/domain';
 /**
  * Entity type discriminator
  */
-export type EntityType = 'DRIVER' | 'MILESTONE' | 'ACTION' | 'SNAPSHOT' | 'ONBOARDING';
+export type EntityType =
+  | 'DRIVER'
+  | 'MILESTONE'
+  | 'ACTION'
+  | 'SNAPSHOT'
+  | 'ONBOARDING'
+  | 'SETTINGS'
+  | 'REVIEW_STATUS';
 
 /**
  * DynamoDB key structure
@@ -240,5 +247,63 @@ export function getOnboardingKey(userId: UserId): DynamoDBKey {
   return {
     PK: getOnboardingPK(userId),
     SK: getOnboardingSK(),
+  };
+}
+
+/**
+ * Constructs a partition key for user settings
+ *
+ * @param userId - The user ID
+ * @returns The partition key
+ */
+export function getUserSettingsPK(userId: UserId): string {
+  return `USER#${userId}#SETTINGS`;
+}
+
+/**
+ * Constructs a sort key for user settings
+ *
+ * @returns The sort key
+ */
+export function getUserSettingsSK(): string {
+  return 'SETTINGS';
+}
+
+/**
+ * Constructs a complete DynamoDB key for user settings
+ */
+export function getUserSettingsKey(userId: UserId): DynamoDBKey {
+  return {
+    PK: getUserSettingsPK(userId),
+    SK: getUserSettingsSK(),
+  };
+}
+
+/**
+ * Constructs a partition key for review status
+ *
+ * @param userId - The user ID
+ * @returns The partition key
+ */
+export function getReviewStatusPK(userId: UserId): string {
+  return `USER#${userId}#REVIEW_STATUS`;
+}
+
+/**
+ * Constructs a sort key for review status
+ *
+ * @returns The sort key
+ */
+export function getReviewStatusSK(): string {
+  return 'REVIEW_STATUS';
+}
+
+/**
+ * Constructs a complete DynamoDB key for review status
+ */
+export function getReviewStatusKey(userId: UserId): DynamoDBKey {
+  return {
+    PK: getReviewStatusPK(userId),
+    SK: getReviewStatusSK(),
   };
 }

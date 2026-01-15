@@ -30,6 +30,7 @@ export function createTestDriver(overrides?: Partial<Driver>): Driver {
     title: 'Test Driver',
     description: 'A test driver for unit tests',
     isActive: true,
+    isArchived: false,
     createdAt: now,
     updatedAt: now,
     ...overrides,

@@ -1,0 +1,98 @@
+/**
+ * DELETE /drivers/{driverId}
+ *
+ * Deletes a driver for the authenticated user.
+ * Note: This is a hard delete. Consider using archive instead.
+ */
+
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, GetCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+import { getDriverKey, type UserId, type DriverId, type Driver } from '@time-management/shared';
+
+const client = new DynamoDBClient({});
+const docClient = DynamoDBDocumentClient.from(client);
+
+const TABLE_NAME = process.env.TABLE_NAME || '';
+
+/**
+ * Main handler for deleting a driver
+ */
+export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+  try {
+    // Extract user ID from Cognito authorizer
+    const userId = event.requestContext.authorizer?.claims?.sub as UserId;
+
+    if (!userId) {
+      return {
+        statusCode: 401,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Unauthorized: Missing user ID' }),
+      };
+    }
+
+    // Get driver ID from path
+    const driverId = event.pathParameters?.driverId as DriverId | undefined;
+
+    if (!driverId) {
+      return {
+        statusCode: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Driver ID is required' }),
+      };
+    }
+
+    // Retrieve driver to verify ownership
+    const driverKey = getDriverKey(userId, driverId);
+    const result = await docClient.send(
+      new GetCommand({
+        TableName: TABLE_NAME,
+        Key: driverKey,
+      })
+    );
+
+    if (!result.Item) {
+      return {
+        statusCode: 404,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Driver not found' }),
+      };
+    }
+
+    const driver = result.Item as Driver;
+
+    // Verify ownership
+    if (driver.userId !== userId) {
+      return {
+        statusCode: 403,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Forbidden' }),
+      };
+    }
+
+    // Delete driver
+    await docClient.send(
+      new DeleteCommand({
+        TableName: TABLE_NAME,
+        Key: driverKey,
+      })
+    );
+
+    return {
+      statusCode: 204,
+      headers: { 'Content-Type': 'application/json' },
+      body: '',
+    };
+  } catch (error) {
+    console.error('Error deleting driver:', error);
+
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        error: 'Failed to delete driver',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      }),
+    };
+  }
+}
