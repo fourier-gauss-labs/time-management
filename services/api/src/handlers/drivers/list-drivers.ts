@@ -7,7 +7,7 @@
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { type Driver } from '@time-management/shared';
 import { getUserId } from '../../utils/auth';
 
@@ -35,13 +35,13 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     // Get query parameters
     const includeArchived = event.queryStringParameters?.includeArchived === 'true';
 
-    // Query all drivers for this user
+    // Scan for drivers belonging to this user (temporary workaround)
     const result = await docClient.send(
-      new QueryCommand({
+      new ScanCommand({
         TableName: TABLE_NAME,
-        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :skPrefix)',
+        FilterExpression: 'begins_with(PK, :pkPrefix) AND begins_with(SK, :skPrefix)',
         ExpressionAttributeValues: {
-          ':pk': `USER#${userId}`,
+          ':pkPrefix': `USER#${userId}#DRIVER#`,
           ':skPrefix': 'DRIVER#',
         },
       })
