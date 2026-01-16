@@ -57,6 +57,10 @@ export class TimeManagementStack extends cdk.Stack {
       userPoolClient: auth.userPoolClient,
       dataTable: database.table,
       appSecrets: secrets.appSecrets,
+      allowedOrigins: [
+        'http://localhost:5173',
+        `https://${frontend.distribution.distributionDomainName}`,
+      ],
     });
 
     // Additional outputs
