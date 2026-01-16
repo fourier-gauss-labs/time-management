@@ -9,6 +9,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { getReviewStatusKey, type UserId, type ReviewStatus } from '@time-management/shared';
+import { getUserId } from '../../utils/auth';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -21,7 +22,7 @@ const TABLE_NAME = process.env.TABLE_NAME || '';
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
     // Extract user ID from Cognito authorizer
-    const userId = event.requestContext.authorizer?.claims?.sub as UserId;
+    const userId = getUserId(event);
 
     if (!userId) {
       return {

@@ -14,6 +14,7 @@ import {
   type UpdateUserSettingsInput,
   type DayOfWeekString,
 } from '@time-management/shared';
+import { getUserId } from '../../utils/auth';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -36,7 +37,7 @@ const VALID_DAYS: DayOfWeekString[] = [
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
     // Extract user ID from Cognito authorizer
-    const userId = event.requestContext.authorizer?.claims?.sub as UserId;
+    const userId = getUserId(event);
 
     if (!userId) {
       return {
