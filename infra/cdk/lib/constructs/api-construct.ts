@@ -15,6 +15,7 @@ export interface ApiConstructProps {
   readonly userPoolClient: cognito.UserPoolClient;
   readonly dataTable?: dynamodb.Table;
   readonly appSecrets?: secretsmanager.Secret;
+  readonly allowedOrigins?: string[];
 }
 
 /**
@@ -31,7 +32,7 @@ export class ApiConstruct extends Construct {
     this.httpApi = new apigateway.HttpApi(this, 'HttpApi', {
       apiName: `${cdk.Stack.of(this).stackName}-api`,
       corsPreflight: {
-        allowOrigins: ['http://localhost:5173'],
+        allowOrigins: props.allowedOrigins || ['http://localhost:5173'],
         allowMethods: [
           apigateway.CorsHttpMethod.GET,
           apigateway.CorsHttpMethod.POST,
