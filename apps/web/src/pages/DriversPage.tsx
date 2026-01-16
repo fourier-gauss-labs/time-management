@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Archive, Trash2 } from 'lucide-react';
 import { driverApi } from '../lib/api-client';
 import { Button } from '../components/ui/button';
+import { ConfirmDialog } from '../components/ui/confirm-dialog';
 
 interface Driver {
   id: string;
@@ -20,6 +21,7 @@ export function DriversPage() {
   const [newDriverTitle, setNewDriverTitle] = useState('');
   const [newDriverDescription, setNewDriverDescription] = useState('');
   const [isCreating, setIsCreating] = useState(false);
+  const [driverToDelete, setDriverToDelete] = useState<Driver | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['drivers', showArchived],
@@ -49,6 +51,7 @@ export function DriversPage() {
     mutationFn: (id: string) => driverApi.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['drivers'] });
+      setDriverToDelete(null);
     },
   });
 
@@ -67,6 +70,16 @@ export function DriversPage() {
       id: driver.id,
       data: { isArchived: !driver.isArchived },
     });
+  };
+
+  const handleDeleteClick = (driver: Driver) => {
+    setDriverToDelete(driver);
+  };
+
+  const handleConfirmDelete = () => {
+    if (driverToDelete) {
+      deleteMutation.mutate(driverToDelete.id);
+    }
   };
 
   const drivers = data?.drivers || [];
@@ -172,7 +185,7 @@ export function DriversPage() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => deleteMutation.mutate(driver.id)}
+                    onClick={() => handleDeleteClick(driver)}
                     title="Delete"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -183,6 +196,18 @@ export function DriversPage() {
           ))}
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={!!driverToDelete}
+        onOpenChange={(open) => !open && setDriverToDelete(null)}
+        title="Are you sure?"
+        message={`Are you sure you want to delete "${driverToDelete?.title}"?`}
+        confirmText="Yes"
+        cancelText="No"
+        onConfirm={handleConfirmDelete}
+        variant="destructive"
+      />
     </div>
   );
 }
