@@ -8,7 +8,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb';
-import { getOnboardingKey, type UserId } from '@time-management/shared';
+import { getOnboardingKey } from '@time-management/shared';
 import { getUserId } from '../../utils/auth';
 
 const client = new DynamoDBClient({});

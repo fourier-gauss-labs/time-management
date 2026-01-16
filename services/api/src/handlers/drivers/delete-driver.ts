@@ -8,7 +8,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
-import { getDriverKey, type UserId, type DriverId, type Driver } from '@time-management/shared';
+import { getDriverKey, type DriverId, type Driver } from '@time-management/shared';
 import { getUserId } from '../../utils/auth';
 
 const client = new DynamoDBClient({});
