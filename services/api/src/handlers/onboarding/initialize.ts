@@ -16,8 +16,8 @@ import {
   getMilestoneKey,
   getActionKey,
   type OnboardingConfig,
-  type UserId,
 } from '@time-management/shared';
+import { getUserId } from '../../utils/auth';
 import onboardingDefaults from '../../config/onboarding-defaults.json';
 
 const client = new DynamoDBClient({});
@@ -31,7 +31,7 @@ const TABLE_NAME = process.env.TABLE_NAME || '';
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
     // Extract user ID from Cognito authorizer
-    const userId = event.requestContext.authorizer?.claims?.sub as UserId;
+    const userId = getUserId(event);
 
     if (!userId) {
       return {

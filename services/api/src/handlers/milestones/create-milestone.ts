@@ -11,13 +11,13 @@ import { randomUUID } from 'crypto';
 import {
   getMilestoneKey,
   getDriverKey,
-  type UserId,
   type DriverId,
   type MilestoneId,
   type Milestone,
   type CreateMilestoneInput,
   type Driver,
 } from '@time-management/shared';
+import { getUserId } from '../../utils/auth';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -30,7 +30,7 @@ const TABLE_NAME = process.env.TABLE_NAME || '';
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
     // Extract user ID from Cognito authorizer
-    const userId = event.requestContext.authorizer?.claims?.sub as UserId;
+    const userId = getUserId(event);
 
     if (!userId) {
       return {
