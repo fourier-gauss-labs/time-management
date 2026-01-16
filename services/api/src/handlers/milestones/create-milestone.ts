@@ -11,7 +11,7 @@ import { randomUUID } from 'crypto';
 import {
   getMilestoneKey,
   getDriverKey,
-  type UserId,
+  
   type DriverId,
   type MilestoneId,
   type Milestone,

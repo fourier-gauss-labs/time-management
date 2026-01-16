@@ -10,7 +10,6 @@ import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { randomUUID } from 'crypto';
 import {
   getDriverKey,
-  type UserId,
   type Driver,
   type CreateDriverInput,
   type DriverId,
