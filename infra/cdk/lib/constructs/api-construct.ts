@@ -46,11 +46,11 @@ export class ApiConstruct extends Construct {
     });
 
     // Create JWT Authorizer
-    // Note: Cognito ID tokens use 'client_id' claim, not 'aud', so we don't specify jwtAudience
     this.authorizer = new apigatewayAuthorizers.HttpJwtAuthorizer(
       'CognitoAuthorizer',
       `https://cognito-idp.${cdk.Stack.of(this).region}.amazonaws.com/${props.userPool.userPoolId}`,
       {
+        jwtAudience: [props.userPoolClient.userPoolClientId],
         identitySource: ['$request.header.Authorization'],
       }
     );
