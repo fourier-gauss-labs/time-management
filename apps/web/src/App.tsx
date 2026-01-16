@@ -33,7 +33,7 @@ function App() {
           const tokens = authService.getTokens();
           const authUser = authService.getUser();
           if (tokens && authUser) {
-            localStorage.setItem('authToken', tokens.idToken);
+            localStorage.setItem('authToken', tokens.accessToken);
             setUser(authUser);
           }
           window.history.replaceState({}, '', window.location.pathname);
@@ -47,7 +47,7 @@ function App() {
       const authUser = authService.getUser();
       const tokens = authService.getTokens();
       if (authUser && tokens) {
-        localStorage.setItem('authToken', tokens.idToken);
+        localStorage.setItem('authToken', tokens.accessToken);
         setUser(authUser);
       }
       setIsLoading(false);
