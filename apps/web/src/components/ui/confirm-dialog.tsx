@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,7 +12,7 @@ import {
 
 interface ConfirmDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
   title?: string;
   message: string;
   confirmText?: string;
@@ -30,6 +31,11 @@ export function ConfirmDialog({
   onConfirm,
   variant = 'default',
 }: ConfirmDialogProps) {
+  const handleConfirm = () => {
+    onConfirm();
+    onOpenChange(false);
+  };
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -40,7 +46,7 @@ export function ConfirmDialog({
         <AlertDialogFooter>
           <AlertDialogCancel>{cancelText}</AlertDialogCancel>
           <AlertDialogAction
-            onClick={onConfirm}
+            onClick={handleConfirm}
             className={
               variant === 'destructive'
                 ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'

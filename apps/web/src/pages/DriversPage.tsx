@@ -200,7 +200,7 @@ export function DriversPage() {
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         open={!!driverToDelete}
-        onOpenChange={(open) => !open && setDriverToDelete(null)}
+        onOpenChange={open => !open && setDriverToDelete(null)}
         title="Are you sure?"
         message={`Are you sure you want to delete "${driverToDelete?.title}"?`}
         confirmText="Yes"
