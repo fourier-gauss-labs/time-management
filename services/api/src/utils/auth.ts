@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { UserId } from '@time-management/shared/domain';
+import { type UserId } from '@time-management/shared';
 
 /**
  * Extract user ID from API Gateway event context
