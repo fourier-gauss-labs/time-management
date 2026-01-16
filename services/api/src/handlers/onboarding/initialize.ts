@@ -16,7 +16,6 @@ import {
   getMilestoneKey,
   getActionKey,
   type OnboardingConfig,
-  type UserId,
 } from '@time-management/shared';
 import { getUserId } from '../../utils/auth';
 import onboardingDefaults from '../../config/onboarding-defaults.json';

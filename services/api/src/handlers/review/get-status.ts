@@ -11,7 +11,6 @@ import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb';
 import {
   getReviewStatusKey,
   getUserSettingsKey,
-  type UserId,
   type ReviewStatus,
   type UserSettings,
   type DayOfWeekString,
