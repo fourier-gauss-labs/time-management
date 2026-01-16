@@ -39,9 +39,10 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const result = await docClient.send(
       new QueryCommand({
         TableName: TABLE_NAME,
-        KeyConditionExpression: 'begins_with(PK, :pkPrefix)',
+        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :skPrefix)',
         ExpressionAttributeValues: {
-          ':pkPrefix': `USER#${userId}#DRIVER#`,
+          ':pk': `USER#${userId}`,
+          ':skPrefix': 'DRIVER#',
         },
       })
     );
