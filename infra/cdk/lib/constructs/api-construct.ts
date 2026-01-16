@@ -51,6 +51,7 @@ export class ApiConstruct extends Construct {
       `https://cognito-idp.${cdk.Stack.of(this).region}.amazonaws.com/${props.userPool.userPoolId}`,
       {
         jwtAudience: [props.userPoolClient.userPoolClientId],
+        identitySource: ['$request.header.Authorization'],
       }
     );
 
