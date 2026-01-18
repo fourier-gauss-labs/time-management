@@ -99,7 +99,9 @@ async function fetchWithAuth<T>(
   endpoint: string,
   options: Record<string, unknown> = {}
 ): Promise<T> {
-  const token = localStorage.getItem('authToken');
+  const tokensJson = localStorage.getItem('auth_tokens');
+  const tokens = tokensJson ? JSON.parse(tokensJson) : null;
+  const token = tokens?.idToken;
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
