@@ -55,6 +55,7 @@ export function ReviewPage() {
     mutationFn: ({ driverId, title }: { driverId: string; title: string }) =>
       milestoneApi.create(driverId, { title }),
     onSuccess: (data, variables) => {
+      console.log('Milestone created:', data);
       setNewMilestoneTitle('');
       setNewMilestoneId(data.id);
       setCurrentDriverId(variables.driverId);
@@ -97,10 +98,13 @@ export function ReviewPage() {
 
   const handleCreateAction = () => {
     if (newMilestoneId && currentDriverId && newActionTitle.trim()) {
+      console.log('Creating action with milestoneId:', newMilestoneId);
       createActionMutation.mutate({
         milestoneId: newMilestoneId,
         title: newActionTitle,
       });
+    } else {
+      console.log('Missing required fields:', { newMilestoneId, currentDriverId, newActionTitle });
     }
   };
 
