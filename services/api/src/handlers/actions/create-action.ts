@@ -13,7 +13,8 @@ import {
   type MilestoneId,
   type ActionId,
   type Action,
-  type CreateActionInput,
+  type ActionState,
+  type RecurrencePattern,
   type Milestone,
 } from '@time-management/shared';
 import { getUserId } from '../../utils/auth';
@@ -51,7 +52,16 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     }
 
     // Parse and validate request body
-    const body: CreateActionInput = JSON.parse(event.body || '{}');
+    interface ActionRequestBody {
+      title: string;
+      description?: string;
+      state?: ActionState;
+      recurrencePattern?: RecurrencePattern;
+      estimatedMinutes?: number;
+      trigger?: string;
+    }
+    
+    const body: ActionRequestBody = JSON.parse(event.body || '{}');
 
     if (!body.title || body.title.trim().length === 0) {
       return {
