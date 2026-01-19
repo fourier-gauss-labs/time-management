@@ -71,15 +71,17 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
       };
     }
 
-    // We need to find the milestone to get the driverId
-    // For now, we'll do a simplified approach - in production, consider caching or including driverId in path
+    // Find the milestone - we can construct a partial key since PK includes milestoneId
+    // PK format: USER#{userId}#MILESTONE#{milestoneId}
+    const milestonePK = `USER#${userId}#MILESTONE#${milestoneId}`;
+
+    // Scan with exact PK match
     const queryResult = await docClient.send(
       new ScanCommand({
         TableName: TABLE_NAME,
-        FilterExpression: 'begins_with(PK, :pkPrefix) AND id = :milestoneId',
+        FilterExpression: 'PK = :pk',
         ExpressionAttributeValues: {
-          ':pkPrefix': `USER#${userId}#MILESTONE#`,
-          ':milestoneId': milestoneId,
+          ':pk': milestonePK,
         },
         Limit: 1,
       })
