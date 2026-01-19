@@ -60,7 +60,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
       estimatedMinutes?: number;
       trigger?: string;
     }
-    
+
     const body: ActionRequestBody = JSON.parse(event.body || '{}');
 
     if (!body.title || body.title.trim().length === 0) {
