@@ -63,13 +63,8 @@ export function ReviewPage() {
   });
 
   const createActionMutation = useMutation({
-    mutationFn: ({
-      milestoneId,
-      title,
-    }: {
-      milestoneId: string;
-      title: string;
-    }) => actionApi.create(milestoneId, { title }),
+    mutationFn: ({ milestoneId, title }: { milestoneId: string; title: string }) =>
+      actionApi.create(milestoneId, { title }),
     onSuccess: () => {
       setNewActionTitle('');
       setNewMilestoneId(null);
