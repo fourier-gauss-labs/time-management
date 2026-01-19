@@ -53,7 +53,7 @@ export function ReviewPage() {
 
   const createMilestoneMutation = useMutation({
     mutationFn: ({ driverId, title }: { driverId: string; title: string }) =>
-      milestoneApi.create(driverId, { driverId, title }),
+      milestoneApi.create(driverId, { title }),
     onSuccess: (data, variables) => {
       setNewMilestoneTitle('');
       setNewMilestoneId(data.id);
@@ -64,14 +64,12 @@ export function ReviewPage() {
 
   const createActionMutation = useMutation({
     mutationFn: ({
-      driverId,
       milestoneId,
       title,
     }: {
-      driverId: string;
       milestoneId: string;
       title: string;
-    }) => actionApi.create(milestoneId, { driverId, milestoneId, title }),
+    }) => actionApi.create(milestoneId, { title }),
     onSuccess: () => {
       setNewActionTitle('');
       setNewMilestoneId(null);
@@ -105,7 +103,6 @@ export function ReviewPage() {
   const handleCreateAction = () => {
     if (newMilestoneId && currentDriverId && newActionTitle.trim()) {
       createActionMutation.mutate({
-        driverId: currentDriverId,
         milestoneId: newMilestoneId,
         title: newActionTitle,
       });

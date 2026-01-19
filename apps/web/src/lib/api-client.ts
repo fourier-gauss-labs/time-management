@@ -56,7 +56,6 @@ interface Milestone {
 }
 
 interface CreateMilestoneInput {
-  driverId: string;
   title: string;
   description?: string;
   targetDate?: string;
@@ -76,8 +75,6 @@ interface Action {
 }
 
 interface CreateActionInput {
-  driverId: string;
-  milestoneId?: string;
   title: string;
   description?: string;
   dueDate?: string;

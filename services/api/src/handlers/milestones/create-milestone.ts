@@ -14,7 +14,6 @@ import {
   type DriverId,
   type MilestoneId,
   type Milestone,
-  type CreateMilestoneInput,
   type Driver,
 } from '@time-management/shared';
 import { getUserId } from '../../utils/auth';
@@ -78,7 +77,13 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     }
 
     // Parse and validate request body
-    const body: CreateMilestoneInput = JSON.parse(event.body || '{}');
+    interface MilestoneRequestBody {
+      title: string;
+      description?: string;
+      targetDate?: string;
+    }
+
+    const body: MilestoneRequestBody = JSON.parse(event.body || '{}');
 
     if (!body.title || body.title.trim().length === 0) {
       return {
