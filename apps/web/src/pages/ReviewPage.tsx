@@ -252,12 +252,7 @@ export function ReviewPage() {
                       <p className="text-sm font-medium text-muted-foreground">
                         Milestone created:
                       </p>
-                      <h5 className="font-semibold mt-1">
-                        {createdMilestone.title || '[No title]'}
-                      </h5>
-                      <pre className="text-xs mt-2 text-muted-foreground">
-                        {JSON.stringify(createdMilestone, null, 2)}
-                      </pre>
+                      <h5 className="font-semibold mt-1">{createdMilestone.title}</h5>
                     </div>
                     <div className="space-y-2">
                       <p className="text-sm font-medium">Add an action:</p>
