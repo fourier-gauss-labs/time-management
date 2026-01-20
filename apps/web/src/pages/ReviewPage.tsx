@@ -14,12 +14,24 @@ interface Driver {
   updatedAt: string;
 }
 
+interface Milestone {
+  id: string;
+  userId: string;
+  driverId: string;
+  title: string;
+  description?: string;
+  targetDate?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export function ReviewPage() {
   const queryClient = useQueryClient();
   const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
   const [newMilestoneTitle, setNewMilestoneTitle] = useState('');
   const [newActionTitle, setNewActionTitle] = useState('');
   const [newMilestoneId, setNewMilestoneId] = useState<string | null>(null);
+  const [createdMilestone, setCreatedMilestone] = useState<Milestone | null>(null);
   const [currentDriverId, setCurrentDriverId] = useState<string | null>(null);
   const [editingDriverTitle, setEditingDriverTitle] = useState('');
   const [editingDriverDesc, setEditingDriverDesc] = useState('');
@@ -58,6 +70,7 @@ export function ReviewPage() {
       console.log('Milestone created:', data);
       setNewMilestoneTitle('');
       setNewMilestoneId(data.id);
+      setCreatedMilestone(data);
       setCurrentDriverId(variables.driverId);
       queryClient.invalidateQueries({ queryKey: ['milestones'] });
     },
@@ -69,6 +82,7 @@ export function ReviewPage() {
     onSuccess: () => {
       setNewActionTitle('');
       setNewMilestoneId(null);
+      setCreatedMilestone(null);
       setCurrentDriverId(null);
       queryClient.invalidateQueries({ queryKey: ['actions'] });
     },
@@ -231,30 +245,38 @@ export function ReviewPage() {
                   </Button>
                 </div>
 
-                {/* Create Action if milestone was just created */}
-                {newMilestoneId && (
-                  <div className="pl-6 border-l-2 space-y-2">
-                    <p className="text-sm font-medium">Milestone created! Add an action:</p>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={newActionTitle}
-                        onChange={e => setNewActionTitle(e.target.value)}
-                        placeholder="New action title..."
-                        className="flex-1 px-3 py-2 border rounded-md bg-background text-sm"
-                        onKeyDown={e => {
-                          if (e.key === 'Enter') handleCreateAction();
-                        }}
-                        autoFocus
-                      />
-                      <Button
-                        size="sm"
-                        onClick={handleCreateAction}
-                        disabled={!newActionTitle.trim() || createActionMutation.isPending}
-                      >
-                        <Plus className="h-4 w-4 mr-1" />
-                        Add Action
-                      </Button>
+                {/* Display created milestone and action input */}
+                {createdMilestone && (
+                  <div className="mt-4 p-4 bg-muted/50 rounded-lg border space-y-3">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">
+                        Milestone created:
+                      </p>
+                      <h5 className="font-semibold mt-1">{createdMilestone.title}</h5>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Add an action:</p>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newActionTitle}
+                          onChange={e => setNewActionTitle(e.target.value)}
+                          placeholder="New action title..."
+                          className="flex-1 px-3 py-2 border rounded-md bg-background text-sm"
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') handleCreateAction();
+                          }}
+                          autoFocus
+                        />
+                        <Button
+                          size="sm"
+                          onClick={handleCreateAction}
+                          disabled={!newActionTitle.trim() || createActionMutation.isPending}
+                        >
+                          <Plus className="h-4 w-4 mr-1" />
+                          Add Action
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}
