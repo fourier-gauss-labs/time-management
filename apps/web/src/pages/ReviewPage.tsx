@@ -77,14 +77,23 @@ export function ReviewPage() {
   });
 
   const createActionMutation = useMutation({
-    mutationFn: ({ milestoneId, title }: { milestoneId: string; title: string }) =>
-      actionApi.create(milestoneId, { title }),
+    mutationFn: ({ milestoneId, title }: { milestoneId: string; title: string }) => {
+      console.log('Creating action with milestoneId:', milestoneId);
+      const tokensJson = localStorage.getItem('auth_tokens');
+      const tokens = tokensJson ? JSON.parse(tokensJson) : null;
+      console.log('Auth token exists:', !!tokens?.idToken);
+      return actionApi.create(milestoneId, { title });
+    },
     onSuccess: () => {
       setNewActionTitle('');
       setNewMilestoneId(null);
       setCreatedMilestone(null);
       setCurrentDriverId(null);
       queryClient.invalidateQueries({ queryKey: ['actions'] });
+    },
+    onError: error => {
+      console.error('Error creating action:', error);
+      alert(`Failed to create action: ${error}`);
     },
   });
 
