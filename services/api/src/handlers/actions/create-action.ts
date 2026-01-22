@@ -75,6 +75,9 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     // PK format: USER#{userId}#MILESTONE#{milestoneId}
     const milestonePK = `USER#${userId}#MILESTONE#${milestoneId}`;
 
+    console.log('Looking for milestone with PK:', milestonePK);
+    console.log('Table:', TABLE_NAME);
+
     // Scan with exact PK match
     const queryResult = await docClient.send(
       new ScanCommand({
@@ -87,11 +90,33 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
       })
     );
 
+    console.log('Scan result:', JSON.stringify(queryResult, null, 2));
+    console.log('Items found:', queryResult.Items?.length || 0);
+
     if (!queryResult.Items || queryResult.Items.length === 0) {
+      // Log all milestones for this user to debug
+      const allUserMilestones = await docClient.send(
+        new ScanCommand({
+          TableName: TABLE_NAME,
+          FilterExpression: 'begins_with(PK, :userPrefix) AND begins_with(SK, :milestonePrefix)',
+          ExpressionAttributeValues: {
+            ':userPrefix': `USER#${userId}#MILESTONE`,
+            ':milestonePrefix': 'DRIVER#',
+          },
+        })
+      );
+      console.log('All milestones for user:', JSON.stringify(allUserMilestones.Items, null, 2));
+
       return {
         statusCode: 404,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'Milestone not found' }),
+        body: JSON.stringify({
+          error: 'Milestone not found',
+          debug: {
+            lookingFor: milestonePK,
+            foundMilestones: allUserMilestones.Items?.map(m => ({ PK: m.PK, SK: m.SK, id: m.id })),
+          },
+        }),
       };
     }
 
