@@ -67,6 +67,7 @@ export function ReviewPage() {
     mutationFn: ({ driverId, title }: { driverId: string; title: string }) =>
       milestoneApi.create(driverId, { title }),
     onSuccess: (data, variables) => {
+      // eslint-disable-next-line no-console
       console.log('Milestone created:', data);
       setNewMilestoneTitle('');
       setNewMilestoneId(data.id);
@@ -78,9 +79,11 @@ export function ReviewPage() {
 
   const createActionMutation = useMutation({
     mutationFn: ({ milestoneId, title }: { milestoneId: string; title: string }) => {
+      // eslint-disable-next-line no-console
       console.log('Creating action with milestoneId:', milestoneId);
       const tokensJson = localStorage.getItem('auth_tokens');
       const tokens = tokensJson ? JSON.parse(tokensJson) : null;
+      // eslint-disable-next-line no-console
       console.log('Auth token exists:', !!tokens?.idToken);
       return actionApi.create(milestoneId, { title });
     },
@@ -121,12 +124,14 @@ export function ReviewPage() {
 
   const handleCreateAction = () => {
     if (newMilestoneId && currentDriverId && newActionTitle.trim()) {
+      // eslint-disable-next-line no-console
       console.log('Creating action with milestoneId:', newMilestoneId);
       createActionMutation.mutate({
         milestoneId: newMilestoneId,
         title: newActionTitle,
       });
     } else {
+      // eslint-disable-next-line no-console
       console.log('Missing required fields:', { newMilestoneId, currentDriverId, newActionTitle });
     }
   };
