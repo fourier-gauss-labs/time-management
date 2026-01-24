@@ -5,6 +5,10 @@
 // Domain types
 export * from './types/domain';
 
+// New architecture types
+export * from './domain/values';
+export * from './domain/daily-plan';
+
 // Validation schemas
 export * from './validation/schemas';
 
@@ -16,3 +20,5 @@ export * from './domain/onboarding';
 
 // Database utilities
 export * from './database/dynamodb-keys';
+export * from './database/keys';
+export * from './database/revisions';
