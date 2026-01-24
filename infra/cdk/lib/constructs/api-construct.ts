@@ -237,13 +237,13 @@ export class ApiConstruct extends Construct {
     // ========== Driver Handlers ==========
     const listDriversHandler = this.createLambdaFunction(
       'ListDriversHandler',
-      'drivers/list-drivers.ts',
+      'drivers/list-drivers-v2.ts',
       props.dataTable
     );
 
     const createDriverHandler = this.createLambdaFunction(
       'CreateDriverHandler',
-      'drivers/create-driver.ts',
+      'drivers/create-driver-v2.ts',
       props.dataTable
     );
 
@@ -318,7 +318,7 @@ export class ApiConstruct extends Construct {
     // ========== Milestone Handlers ==========
     const createMilestoneHandler = this.createLambdaFunction(
       'CreateMilestoneHandler',
-      'milestones/create-milestone.ts',
+      'milestones/create-milestone-v2.ts',
       props.dataTable
     );
 
@@ -335,12 +335,13 @@ export class ApiConstruct extends Construct {
     // ========== Action Handlers ==========
     const createActionHandler = this.createLambdaFunction(
       'CreateActionHandler',
-      'actions/create-action.ts',
+      'actions/create-action-v2.ts',
       props.dataTable
     );
 
+    // Create action under driver (with optional milestone parent)
     this.httpApi.addRoutes({
-      path: '/api/milestones/{milestoneId}/actions',
+      path: '/api/drivers/{driverId}/actions',
       methods: [apigateway.HttpMethod.POST],
       integration: new apigatewayIntegrations.HttpLambdaIntegration(
         'CreateActionIntegration',

@@ -78,14 +78,27 @@ export function ReviewPage() {
   });
 
   const createActionMutation = useMutation({
-    mutationFn: ({ milestoneId, title }: { milestoneId: string; title: string }) => {
+    mutationFn: ({
+      driverId,
+      title,
+      parentMilestoneId,
+    }: {
+      driverId: string;
+      title: string;
+      parentMilestoneId?: string;
+    }) => {
       // eslint-disable-next-line no-console
-      console.log('Creating action with milestoneId:', milestoneId);
+      console.log(
+        'Creating action with driverId:',
+        driverId,
+        'parentMilestoneId:',
+        parentMilestoneId
+      );
       const tokensJson = localStorage.getItem('auth_tokens');
       const tokens = tokensJson ? JSON.parse(tokensJson) : null;
       // eslint-disable-next-line no-console
       console.log('Auth token exists:', !!tokens?.idToken);
-      return actionApi.create(milestoneId, { title });
+      return actionApi.create(driverId, { title, parentMilestoneId });
     },
     onSuccess: () => {
       setNewActionTitle('');
@@ -125,10 +138,16 @@ export function ReviewPage() {
   const handleCreateAction = () => {
     if (newMilestoneId && currentDriverId && newActionTitle.trim()) {
       // eslint-disable-next-line no-console
-      console.log('Creating action with milestoneId:', newMilestoneId);
+      console.log(
+        'Creating action with driverId:',
+        currentDriverId,
+        'parentMilestoneId:',
+        newMilestoneId
+      );
       createActionMutation.mutate({
-        milestoneId: newMilestoneId,
+        driverId: currentDriverId,
         title: newActionTitle,
+        parentMilestoneId: newMilestoneId,
       });
     } else {
       // eslint-disable-next-line no-console

@@ -77,7 +77,9 @@ interface Action {
 interface CreateActionInput {
   title: string;
   description?: string;
-  dueDate?: string;
+  parentMilestoneId?: string;
+  estimatedMinutes?: number;
+  trigger?: string;
 }
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -191,8 +193,8 @@ export const milestoneApi = {
 
 // Action API
 export const actionApi = {
-  create: (milestoneId: string, data: CreateActionInput) =>
-    fetchWithAuth<Action>(`/api/milestones/${milestoneId}/actions`, {
+  create: (driverId: string, data: CreateActionInput) =>
+    fetchWithAuth<Action>(`/api/drivers/${driverId}/actions`, {
       method: 'POST',
       body: JSON.stringify(data),
     }),
