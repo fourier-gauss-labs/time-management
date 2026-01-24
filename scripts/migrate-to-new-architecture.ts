@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 /**
  * Migration Script: Old Architecture → New Architecture
  *
@@ -93,7 +94,7 @@ async function deleteAllData(): Promise<void> {
   }
 
   // Delete in batches of 25 (DynamoDB limit)
-  const batches: any[][] = [];
+  const batches: Array<Record<string, unknown>[]> = [];
   for (let i = 0; i < items.length; i += 25) {
     batches.push(items.slice(i, i + 25));
   }
