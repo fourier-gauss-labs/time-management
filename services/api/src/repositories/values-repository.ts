@@ -11,7 +11,6 @@ import {
   GetCommand,
   PutCommand,
   QueryCommand,
-  BatchWriteCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { randomUUID } from 'crypto';
 import {
