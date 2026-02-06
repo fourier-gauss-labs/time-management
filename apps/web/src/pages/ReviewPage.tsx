@@ -156,6 +156,8 @@ export function ReviewPage() {
   };
 
   const drivers = driversData?.drivers || [];
+  const hasDrivers = drivers.length > 0;
+  const isFirstReview = !reviewStatus?.lastCompletedAt;
 
   return (
     <div className="max-w-4xl space-y-6">
@@ -179,144 +181,297 @@ export function ReviewPage() {
               </p>
             )}
           </div>
-          <Button
-            onClick={() => completeMutation.mutate()}
-            disabled={completeMutation.isPending}
-            size="lg"
-          >
-            <Check className="h-5 w-5 mr-2" />
-            {completeMutation.isPending ? 'Completing...' : 'Complete Review'}
-          </Button>
+          {hasDrivers && (
+            <Button
+              onClick={() => completeMutation.mutate()}
+              disabled={completeMutation.isPending}
+              size="lg"
+            >
+              <Check className="h-5 w-5 mr-2" />
+              {completeMutation.isPending ? 'Completing...' : 'Complete Review'}
+            </Button>
+          )}
         </div>
       </div>
 
-      {/* Review Instructions */}
-      <div className="bg-muted/50 border rounded-lg p-6 space-y-3">
-        <h3 className="font-semibold">Review Workflow</h3>
-        <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-          <li>Review each driver below - edit titles and descriptions as needed</li>
-          <li>Create new milestones to break drivers into achievable targets</li>
-          <li>Define actions for each milestone to make progress tangible</li>
-          <li>When satisfied with your plan, mark the review as complete</li>
-        </ol>
-      </div>
-
-      {/* Drivers */}
+      {/* Content based on review state */}
       {driversLoading ? (
         <div>Loading drivers...</div>
-      ) : drivers.length === 0 ? (
-        <div className="text-center py-12 border rounded-lg">
-          <p className="text-muted-foreground">No drivers yet. Go to Drivers page to create one.</p>
+      ) : !hasDrivers ? (
+        <div className="bg-muted/50 border rounded-lg p-6 space-y-4">
+          <h3 className="font-semibold text-lg">Welcome to Your First Weekly Review</h3>
+          <p className="text-muted-foreground">
+            To begin your weekly review practice, you'll need to create at least one driver. Drivers
+            represent your strategic goals and provide the "why" behind your work.
+          </p>
+          <p className="text-muted-foreground">
+            Once you have drivers, you can return here to break them down into milestones and
+            actions during your weekly review.
+          </p>
+          <div className="pt-2">
+            <Button onClick={() => (window.location.href = '/drivers')}>Go to Drivers Page</Button>
+          </div>
         </div>
-      ) : (
-        <div className="space-y-4">
-          {drivers.map(driver => (
-            <div key={driver.id} className="border rounded-lg bg-card">
-              {/* Driver Header */}
-              <div className="p-6 border-b">
-                {selectedDriver?.id === driver.id ? (
-                  <div className="space-y-3">
-                    <input
-                      type="text"
-                      value={editingDriverTitle}
-                      onChange={e => setEditingDriverTitle(e.target.value)}
-                      className="w-full text-xl font-semibold px-3 py-2 border rounded-md bg-background"
-                    />
-                    <textarea
-                      value={editingDriverDesc}
-                      onChange={e => setEditingDriverDesc(e.target.value)}
-                      className="w-full px-3 py-2 border rounded-md bg-background"
-                      rows={2}
-                      placeholder="Description"
-                    />
-                    <div className="flex gap-2">
-                      <Button size="sm" onClick={handleSaveDriver}>
-                        Save Changes
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => setSelectedDriver(null)}>
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="text-xl font-semibold">{driver.title}</h3>
-                        {driver.description && (
-                          <p className="text-sm text-muted-foreground mt-1">{driver.description}</p>
-                        )}
-                      </div>
-                      <Button size="sm" variant="outline" onClick={() => handleEditDriver(driver)}>
-                        Edit
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Create Milestone Section */}
-              <div className="p-6 space-y-3">
-                <h4 className="font-medium text-sm text-muted-foreground">Add Milestone</h4>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={newMilestoneTitle}
-                    onChange={e => setNewMilestoneTitle(e.target.value)}
-                    placeholder="New milestone title..."
-                    className="flex-1 px-3 py-2 border rounded-md bg-background"
-                    onKeyDown={e => {
-                      if (e.key === 'Enter') handleCreateMilestone(driver.id);
-                    }}
-                  />
-                  <Button
-                    onClick={() => handleCreateMilestone(driver.id)}
-                    disabled={!newMilestoneTitle.trim() || createMilestoneMutation.isPending}
-                  >
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add
-                  </Button>
-                </div>
-
-                {/* Display created milestone and action input */}
-                {createdMilestone && (
-                  <div className="mt-4 p-4 bg-muted/50 rounded-lg border space-y-3">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">
-                        Milestone created:
-                      </p>
-                      <h5 className="font-semibold mt-1">{createdMilestone.title}</h5>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">Add an action:</p>
+      ) : isFirstReview ? (
+        <>
+          {/* First review with drivers - show instructions */}
+          <div className="bg-muted/50 border rounded-lg p-6 space-y-4">
+            <h3 className="font-semibold">Starting Your Weekly Review Practice</h3>
+            <p className="text-muted-foreground">
+              This is your first weekly review. Take time to reflect on your drivers and set up
+              milestones and actions for the week ahead.
+            </p>
+            <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+              <li>Review each driver below - edit titles and descriptions as needed</li>
+              <li>Create new milestones to break drivers into achievable targets</li>
+              <li>Define actions for each milestone to make progress tangible</li>
+              <li>When satisfied with your plan, mark the review as complete</li>
+            </ol>
+          </div>
+          {/* Drivers Section */}
+          <div className="space-y-4">
+            {drivers.map(driver => (
+              <div key={driver.id} className="border rounded-lg bg-card">
+                {/* Driver Header */}
+                <div className="p-6 border-b">
+                  {selectedDriver?.id === driver.id ? (
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={editingDriverTitle}
+                        onChange={e => setEditingDriverTitle(e.target.value)}
+                        className="w-full text-xl font-semibold px-3 py-2 border rounded-md bg-background"
+                      />
+                      <textarea
+                        value={editingDriverDesc}
+                        onChange={e => setEditingDriverDesc(e.target.value)}
+                        className="w-full px-3 py-2 border rounded-md bg-background"
+                        rows={2}
+                        placeholder="Description"
+                      />
                       <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={newActionTitle}
-                          onChange={e => setNewActionTitle(e.target.value)}
-                          placeholder="New action title..."
-                          className="flex-1 px-3 py-2 border rounded-md bg-background text-sm"
-                          onKeyDown={e => {
-                            if (e.key === 'Enter') handleCreateAction();
-                          }}
-                          autoFocus
-                        />
-                        <Button
-                          size="sm"
-                          onClick={handleCreateAction}
-                          disabled={!newActionTitle.trim() || createActionMutation.isPending}
-                        >
-                          <Plus className="h-4 w-4 mr-1" />
-                          Add Action
+                        <Button size="sm" onClick={handleSaveDriver}>
+                          Save Changes
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => setSelectedDriver(null)}>
+                          Cancel
                         </Button>
                       </div>
                     </div>
+                  ) : (
+                    <div>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="text-xl font-semibold">{driver.title}</h3>
+                          {driver.description && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {driver.description}
+                            </p>
+                          )}
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEditDriver(driver)}
+                        >
+                          Edit
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Create Milestone Section */}
+                <div className="p-6 space-y-3">
+                  <h4 className="font-medium text-sm text-muted-foreground">Add Milestone</h4>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newMilestoneTitle}
+                      onChange={e => setNewMilestoneTitle(e.target.value)}
+                      placeholder="New milestone title..."
+                      className="flex-1 px-3 py-2 border rounded-md bg-background"
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') handleCreateMilestone(driver.id);
+                      }}
+                    />
+                    <Button
+                      onClick={() => handleCreateMilestone(driver.id)}
+                      disabled={!newMilestoneTitle.trim() || createMilestoneMutation.isPending}
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      Add
+                    </Button>
                   </div>
-                )}
+
+                  {/* Display created milestone and action input */}
+                  {createdMilestone && (
+                    <div className="mt-4 p-4 bg-muted/50 rounded-lg border space-y-3">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">
+                          Milestone created:
+                        </p>
+                        <h5 className="font-semibold mt-1">{createdMilestone.title}</h5>
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium">Add an action:</p>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={newActionTitle}
+                            onChange={e => setNewActionTitle(e.target.value)}
+                            placeholder="New action title..."
+                            className="flex-1 px-3 py-2 border rounded-md bg-background text-sm"
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') handleCreateAction();
+                            }}
+                            autoFocus
+                          />
+                          <Button
+                            size="sm"
+                            onClick={handleCreateAction}
+                            disabled={!newActionTitle.trim() || createActionMutation.isPending}
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Add Action
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Subsequent reviews - show standard workflow */}
+          <div className="bg-muted/50 border rounded-lg p-6 space-y-3">
+            <h3 className="font-semibold">Review Workflow</h3>
+            <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+              <li>Review each driver below - edit titles and descriptions as needed</li>
+              <li>Create new milestones to break drivers into achievable targets</li>
+              <li>Define actions for each milestone to make progress tangible</li>
+              <li>When satisfied with your plan, mark the review as complete</li>
+            </ol>
+          </div>
+          {/* Drivers Section */}
+          <div className="space-y-4">
+            {drivers.map(driver => (
+              <div key={driver.id} className="border rounded-lg bg-card">
+                {/* Driver Header */}
+                <div className="p-6 border-b">
+                  {selectedDriver?.id === driver.id ? (
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={editingDriverTitle}
+                        onChange={e => setEditingDriverTitle(e.target.value)}
+                        className="w-full text-xl font-semibold px-3 py-2 border rounded-md bg-background"
+                      />
+                      <textarea
+                        value={editingDriverDesc}
+                        onChange={e => setEditingDriverDesc(e.target.value)}
+                        className="w-full px-3 py-2 border rounded-md bg-background"
+                        rows={2}
+                        placeholder="Description"
+                      />
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={handleSaveDriver}>
+                          Save Changes
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => setSelectedDriver(null)}>
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="text-xl font-semibold">{driver.title}</h3>
+                          {driver.description && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {driver.description}
+                            </p>
+                          )}
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEditDriver(driver)}
+                        >
+                          Edit
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Create Milestone Section */}
+                <div className="p-6 space-y-3">
+                  <h4 className="font-medium text-sm text-muted-foreground">Add Milestone</h4>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newMilestoneTitle}
+                      onChange={e => setNewMilestoneTitle(e.target.value)}
+                      placeholder="New milestone title..."
+                      className="flex-1 px-3 py-2 border rounded-md bg-background"
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') handleCreateMilestone(driver.id);
+                      }}
+                    />
+                    <Button
+                      onClick={() => handleCreateMilestone(driver.id)}
+                      disabled={!newMilestoneTitle.trim() || createMilestoneMutation.isPending}
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      Add
+                    </Button>
+                  </div>
+
+                  {/* Display created milestone and action input */}
+                  {createdMilestone && (
+                    <div className="mt-4 p-4 bg-muted/50 rounded-lg border space-y-3">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">
+                          Milestone created:
+                        </p>
+                        <h5 className="font-semibold mt-1">{createdMilestone.title}</h5>
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium">Add an action:</p>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={newActionTitle}
+                            onChange={e => setNewActionTitle(e.target.value)}
+                            placeholder="New action title..."
+                            className="flex-1 px-3 py-2 border rounded-md bg-background text-sm"
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') handleCreateAction();
+                            }}
+                            autoFocus
+                          />
+                          <Button
+                            size="sm"
+                            onClick={handleCreateAction}
+                            disabled={!newActionTitle.trim() || createActionMutation.isPending}
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Add Action
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
