@@ -8,6 +8,13 @@
 import type { UserId } from '../types/domain';
 
 /**
+ * Generate user partition key
+ */
+export function getUserPK(userId: UserId): string {
+  return `U#${userId}`;
+}
+
+/**
  * Values Tree Keys
  */
 
