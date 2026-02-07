@@ -20,6 +20,13 @@ interface CreateDriverBody {
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
     const userId = getUserId(event);
+    if (!userId) {
+      return {
+        statusCode: 401,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Unauthorized - missing user ID' }),
+      };
+    }
 
     // Parse and validate request body
     const body: CreateDriverBody = JSON.parse(event.body || '{}');

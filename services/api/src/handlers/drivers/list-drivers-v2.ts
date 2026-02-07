@@ -15,6 +15,13 @@ import type { DriverNode } from '@time-management/shared';
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
     const userId = getUserId(event);
+    if (!userId) {
+      return {
+        statusCode: 401,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Unauthorized - missing user ID' }),
+      };
+    }
 
     // Get all nodes from current snapshot
     const nodes = await getCurrentSnapshot(userId);

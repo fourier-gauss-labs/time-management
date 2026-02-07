@@ -22,6 +22,14 @@ interface CreateMilestoneBody {
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
     const userId = getUserId(event);
+    if (!userId) {
+      return {
+        statusCode: 401,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Unauthorized - missing user ID' }),
+      };
+    }
+
     const driverId = event.pathParameters?.driverId as DriverId;
 
     if (!driverId) {
