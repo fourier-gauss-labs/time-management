@@ -199,3 +199,34 @@ export const actionApi = {
       body: JSON.stringify(data),
     }),
 };
+
+// Onboarding API
+export const onboardingApi = {
+  getStatus: () =>
+    fetchWithAuth<{
+      userId: string;
+      isOnboarded: boolean;
+      onboardingVersion?: string;
+      completedAt?: string;
+      requiresOnboarding: boolean;
+    }>('/api/user/onboarding/status'),
+
+  initialize: () =>
+    fetchWithAuth<{
+      message: string;
+      drivers: unknown[];
+      milestones: unknown[];
+      actions: unknown[];
+    }>('/api/user/onboarding/initialize', {
+      method: 'POST',
+    }),
+
+  reset: () =>
+    fetchWithAuth<{
+      message: string;
+      deletedItems: number;
+      onboardingResult: unknown;
+    }>('/api/user/onboarding/reset', {
+      method: 'POST',
+    }),
+};

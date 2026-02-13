@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { settingsApi } from '../lib/api-client';
+import { settingsApi, onboardingApi } from '../lib/api-client';
 import { Button } from '../components/ui/button';
 
 type DayOfWeekString =
@@ -32,6 +32,7 @@ const DAYS: { value: DayOfWeekString; label: string }[] = [
 export function SettingsPage() {
   const queryClient = useQueryClient();
   const [selectedDay, setSelectedDay] = useState<DayOfWeekString | null>(null);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const { data: settings, isLoading } = useQuery<UserSettings>({
     queryKey: ['settings'],
@@ -53,9 +54,31 @@ export function SettingsPage() {
     },
   });
 
+  const resetMutation = useMutation({
+    mutationFn: () => onboardingApi.reset(),
+    onSuccess: () => {
+      // Invalidate all queries to refresh the entire app
+      queryClient.invalidateQueries();
+      setShowResetConfirm(false);
+      alert('User data reset successfully! Default content has been loaded.');
+    },
+    onError: error => {
+      console.error('Reset failed:', error);
+      alert('Failed to reset user data. Please try again.');
+    },
+  });
+
   const handleSave = () => {
     if (selectedDay) {
       updateMutation.mutate(selectedDay);
+    }
+  };
+
+  const handleReset = () => {
+    if (showResetConfirm) {
+      resetMutation.mutate();
+    } else {
+      setShowResetConfirm(true);
     }
   };
 
@@ -126,6 +149,50 @@ export function SettingsPage() {
         {updateMutation.isError && (
           <p className="text-sm text-destructive">Failed to save settings. Please try again.</p>
         )}
+      </div>
+
+      {/* Developer/Testing Reset Section */}
+      <div className="border border-destructive/50 rounded-lg p-6 space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold text-destructive mb-2">
+            Reset User Data (Development Only)
+          </h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            This will permanently delete all your data (drivers, milestones, actions, settings) and
+            reload the default onboarding content. This action cannot be undone.
+          </p>
+
+          {showResetConfirm ? (
+            <div className="space-y-4">
+              <div className="bg-destructive/10 border border-destructive rounded-md p-4">
+                <p className="font-semibold text-destructive mb-2">⚠️ Confirm Reset</p>
+                <p className="text-sm">
+                  Are you absolutely sure? This will delete all your data and cannot be reversed.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="destructive"
+                  onClick={handleReset}
+                  disabled={resetMutation.isPending}
+                >
+                  {resetMutation.isPending ? 'Resetting...' : 'Yes, Reset Everything'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowResetConfirm(false)}
+                  disabled={resetMutation.isPending}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button variant="destructive" onClick={handleReset}>
+              Reset User Data
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

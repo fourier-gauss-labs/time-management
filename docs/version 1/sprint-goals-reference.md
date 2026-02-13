@@ -138,12 +138,12 @@ Define what success looks like for this sprint.
 
 Explicitly list what this sprint will cover.
 
-- **Domain model definitions:**
-- **Hierarchical relationships:**
-- **DynamoDB single-table schema design:**
-- **Daily snapshot persistence:**
-- **Domain-level unit tests:**
-- **TypeScript types and interfaces in shared package:**
+- Domain model definitions
+- Hierarchical relationships
+- DynamoDB single-table schema design
+- Daily snapshot persistence
+- Domain-level unit tests
+- TypeScript types and interfaces in shared package
 
 ---
 
