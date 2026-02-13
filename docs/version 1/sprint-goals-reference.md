@@ -121,7 +121,62 @@ Explicitly list what this sprint will cover.
 
 ## Sprint 4
 
+### Goals
+
+Define what success looks like for this sprint.
+
+- Domain models defined and enforced in shared package
+- Driver → milestone → action hierarchy implemented and validated
+- Action states and lifecycle properly managed
+- Recurrence model for habits functioning correctly
+- Daily snapshot persistence working
+- All domain rules backed by comprehensive unit tests
+
+---
+
+### In Scope
+
+Explicitly list what this sprint will cover.
+
+- **Domain model definitions:**
+- **Hierarchical relationships:**
+- **DynamoDB single-table schema design:**
+- **Daily snapshot persistence:**
+- **Domain-level unit tests:**
+- **TypeScript types and interfaces in shared package:**
+
+---
+
 ## Sprint 5
+
+### Goals
+
+Define what success looks like for this sprint.
+
+- New users see a meaningful, functional system immediately upon first login
+- Default content demonstrates the driver → milestone → action hierarchy
+- System terminology (drivers, actions) is reinforced through example content
+- Users can edit or remove defaults without friction
+- Onboarding logic is idempotent and safe to re-run
+
+---
+
+### In Scope
+
+Explicitly list what this sprint will cover.
+
+- Default driver creation with meaningful examples
+- Default recurring actions aligned with system philosophy
+- First-run detection and initialization logic
+- Idempotent onboarding workflow (safe re-execution)
+- UI support for viewing, editing, and removing default content
+- Copy that consistently uses "drivers" and "actions" (never "goals" or "tasks")
+- References to the three core problems the system addresses
+- Reinforcement of "meaning before execution" principle
+- **Parameter store for default content configuration** (JSON-based, build-time configurable)
+- Product manager-editable default content without code changes
+
+---
 
 ## Sprint 6
 
