@@ -4,7 +4,7 @@ This document is a compiled reference of the in-scope goals for the project
 
 ## Sprint 0
 
-## Goals
+### Goals
 
 Define what success looks like for this sprint.
 
@@ -15,7 +15,7 @@ Define what success looks like for this sprint.
 
 ---
 
-## In Scope
+### In Scope
 
 Explicitly list what this sprint will cover.
 
@@ -28,6 +28,34 @@ Explicitly list what this sprint will cover.
 - README documentation for repository structure and development workflow
 - .gitignore configuration
 - VS Code workspace settings (recommended extensions, settings)
+
+---
+
+## Sprint 1
+
+### Goals
+
+Define what success looks like for this sprint.
+
+- Secure user authentication via AWS Cognito Hosted UI
+- Protected API Gateway with Cognito authorizer
+- User identity available in all Lambda contexts
+- Per-user data isolation enforced at the architectural level
+
+---
+
+### In Scope
+
+Explicitly list what this sprint will cover.
+
+- AWS Cognito User Pool infrastructure via CDK
+- Cognito Hosted UI configuration and deployment
+- Frontend login/logout flow with Cognito integration
+- API Gateway HTTP API with Cognito authorizer
+- Lambda context enrichment with authenticated user identity
+- IAM least-privilege policies for Lambda execution roles
+- Secure environment variable handling for Cognito configuration
+- CI pipeline update to include CDK synth validation
 
 ---
 
