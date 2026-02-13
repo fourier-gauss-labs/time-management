@@ -59,6 +59,44 @@ Explicitly list what this sprint will cover.
 
 ---
 
+## Sprint 2
+
+### Goals
+
+Define what success looks like for this sprint.
+
+- Complete infrastructure-as-code coverage for all application components
+- Multi-environment support (dev, QA, prod) with proper parameterization
+- DynamoDB table for per-user data storage
+- Frontend hosting infrastructure (S3 + CloudFront)
+- Automated deployment for dev environment
+- Production-ready infrastructure patterns established
+
+---
+
+### In Scope
+
+Explicitly list what this sprint will cover.
+
+- DynamoDB table with single-table design for user data
+- S3 bucket and CloudFront distribution for frontend hosting
+- Environment-specific configuration (dev, QA, prod)
+- Environment parameter file structure
+- AWS Secrets Manager integration for sensitive configuration
+- Cost control guardrails (budget alerts, resource tagging)
+- Dev environment auto-deployment pipeline
+- QA and Prod deployment pipeline scaffolding
+- Infrastructure documentation and deployment guides
+- CDK context and environment variable handling
+
+---
+
+## Sprint 3
+
+## Sprint 4
+
+## Sprint 5
+
 ## Sprint 6
 
 ### Goals
