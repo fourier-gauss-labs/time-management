@@ -136,10 +136,27 @@ export class ApiConstruct extends Construct {
       }
     );
 
+    // Create onboarding reset Lambda function
+    const onboardingResetHandler = new lambdaNodejs.NodejsFunction(this, 'OnboardingResetHandler', {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      handler: 'handler',
+      entry: path.join(__dirname, '../../../../services/api/src/handlers/onboarding/reset.ts'),
+      environment: {
+        NODE_ENV: process.env.NODE_ENV || 'development',
+        TABLE_NAME: props.dataTable?.tableName || '',
+      },
+      timeout: cdk.Duration.seconds(30),
+      memorySize: 512,
+      bundling: {
+        externalModules: ['@aws-sdk/*'],
+      },
+    });
+
     // Grant DynamoDB permissions to onboarding handlers
     if (props.dataTable) {
       props.dataTable.grantReadWriteData(onboardingInitializeHandler);
       props.dataTable.grantReadData(onboardingStatusHandler);
+      props.dataTable.grantReadWriteData(onboardingResetHandler);
     }
 
     // Create Lambda integrations for onboarding
@@ -151,6 +168,11 @@ export class ApiConstruct extends Construct {
     const onboardingStatusIntegration = new apigatewayIntegrations.HttpLambdaIntegration(
       'OnboardingStatusIntegration',
       onboardingStatusHandler
+    );
+
+    const onboardingResetIntegration = new apigatewayIntegrations.HttpLambdaIntegration(
+      'OnboardingResetIntegration',
+      onboardingResetHandler
     );
 
     // Add onboarding routes with Cognito authorizer
@@ -165,6 +187,13 @@ export class ApiConstruct extends Construct {
       path: '/api/user/onboarding/status',
       methods: [apigateway.HttpMethod.GET],
       integration: onboardingStatusIntegration,
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/user/onboarding/reset',
+      methods: [apigateway.HttpMethod.POST],
+      integration: onboardingResetIntegration,
       authorizer: this.authorizer,
     });
 

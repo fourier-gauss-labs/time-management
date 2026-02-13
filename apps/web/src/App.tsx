@@ -7,6 +7,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { ReviewPage } from './pages/ReviewPage';
 import { DriversPage } from './pages/DriversPage';
 import { authService, type User } from './services/auth';
+import { onboardingApi } from './lib/api-client';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,12 +30,22 @@ function App() {
     if (code) {
       authService
         .handleCallback(code)
-        .then(() => {
+        .then(async () => {
           const tokens = authService.getTokens();
           const authUser = authService.getUser();
           if (tokens && authUser) {
             localStorage.setItem('authToken', tokens.idToken);
             setUser(authUser);
+
+            // Check and run onboarding if needed
+            try {
+              const status = await onboardingApi.getStatus();
+              if (status.requiresOnboarding) {
+                await onboardingApi.initialize();
+              }
+            } catch (error) {
+              console.error('Onboarding check failed:', error);
+            }
           }
           window.history.replaceState({}, '', window.location.pathname);
         })
@@ -49,6 +60,18 @@ function App() {
       if (authUser && tokens) {
         localStorage.setItem('authToken', tokens.idToken);
         setUser(authUser);
+
+        // Check and run onboarding if needed
+        onboardingApi
+          .getStatus()
+          .then(status => {
+            if (status.requiresOnboarding) {
+              return onboardingApi.initialize();
+            }
+          })
+          .catch(error => {
+            console.error('Onboarding check failed:', error);
+          });
       }
       setIsLoading(false);
     }
