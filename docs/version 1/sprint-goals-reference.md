@@ -93,6 +93,32 @@ Explicitly list what this sprint will cover.
 
 ## Sprint 3
 
+### Goals
+
+Define what success looks like for this sprint.
+
+- Automated CI pipeline running on every pull request
+- Automated deployment to dev environment on main branch merge
+- Quality gates preventing broken code from shipping
+- Repeatable, boring deployments that require no manual intervention
+- Comprehensive test coverage baseline established
+
+---
+
+### In Scope
+
+Explicitly list what this sprint will cover.
+
+- GitHub Actions workflow for continuous integration:
+- GitHub Actions workflow for dev environment deployment:
+- GitHub Actions workflow for QA environment deployment:
+- GitHub Actions workflow for production deployment:
+- Vitest configuration and baseline test suite:
+- Secrets management in GitHub Actions:
+- Deployment status and notifications:
+
+---
+
 ## Sprint 4
 
 ## Sprint 5
