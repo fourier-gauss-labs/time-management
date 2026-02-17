@@ -27,3 +27,12 @@ Explicitly list what this sprint will cover.
 - Coach reminder system for missed reviews
 - Focused, calm UI state for review mode
 - Minimal persistence enhancements to support review state
+
+---
+
+## Weekly Review
+
+UX requirements
+
+- From the home screen, the app shall determine if a "weekly review" is necessary. It does this by checking if a review has occured within the past week. If the review is necessary, then the "Weekly Review Due" message is displayed which includes a link to the review page.
+- When the Review screen is opened, the app shall display all the drivers. Each driver stands at the top of a hierarchy of milestones and actions. When displayed, the page shall provide a method of expanding the hierarchies such that the user can browse their entire set of drivers, milestones, and actions.
