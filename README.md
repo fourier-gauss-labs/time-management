@@ -2,7 +2,6 @@
 
 This is a modern, privacy-respecting **personal time-management application** designed to help users organize tasks, schedule focused work, and integrate with their existing calendars. The project is built from the ground up with best-practice cloud architecture, low-cost serverless infrastructure, strong security, and a clean DX suitable for vibe-coding with Copilot Agents.
 
-
 This repository contains the **frontend PWA**, **backend serverless API**, **infrastructure-as-code**, and **shared TypeScript packages** that make up the system.
 
 ---
