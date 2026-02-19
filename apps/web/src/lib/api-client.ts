@@ -82,6 +82,23 @@ interface CreateActionInput {
   trigger?: string;
 }
 
+interface Edge {
+  PK: string;
+  SK: string;
+  parentNodeId: string;
+  childNodeId: string;
+  order: number;
+  createdAt?: string;
+}
+
+interface ValuesHierarchy {
+  nodes: Array<Driver | Milestone | Action>;
+  edges: Edge[];
+  drivers: Driver[];
+  milestones: Milestone[];
+  actions: Action[];
+}
+
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 class ApiError extends Error {
@@ -198,6 +215,11 @@ export const actionApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+};
+
+// Values API
+export const valuesApi = {
+  getHierarchy: () => fetchWithAuth<ValuesHierarchy>('/api/values/hierarchy'),
 };
 
 // Onboarding API
