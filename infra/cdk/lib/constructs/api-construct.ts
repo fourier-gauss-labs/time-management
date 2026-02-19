@@ -379,6 +379,23 @@ export class ApiConstruct extends Construct {
       authorizer: this.authorizer,
     });
 
+    // ========== Values Hierarchy Handler ==========
+    const getHierarchyHandler = this.createLambdaFunction(
+      'GetHierarchyHandler',
+      'values/get-hierarchy.ts',
+      props.dataTable
+    );
+
+    this.httpApi.addRoutes({
+      path: '/api/values/hierarchy',
+      methods: [apigateway.HttpMethod.GET],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'GetHierarchyIntegration',
+        getHierarchyHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
     // Outputs
     new cdk.CfnOutput(this, 'ApiUrl', {
       value: this.httpApi.apiEndpoint,
