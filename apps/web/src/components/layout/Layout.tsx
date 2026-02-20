@@ -26,7 +26,7 @@ export function Layout({ children, user, onLogout }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Top Banner */}
-      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 border-b bg-background">
         <div className="flex h-16 items-center px-4 gap-4">
           <button
             onClick={() => setIsNavOpen(!isNavOpen)}
