@@ -36,3 +36,12 @@ UX requirements
 
 - From the home screen, the app shall determine if a "weekly review" is necessary. It does this by checking if a review has occured within the past week. If the review is necessary, then the "Weekly Review Due" message is displayed which includes a link to the review page.
 - When the Review screen is opened, the app shall display all the drivers. Each driver stands at the top of a hierarchy of milestones and actions. When displayed, the page shall provide a method of expanding the hierarchies such that the user can browse their entire set of drivers, milestones, and actions.
+
+---
+
+## Application Layout
+
+UX requirements
+
+- The top banner shall remain fixed at the top of the viewport with a semi-transparent background and blur effect, ensuring it stays visible above scrolling content while maintaining visual depth.
+- The left navigation sidebar shall remain fixed in position on desktop screens, ensuring navigation functions are always accessible to the user without scrolling away. The main content area shall be appropriately offset to prevent overlap with the fixed sidebar.
