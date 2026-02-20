@@ -34,7 +34,7 @@ Explicitly list what this sprint will cover.
 
 UX requirements
 
-- The top banner shall remain fixed at the top of the viewport with a semi-transparent background and blur effect, ensuring it stays visible above scrolling content while maintaining visual depth.
+- The top banner shall remain fixed at the top of the viewport with a fully opaque background, ensuring it stays visible above scrolling content and prevents any content from showing beneath it.
 - The left navigation sidebar shall remain fixed in position on desktop screens, ensuring navigation functions are always accessible to the user without scrolling away. The main content area shall be appropriately offset to prevent overlap with the fixed sidebar.
 
 ---
