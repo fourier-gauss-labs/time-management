@@ -26,7 +26,7 @@ export function Layout({ children, user, onLogout }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Top Banner */}
-      <header className="sticky top-0 z-50 border-b bg-card">
+      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex h-16 items-center px-4 gap-4">
           <button
             onClick={() => setIsNavOpen(!isNavOpen)}
@@ -54,9 +54,9 @@ export function Layout({ children, user, onLogout }: LayoutProps) {
         {/* Left Navigation Panel */}
         <aside
           className={`
-            fixed inset-y-0 left-0 top-16 z-40 w-64 border-r bg-card transform transition-transform duration-200 ease-in-out
-            lg:translate-x-0 lg:static lg:inset-auto
-            ${isNavOpen ? 'translate-x-0' : '-translate-x-full'}
+            fixed left-0 top-16 bottom-0 z-40 w-64 border-r bg-background overflow-y-auto transform transition-transform duration-200 ease-in-out
+            lg:translate-x-0
+            ${isNavOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           `}
         >
           <nav className="flex flex-col gap-1 p-4">
@@ -85,7 +85,7 @@ export function Layout({ children, user, onLogout }: LayoutProps) {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6 lg:p-8">
+        <main className="flex-1 p-6 lg:p-8 lg:ml-64">
           <div className="max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
