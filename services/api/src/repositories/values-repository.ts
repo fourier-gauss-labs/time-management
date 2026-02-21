@@ -33,6 +33,9 @@ import {
   type DriverId,
   type MilestoneId,
   type ActionId,
+  type UpdateDriverRequest,
+  type UpdateMilestoneRequest,
+  type UpdateActionRequest,
 } from '@time-management/shared';
 
 const client = new DynamoDBClient({});
@@ -396,6 +399,7 @@ export async function addAction(
     notes,
     estimatedMinutes,
     trigger,
+    status: 'not-started',
     createdAt: now,
     archived: false,
   };
@@ -423,4 +427,306 @@ export async function addAction(
   );
 
   return newAction;
+}
+
+/**
+ * Update a driver (creates new revision)
+ */
+export async function updateDriver(
+  userId: UserId,
+  driverId: DriverId,
+  updates: UpdateDriverRequest
+): Promise<DriverNode> {
+  const currentNodes = await getCurrentSnapshot(userId);
+  const currentEdges = await getCurrentEdges(userId);
+
+  const driverIndex = currentNodes.findIndex(n => n.id === driverId);
+  if (driverIndex === -1 || currentNodes[driverIndex].nodeType !== 'DRIVER') {
+    throw new Error('Driver not found');
+  }
+
+  const existingDriver = currentNodes[driverIndex] as DriverNode & { PK: string; SK: string };
+  const updatedDriver = {
+    ...existingDriver,
+    ...updates,
+  };
+
+  const updatedNodes = [...currentNodes];
+  updatedNodes[driverIndex] = updatedDriver;
+
+  await createNewRevision(
+    userId,
+    `Updated driver: ${updatedDriver.title}`,
+    'weekly_review',
+    updatedNodes,
+    currentEdges
+  );
+
+  // Return driver without PK/SK
+  const { PK, SK, ...driverWithoutKeys } = updatedNodes[driverIndex] as ValueNodeItem;
+  return driverWithoutKeys as DriverNode;
+}
+
+/**
+ * Update a milestone (creates new revision)
+ */
+export async function updateMilestone(
+  userId: UserId,
+  milestoneId: MilestoneId,
+  updates: UpdateMilestoneRequest
+): Promise<MilestoneNode> {
+  const currentNodes = await getCurrentSnapshot(userId);
+  const currentEdges = await getCurrentEdges(userId);
+
+  const milestoneIndex = currentNodes.findIndex(n => n.id === milestoneId);
+  if (milestoneIndex === -1 || currentNodes[milestoneIndex].nodeType !== 'MILESTONE') {
+    throw new Error('Milestone not found');
+  }
+
+  const existingMilestone = currentNodes[milestoneIndex] as MilestoneNode & {
+    PK: string;
+    SK: string;
+  };
+  const updatedMilestone = {
+    ...existingMilestone,
+    ...updates,
+  };
+
+  const updatedNodes = [...currentNodes];
+  updatedNodes[milestoneIndex] = updatedMilestone;
+
+  await createNewRevision(
+    userId,
+    `Updated milestone: ${updatedMilestone.title}`,
+    'weekly_review',
+    updatedNodes,
+    currentEdges
+  );
+
+  // Return milestone without PK/SK
+  const { PK, SK, ...milestoneWithoutKeys } = updatedNodes[milestoneIndex] as ValueNodeItem;
+  return milestoneWithoutKeys as MilestoneNode;
+}
+
+/**
+ * Update an action (creates new revision)
+ */
+export async function updateAction(
+  userId: UserId,
+  actionId: ActionId,
+  updates: UpdateActionRequest
+): Promise<ActionNode> {
+  const currentNodes = await getCurrentSnapshot(userId);
+  const currentEdges = await getCurrentEdges(userId);
+
+  const actionIndex = currentNodes.findIndex(n => n.id === actionId);
+  if (actionIndex === -1 || currentNodes[actionIndex].nodeType !== 'ACTION') {
+    throw new Error('Action not found');
+  }
+
+  const existingAction = currentNodes[actionIndex] as ActionNode & { PK: string; SK: string };
+  const updatedAction = {
+    ...existingAction,
+    ...updates,
+  };
+
+  // If status is being set to 'complete' and completedAt is not set, set it
+  if (updates.status === 'complete' && !updatedAction.completedAt) {
+    updatedAction.completedAt = new Date().toISOString();
+  }
+
+  // If status is being changed from 'complete' to something else, clear completedAt
+  if (updates.status && updates.status !== 'complete' && existingAction.status === 'complete') {
+    delete updatedAction.completedAt;
+  }
+
+  const updatedNodes = [...currentNodes];
+  updatedNodes[actionIndex] = updatedAction;
+
+  await createNewRevision(
+    userId,
+    `Updated action: ${updatedAction.title}`,
+    'daily_update',
+    updatedNodes,
+    currentEdges
+  );
+
+  // Return action without PK/SK
+  const { PK, SK, ...actionWithoutKeys } = updatedNodes[actionIndex] as ValueNodeItem;
+  return actionWithoutKeys as ActionNode;
+}
+
+/**
+ * Delete a driver and all its children (creates new revision)
+ */
+export async function deleteDriver(userId: UserId, driverId: DriverId): Promise<void> {
+  const currentNodes = await getCurrentSnapshot(userId);
+  const currentEdges = await getCurrentEdges(userId);
+
+  const driver = currentNodes.find(n => n.id === driverId && n.nodeType === 'DRIVER');
+  if (!driver) {
+    throw new Error('Driver not found');
+  }
+
+  // Find all nodes that belong to this driver
+  const nodesToRemove = new Set<string>([driverId]);
+
+  // Remove all milestones and actions under this driver
+  for (const node of currentNodes) {
+    if (
+      (node.nodeType === 'MILESTONE' || node.nodeType === 'ACTION') &&
+      'driverId' in node &&
+      node.driverId === driverId
+    ) {
+      nodesToRemove.add(node.id);
+    }
+  }
+
+  // Filter out removed nodes
+  const updatedNodes = currentNodes.filter(n => !nodesToRemove.has(n.id));
+
+  // Filter out edges that reference removed nodes
+  const updatedEdges = currentEdges.filter(
+    e => !nodesToRemove.has(e.parentNodeId) && !nodesToRemove.has(e.childNodeId)
+  );
+
+  await createNewRevision(
+    userId,
+    `Deleted driver: ${driver.title}`,
+    'weekly_review',
+    updatedNodes,
+    updatedEdges
+  );
+}
+
+/**
+ * Delete a milestone and all its children (creates new revision)
+ */
+export async function deleteMilestone(userId: UserId, milestoneId: MilestoneId): Promise<void> {
+  const currentNodes = await getCurrentSnapshot(userId);
+  const currentEdges = await getCurrentEdges(userId);
+
+  const milestone = currentNodes.find(n => n.id === milestoneId && n.nodeType === 'MILESTONE');
+  if (!milestone) {
+    throw new Error('Milestone not found');
+  }
+
+  // Find all descendants recursively
+  const nodesToRemove = new Set<string>([milestoneId]);
+
+  const findDescendants = (parentId: string) => {
+    const childEdges = currentEdges.filter(e => e.parentNodeId === parentId);
+    for (const edge of childEdges) {
+      nodesToRemove.add(edge.childNodeId);
+      findDescendants(edge.childNodeId);
+    }
+  };
+
+  findDescendants(milestoneId);
+
+  // Filter out removed nodes
+  const updatedNodes = currentNodes.filter(n => !nodesToRemove.has(n.id));
+
+  // Filter out edges that reference removed nodes
+  const updatedEdges = currentEdges.filter(
+    e => !nodesToRemove.has(e.parentNodeId) && !nodesToRemove.has(e.childNodeId)
+  );
+
+  await createNewRevision(
+    userId,
+    `Deleted milestone: ${milestone.title}`,
+    'weekly_review',
+    updatedNodes,
+    updatedEdges
+  );
+}
+
+/**
+ * Delete an action (creates new revision)
+ */
+export async function deleteAction(userId: UserId, actionId: ActionId): Promise<void> {
+  const currentNodes = await getCurrentSnapshot(userId);
+  const currentEdges = await getCurrentEdges(userId);
+
+  const action = currentNodes.find(n => n.id === actionId && n.nodeType === 'ACTION');
+  if (!action) {
+    throw new Error('Action not found');
+  }
+
+  // Remove the action node
+  const updatedNodes = currentNodes.filter(n => n.id !== actionId);
+
+  // Remove edges that reference this action
+  const updatedEdges = currentEdges.filter(
+    e => e.parentNodeId !== actionId && e.childNodeId !== actionId
+  );
+
+  await createNewRevision(
+    userId,
+    `Deleted action: ${action.title}`,
+    'daily_update',
+    updatedNodes,
+    updatedEdges
+  );
+}
+
+/**
+ * Convert an action to a milestone (creates new revision)
+ */
+export async function convertActionToMilestone(
+  userId: UserId,
+  actionId: ActionId
+): Promise<MilestoneNode> {
+  const currentNodes = await getCurrentSnapshot(userId);
+  const currentEdges = await getCurrentEdges(userId);
+
+  const actionIndex = currentNodes.findIndex(n => n.id === actionId && n.nodeType === 'ACTION');
+  if (actionIndex === -1) {
+    throw new Error('Action not found');
+  }
+
+  const action = currentNodes[actionIndex] as ActionNode & { PK: string; SK: string };
+
+  // Create milestone from action (preserve PK/SK for snapshot)
+  const newMilestone = {
+    nodeType: 'MILESTONE' as const,
+    id: randomUUID() as MilestoneId,
+    userId: action.userId,
+    driverId: action.driverId,
+    parentMilestoneId: action.parentMilestoneId,
+    title: action.title,
+    notes: action.notes,
+    createdAt: action.createdAt,
+    archived: action.archived,
+    PK: action.PK,
+    SK: getNodeSK(action.id), // Keep same SK structure for now
+  };
+
+  // Update nodes: replace action with milestone
+  const updatedNodes = [...currentNodes];
+  updatedNodes[actionIndex] = newMilestone;
+
+  // Update edges: replace action references with milestone references
+  const updatedEdges = currentEdges.map(edge => {
+    if (edge.childNodeId === actionId) {
+      return {
+        ...edge,
+        childNodeId: newMilestone.id,
+        childNodeType: 'MILESTONE' as const,
+      };
+    }
+    return edge;
+  });
+
+  await createNewRevision(
+    userId,
+    `Converted action "${action.title}" to milestone`,
+    'weekly_review',
+    updatedNodes,
+    updatedEdges
+  );
+
+  // Return milestone without PK/SK
+  const { PK, SK, ...milestoneWithoutKeys } = newMilestone;
+  return milestoneWithoutKeys as MilestoneNode;
 }

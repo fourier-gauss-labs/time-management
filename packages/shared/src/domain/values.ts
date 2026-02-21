@@ -16,6 +16,12 @@ import type { UserId, DriverId, MilestoneId, ActionId } from '../types/domain';
 
 export type NodeType = 'DRIVER' | 'MILESTONE' | 'ACTION';
 
+/**
+ * Action Status
+ */
+
+export type ActionStatus = 'not-started' | 'in-progress' | 'complete' | 'canceled' | 'carried-over';
+
 export interface BaseNode {
   nodeType: NodeType;
   id: string;
@@ -47,6 +53,7 @@ export interface ActionNode extends BaseNode {
   parentMilestoneId?: MilestoneId;
   estimatedMinutes?: number;
   trigger?: string;
+  status: ActionStatus;
   completedAt?: string;
 }
 
@@ -132,6 +139,7 @@ export interface CreateActionRequest {
   parentMilestoneId?: MilestoneId;
   estimatedMinutes?: number;
   trigger?: string;
+  status?: ActionStatus; // defaults to 'not-started'
 }
 
 export interface UpdateActionRequest {
@@ -139,6 +147,7 @@ export interface UpdateActionRequest {
   notes?: string;
   estimatedMinutes?: number;
   trigger?: string;
+  status?: ActionStatus;
   completedAt?: string;
   archived?: boolean;
 }
