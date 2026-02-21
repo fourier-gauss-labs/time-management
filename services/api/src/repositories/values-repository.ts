@@ -463,7 +463,8 @@ export async function updateDriver(
   );
 
   // Return driver without PK/SK
-  const { PK, SK, ...driverWithoutKeys } = updatedNodes[driverIndex] as ValueNodeItem;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { PK: _PK, SK: _SK, ...driverWithoutKeys } = updatedNodes[driverIndex] as ValueNodeItem;
   return driverWithoutKeys as DriverNode;
 }
 
@@ -504,7 +505,12 @@ export async function updateMilestone(
   );
 
   // Return milestone without PK/SK
-  const { PK, SK, ...milestoneWithoutKeys } = updatedNodes[milestoneIndex] as ValueNodeItem;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const {
+    PK: _PK,
+    SK: _SK,
+    ...milestoneWithoutKeys
+  } = updatedNodes[milestoneIndex] as ValueNodeItem;
   return milestoneWithoutKeys as MilestoneNode;
 }
 
@@ -552,7 +558,8 @@ export async function updateAction(
   );
 
   // Return action without PK/SK
-  const { PK, SK, ...actionWithoutKeys } = updatedNodes[actionIndex] as ValueNodeItem;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { PK: _PK, SK: _SK, ...actionWithoutKeys } = updatedNodes[actionIndex] as ValueNodeItem;
   return actionWithoutKeys as ActionNode;
 }
 
@@ -727,6 +734,7 @@ export async function convertActionToMilestone(
   );
 
   // Return milestone without PK/SK
-  const { PK, SK, ...milestoneWithoutKeys } = newMilestone;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { PK: _PK, SK: _SK, ...milestoneWithoutKeys } = newMilestone;
   return milestoneWithoutKeys as MilestoneNode;
 }
