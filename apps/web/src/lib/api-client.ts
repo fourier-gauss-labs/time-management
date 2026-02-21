@@ -2,7 +2,7 @@
  * API client for making authenticated requests to the backend
  */
 
-type DayOfWeekString =
+export type DayOfWeekString =
   | 'sunday'
   | 'monday'
   | 'tuesday'
@@ -11,18 +11,20 @@ type DayOfWeekString =
   | 'friday'
   | 'saturday';
 
-interface UserSettings {
+export type ActionStatus = 'not-started' | 'in-progress' | 'complete' | 'canceled' | 'carried-over';
+
+export interface UserSettings {
   userId: string;
   reviewDay: DayOfWeekString;
   createdAt: string;
   updatedAt: string;
 }
 
-interface UpdateUserSettingsInput {
+export interface UpdateUserSettingsInput {
   reviewDay: DayOfWeekString;
 }
 
-interface Driver {
+export interface Driver {
   id: string;
   userId: string;
   title: string;
@@ -32,18 +34,18 @@ interface Driver {
   updatedAt: string;
 }
 
-interface CreateDriverInput {
+export interface CreateDriverInput {
   title: string;
   description?: string;
 }
 
-interface UpdateDriverInput {
+export interface UpdateDriverInput {
   title?: string;
   description?: string;
   isArchived?: boolean;
 }
 
-interface Milestone {
+export interface Milestone {
   id: string;
   userId: string;
   driverId: string;
@@ -55,13 +57,13 @@ interface Milestone {
   updatedAt: string;
 }
 
-interface CreateMilestoneInput {
+export interface CreateMilestoneInput {
   title: string;
   description?: string;
   targetDate?: string;
 }
 
-interface Action {
+export interface Action {
   id: string;
   userId: string;
   driverId: string;
@@ -69,20 +71,39 @@ interface Action {
   title: string;
   description?: string;
   dueDate?: string;
+  status: ActionStatus;
   completedAt?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-interface CreateActionInput {
+export interface CreateActionInput {
   title: string;
   description?: string;
   parentMilestoneId?: string;
   estimatedMinutes?: number;
   trigger?: string;
+  status?: ActionStatus;
 }
 
-interface Edge {
+export interface UpdateMilestoneInput {
+  title?: string;
+  description?: string;
+  completedAt?: string;
+  archived?: boolean;
+}
+
+export interface UpdateActionInput {
+  title?: string;
+  description?: string;
+  estimatedMinutes?: number;
+  trigger?: string;
+  status?: ActionStatus;
+  completedAt?: string;
+  archived?: boolean;
+}
+
+export interface Edge {
   PK: string;
   SK: string;
   parentNodeId: string;
@@ -91,7 +112,7 @@ interface Edge {
   createdAt?: string;
 }
 
-interface ValuesHierarchy {
+export interface ValuesHierarchy {
   nodes: Array<Driver | Milestone | Action>;
   edges: Edge[];
   drivers: Driver[];
@@ -164,12 +185,11 @@ export const reviewApi = {
     }>('/api/review/status'),
 
   complete: () =>
-    fetchWithAuth<{ userId: string; completedAt: string; success: boolean }>(
-      '/api/review/complete',
-      {
-        method: 'POST',
-      }
-    ),
+    fetchWithAuth<{ completedAt: string }>('/api/reviews/complete', {
+      method: 'POST',
+    }),
+
+  getLastReview: () => fetchWithAuth<{ lastReviewDate: string | null }>('/api/reviews/last'),
 };
 
 // Driver API
@@ -206,6 +226,17 @@ export const milestoneApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+
+  update: (milestoneId: string, data: UpdateMilestoneInput) =>
+    fetchWithAuth<Milestone>(`/api/milestones/${milestoneId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  delete: (milestoneId: string) =>
+    fetchWithAuth<void>(`/api/milestones/${milestoneId}`, {
+      method: 'DELETE',
+    }),
 };
 
 // Action API
@@ -214,6 +245,22 @@ export const actionApi = {
     fetchWithAuth<Action>(`/api/drivers/${driverId}/actions`, {
       method: 'POST',
       body: JSON.stringify(data),
+    }),
+
+  update: (actionId: string, data: UpdateActionInput) =>
+    fetchWithAuth<Action>(`/api/actions/${actionId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  delete: (actionId: string) =>
+    fetchWithAuth<void>(`/api/actions/${actionId}`, {
+      method: 'DELETE',
+    }),
+
+  convertToMilestone: (actionId: string) =>
+    fetchWithAuth<Milestone>(`/api/actions/${actionId}/convert-to-milestone`, {
+      method: 'POST',
     }),
 };
 

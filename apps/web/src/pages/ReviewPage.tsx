@@ -1,7 +1,26 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Check, Plus, ChevronRight, ChevronDown } from 'lucide-react';
-import { reviewApi, driverApi, milestoneApi, actionApi, valuesApi } from '../lib/api-client';
+import {
+  Check,
+  Plus,
+  ChevronRight,
+  ChevronDown,
+  Circle,
+  CircleDot,
+  X,
+  ArrowRight,
+  Trash2,
+  GitBranch,
+} from 'lucide-react';
+import {
+  reviewApi,
+  driverApi,
+  milestoneApi,
+  actionApi,
+  valuesApi,
+  type ActionStatus,
+  type Action,
+} from '../lib/api-client';
 import { Button } from '../components/ui/button';
 
 interface Driver {
@@ -144,7 +163,74 @@ export function ReviewPage() {
       alert(`Failed to create action: ${error}`);
     },
   });
+  const updateActionMutation = useMutation({
+    mutationFn: ({ actionId, updates }: { actionId: string; updates: Partial<Action> }) =>
+      actionApi.update(actionId, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['values-hierarchy'] });
+    },
+  });
 
+  const deleteMilestoneMutation = useMutation({
+    mutationFn: (milestoneId: string) => milestoneApi.delete(milestoneId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['values-hierarchy'] });
+    },
+  });
+
+  const deleteActionMutation = useMutation({
+    mutationFn: (actionId: string) => actionApi.delete(actionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['values-hierarchy'] });
+    },
+  });
+
+  const convertActionMutation = useMutation({
+    mutationFn: (actionId: string) => actionApi.convertToMilestone(actionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['values-hierarchy'] });
+    },
+  });
+
+  // Helper: Get icon component for action status
+  const getStatusIcon = (status: ActionStatus) => {
+    switch (status) {
+      case 'not-started':
+        return Circle;
+      case 'in-progress':
+        return CircleDot;
+      case 'complete':
+        return Check;
+      case 'canceled':
+        return X;
+      case 'carried-over':
+        return ArrowRight;
+      default:
+        return Circle;
+    }
+  };
+
+  // Helper: Cycle to next status
+  const getNextStatus = (current: ActionStatus): ActionStatus => {
+    const statusCycle: ActionStatus[] = [
+      'not-started',
+      'in-progress',
+      'complete',
+      'canceled',
+      'carried-over',
+    ];
+    const currentIndex = statusCycle.indexOf(current);
+    const nextIndex = (currentIndex + 1) % statusCycle.length;
+    return statusCycle[nextIndex];
+  };
+
+  const handleCycleActionStatus = (action: Action) => {
+    const nextStatus = getNextStatus(action.status);
+    updateActionMutation.mutate({
+      actionId: action.id,
+      updates: { status: nextStatus },
+    });
+  };
   const handleEditDriver = (driver: Driver) => {
     setSelectedDriver(driver);
     setEditingDriverTitle(driver.title);
@@ -341,10 +427,10 @@ export function ReviewPage() {
                       </h4>
                       <div className="space-y-3">
                         {driverMilestones.map(milestone => {
-                          const milestoneActions = getChildren(milestone.id);
+                          const milestoneActions = getChildren(milestone.id) as Action[];
                           return (
                             <div key={milestone.id} className="pl-4 border-l-2 border-muted">
-                              <div className="flex items-start justify-between">
+                              <div className="flex items-start justify-between gap-2">
                                 <div className="flex-1">
                                   <h5 className="font-medium">{milestone.title}</h5>
                                   {milestone.description && (
@@ -353,18 +439,56 @@ export function ReviewPage() {
                                     </p>
                                   )}
                                   {milestoneActions.length > 0 && (
-                                    <div className="mt-2 ml-4 space-y-1">
-                                      {milestoneActions.map(action => (
-                                        <div
-                                          key={(action as { id: string }).id}
-                                          className="text-sm text-muted-foreground flex items-center gap-2"
-                                        >
-                                          <span className="text-muted-foreground">•</span>
-                                          {(action as { title: string }).title}
-                                        </div>
-                                      ))}
+                                    <div className="mt-2 ml-4 space-y-1.5">
+                                      {milestoneActions.map(action => {
+                                        const StatusIcon = getStatusIcon(action.status);
+                                        return (
+                                          <div
+                                            key={action.id}
+                                            className="text-sm flex items-center gap-2 group hover:bg-muted/50 p-1 rounded"
+                                          >
+                                            <button
+                                              onClick={() => handleCycleActionStatus(action)}
+                                              className="flex-shrink-0 hover:bg-muted rounded p-0.5"
+                                              title={`Status: ${action.status} (click to cycle)`}
+                                            >
+                                              <StatusIcon className="h-4 w-4" />
+                                            </button>
+                                            <span className="flex-1">{action.title}</span>
+                                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                              <button
+                                                onClick={() =>
+                                                  convertActionMutation.mutate(action.id)
+                                                }
+                                                className="p-1 hover:bg-muted rounded"
+                                                title="Convert to milestone"
+                                              >
+                                                <GitBranch className="h-3 w-3" />
+                                              </button>
+                                              <button
+                                                onClick={() =>
+                                                  deleteActionMutation.mutate(action.id)
+                                                }
+                                                className="p-1 hover:bg-destructive hover:text-destructive-foreground rounded"
+                                                title="Delete action"
+                                              >
+                                                <Trash2 className="h-3 w-3" />
+                                              </button>
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
                                     </div>
                                   )}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <button
+                                    onClick={() => deleteMilestoneMutation.mutate(milestone.id)}
+                                    className="p-1.5 hover:bg-destructive hover:text-destructive-foreground rounded"
+                                    title="Delete milestone"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
                                 </div>
                               </div>
                             </div>
@@ -531,10 +655,10 @@ export function ReviewPage() {
                       </h4>
                       <div className="space-y-3">
                         {driverMilestones.map(milestone => {
-                          const milestoneActions = getChildren(milestone.id);
+                          const milestoneActions = getChildren(milestone.id) as Action[];
                           return (
                             <div key={milestone.id} className="pl-4 border-l-2 border-muted">
-                              <div className="flex items-start justify-between">
+                              <div className="flex items-start justify-between gap-2">
                                 <div className="flex-1">
                                   <h5 className="font-medium">{milestone.title}</h5>
                                   {milestone.description && (
@@ -543,24 +667,61 @@ export function ReviewPage() {
                                     </p>
                                   )}
                                   {milestoneActions.length > 0 && (
-                                    <div className="mt-2 ml-4 space-y-1">
-                                      {milestoneActions.map(action => (
-                                        <div
-                                          key={(action as { id: string }).id}
-                                          className="text-sm text-muted-foreground flex items-center gap-2"
-                                        >
-                                          <span className="text-muted-foreground">•</span>
-                                          {(action as { title: string }).title}
-                                        </div>
-                                      ))}
+                                    <div className="mt-2 ml-4 space-y-1.5">
+                                      {milestoneActions.map(action => {
+                                        const StatusIcon = getStatusIcon(action.status);
+                                        return (
+                                          <div
+                                            key={action.id}
+                                            className="text-sm flex items-center gap-2 group hover:bg-muted/50 p-1 rounded"
+                                          >
+                                            <button
+                                              onClick={() => handleCycleActionStatus(action)}
+                                              className="flex-shrink-0 hover:bg-muted rounded p-0.5"
+                                              title={`Status: ${action.status} (click to cycle)`}
+                                            >
+                                              <StatusIcon className="h-4 w-4" />
+                                            </button>
+                                            <span className="flex-1">{action.title}</span>
+                                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                              <button
+                                                onClick={() =>
+                                                  convertActionMutation.mutate(action.id)
+                                                }
+                                                className="p-1 hover:bg-muted rounded"
+                                                title="Convert to milestone"
+                                              >
+                                                <GitBranch className="h-3 w-3" />
+                                              </button>
+                                              <button
+                                                onClick={() =>
+                                                  deleteActionMutation.mutate(action.id)
+                                                }
+                                                className="p-1 hover:bg-destructive hover:text-destructive-foreground rounded"
+                                                title="Delete action"
+                                              >
+                                                <Trash2 className="h-3 w-3" />
+                                              </button>
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
                                     </div>
                                   )}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <button
+                                    onClick={() => deleteMilestoneMutation.mutate(milestone.id)}
+                                    className="p-1.5 hover:bg-destructive hover:text-destructive-foreground rounded"
+                                    title="Delete milestone"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
                                 </div>
                               </div>
                             </div>
                           );
-                        })}
-                        \n{' '}
+                        })}{' '}
                       </div>
                     </div>
                   )}

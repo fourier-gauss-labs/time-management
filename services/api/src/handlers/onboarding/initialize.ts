@@ -146,6 +146,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
             notes: actionConfig.description,
             estimatedMinutes: actionConfig.estimatedMinutes,
             trigger: actionConfig.trigger,
+            status: 'not-started',
             createdAt: now,
           };
           nodes.push(actionNode);

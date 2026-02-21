@@ -239,7 +239,7 @@ export class ApiConstruct extends Construct {
 
     const completeReviewHandler = this.createLambdaFunction(
       'CompleteReviewHandler',
-      'review/complete.ts',
+      'reviews/complete-review.ts',
       props.dataTable
     );
 
@@ -272,7 +272,7 @@ export class ApiConstruct extends Construct {
 
     const createDriverHandler = this.createLambdaFunction(
       'CreateDriverHandler',
-      'drivers/create-driver-v2.ts',
+      'values/create-driver.ts',
       props.dataTable
     );
 
@@ -284,13 +284,13 @@ export class ApiConstruct extends Construct {
 
     const updateDriverHandler = this.createLambdaFunction(
       'UpdateDriverHandler',
-      'drivers/update-driver.ts',
+      'values/update-driver.ts',
       props.dataTable
     );
 
     const deleteDriverHandler = this.createLambdaFunction(
       'DeleteDriverHandler',
-      'drivers/delete-driver.ts',
+      'values/delete-driver.ts',
       props.dataTable
     );
 
@@ -347,7 +347,7 @@ export class ApiConstruct extends Construct {
     // ========== Milestone Handlers ==========
     const createMilestoneHandler = this.createLambdaFunction(
       'CreateMilestoneHandler',
-      'milestones/create-milestone-v2.ts',
+      'values/create-milestone.ts',
       props.dataTable
     );
 
@@ -364,7 +364,7 @@ export class ApiConstruct extends Construct {
     // ========== Action Handlers ==========
     const createActionHandler = this.createLambdaFunction(
       'CreateActionHandler',
-      'actions/create-action-v2.ts',
+      'values/create-action.ts',
       props.dataTable
     );
 
@@ -392,6 +392,104 @@ export class ApiConstruct extends Construct {
       integration: new apigatewayIntegrations.HttpLambdaIntegration(
         'GetHierarchyIntegration',
         getHierarchyHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    // ========== Additional Values CRUD Handlers ==========
+    const updateMilestoneHandler = this.createLambdaFunction(
+      'UpdateMilestoneHandler',
+      'values/update-milestone.ts',
+      props.dataTable
+    );
+
+    const deleteMilestoneHandler = this.createLambdaFunction(
+      'DeleteMilestoneHandler',
+      'values/delete-milestone.ts',
+      props.dataTable
+    );
+
+    const updateActionHandler = this.createLambdaFunction(
+      'UpdateActionHandler',
+      'values/update-action.ts',
+      props.dataTable
+    );
+
+    const deleteActionHandler = this.createLambdaFunction(
+      'DeleteActionHandler',
+      'values/delete-action.ts',
+      props.dataTable
+    );
+
+    const convertActionHandler = this.createLambdaFunction(
+      'ConvertActionHandler',
+      'values/convert-action-to-milestone.ts',
+      props.dataTable
+    );
+
+    this.httpApi.addRoutes({
+      path: '/api/milestones/{milestoneId}',
+      methods: [apigateway.HttpMethod.PUT],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'UpdateMilestoneIntegration',
+        updateMilestoneHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/milestones/{milestoneId}',
+      methods: [apigateway.HttpMethod.DELETE],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'DeleteMilestoneIntegration',
+        deleteMilestoneHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/actions/{actionId}',
+      methods: [apigateway.HttpMethod.PUT],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'UpdateActionIntegration',
+        updateActionHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/actions/{actionId}',
+      methods: [apigateway.HttpMethod.DELETE],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'DeleteActionIntegration',
+        deleteActionHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    this.httpApi.addRoutes({
+      path: '/api/actions/{actionId}/convert-to-milestone',
+      methods: [apigateway.HttpMethod.POST],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'ConvertActionIntegration',
+        convertActionHandler
+      ),
+      authorizer: this.authorizer,
+    });
+
+    // ========== Review Tracking Handler ==========
+    const getLastReviewHandler = this.createLambdaFunction(
+      'GetLastReviewHandler',
+      'reviews/get-last-review.ts',
+      props.dataTable
+    );
+
+    this.httpApi.addRoutes({
+      path: '/api/reviews/last',
+      methods: [apigateway.HttpMethod.GET],
+      integration: new apigatewayIntegrations.HttpLambdaIntegration(
+        'GetLastReviewIntegration',
+        getLastReviewHandler
       ),
       authorizer: this.authorizer,
     });

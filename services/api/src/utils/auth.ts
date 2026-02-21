@@ -20,3 +20,8 @@ export function getUserId(event: APIGatewayProxyEvent): UserId | null {
 
   return null;
 }
+
+/**
+ * Alias for getUserId for compatibility with existing code
+ */
+export const getUserIdFromEvent = getUserId;
