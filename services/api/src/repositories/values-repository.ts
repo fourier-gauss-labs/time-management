@@ -505,12 +505,13 @@ export async function updateMilestone(
   );
 
   // Return milestone without PK/SK
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   const {
     PK: _PK,
     SK: _SK,
     ...milestoneWithoutKeys
   } = updatedNodes[milestoneIndex] as ValueNodeItem;
+  /* eslint-enable @typescript-eslint/no-unused-vars */
   return milestoneWithoutKeys as MilestoneNode;
 }
 
