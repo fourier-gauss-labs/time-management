@@ -45,3 +45,14 @@ UX requirements
 
 - From the home screen, the app shall determine if a "weekly review" is necessary. It does this by checking if a review has occured within the past week. If the review is necessary, then the "Weekly Review Due" message is displayed which includes a link to the review page.
 - When the Review screen is opened, the app shall display all the drivers. Each driver stands at the top of a hierarchy of milestones and actions. When displayed, the page shall provide a method of expanding the hierarchies such that the user can browse their entire set of drivers, milestones, and actions.
+- The UX for weekly reviews allows the user to manage their drivers, milestones, and actions.
+- Drivers are the users high-levels goals; actions are the day to day tasks; milestones are projects needed to achieve the drivers/goals and are comprised of actions.
+- When performing a weekly review the user must have the ability to add, change, and delete drivers, milestone, and actions.
+- The weekly review shall support dragging milestones from one drive to another.
+- The weekly review shall support dragging actions from one milestone to another.
+- Every milestone must have either a driver or a milestone as its' parent. An action must have either a driver or a milestone as its' parent. In this way, milestones can be nested.
+- An action cannot have another action as its' parent.
+- An action can be converted into a milestone. This is how tasks are broken down into sub-tasks; the sub-tasks in this situation are actions.
+- An action has a status. The status is one of the following: not started, in progress, complete, canceled, carried over.
+- Action status are represented by icons. The icons are "not started" = a circle with no fill; "in progress" = a circle with solid fill; "complete" = checkmark; "canceled" = an X; "carrier over" = a right arrow.
+- A milestone is either done or not done. It is done only if all its' actions are complete or canceled.
