@@ -695,10 +695,13 @@ export async function convertActionToMilestone(
 
   const action = currentNodes[actionIndex] as ActionNode & { PK: string; SK: string };
 
+  // Generate new ID for the milestone
+  const newMilestoneId = randomUUID() as MilestoneId;
+
   // Create milestone from action (preserve PK/SK for snapshot)
   const newMilestone = {
     nodeType: 'MILESTONE' as const,
-    id: randomUUID() as MilestoneId,
+    id: newMilestoneId,
     userId: action.userId,
     driverId: action.driverId,
     parentMilestoneId: action.parentMilestoneId,
@@ -707,7 +710,7 @@ export async function convertActionToMilestone(
     createdAt: action.createdAt,
     archived: action.archived,
     PK: action.PK,
-    SK: getNodeSK(action.id), // Keep same SK structure for now
+    SK: getNodeSK(newMilestoneId), // Use new milestone ID for SK
   };
 
   // Update nodes: replace action with milestone

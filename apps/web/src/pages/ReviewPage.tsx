@@ -192,9 +192,14 @@ export function ReviewPage() {
     },
     onError: error => {
       console.error('Error converting action to milestone:', error);
-      alert(
-        `Failed to convert action: ${error instanceof Error ? error.message : 'Unknown error'}`
-      );
+      console.error('Error details:', {
+        message: error instanceof Error ? error.message : String(error),
+        status: (error as any).status,
+        stack: error instanceof Error ? error.stack : undefined,
+      });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const status = (error as any).status ? ` (Status: ${(error as any).status})` : '';
+      alert(`Failed to convert action: ${errorMessage}${status}`);
     },
   });
 
