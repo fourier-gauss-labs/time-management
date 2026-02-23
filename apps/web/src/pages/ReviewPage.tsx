@@ -190,6 +190,12 @@ export function ReviewPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['values-hierarchy'] });
     },
+    onError: error => {
+      console.error('Error converting action to milestone:', error);
+      alert(
+        `Failed to convert action: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    },
   });
 
   // Helper: Get icon component for action status
@@ -231,6 +237,12 @@ export function ReviewPage() {
       updates: { status: nextStatus },
     });
   };
+
+  const handleConvertActionToMilestone = (actionId: string, actionTitle: string) => {
+    console.log('Converting action to milestone:', { actionId, actionTitle });
+    convertActionMutation.mutate(actionId);
+  };
+
   const handleEditDriver = (driver: Driver) => {
     setSelectedDriver(driver);
     setEditingDriverTitle(driver.title);
@@ -458,7 +470,10 @@ export function ReviewPage() {
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                               <button
                                                 onClick={() =>
-                                                  convertActionMutation.mutate(action.id)
+                                                  handleConvertActionToMilestone(
+                                                    action.id,
+                                                    action.title
+                                                  )
                                                 }
                                                 className="p-1 hover:bg-muted rounded"
                                                 title="Convert to milestone"
@@ -686,7 +701,10 @@ export function ReviewPage() {
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                               <button
                                                 onClick={() =>
-                                                  convertActionMutation.mutate(action.id)
+                                                  handleConvertActionToMilestone(
+                                                    action.id,
+                                                    action.title
+                                                  )
                                                 }
                                                 className="p-1 hover:bg-muted rounded"
                                                 title="Convert to milestone"
