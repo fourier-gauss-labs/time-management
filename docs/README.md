@@ -60,19 +60,17 @@ This prevents vague, long-running tasks from clogging the daily plan and ensures
 
 The system borrows heavily from Franklin-Covey and Free to Focus in its insistence on structured planning rituals.
 
-### Weekly Review
+### Reflection: The weekly review
 
 The weekly review is the strategic anchor of the system.
 
 During this time, sufficient space is reserved for deep introspection. Drivers are established or refined. Milestones and actions are identified for the coming week. The focus is not speed, but clarity—clarity about ambitions, values, and the person you are trying to become.
 
-While I personally conduct this review on Sundays, the system allows flexibility in choosing the day.
+Reflection is time set aside to think about our drivers. I also refer to this as introspection. A person can do their reflection whenever is right for them, but our system assumes this is done weekly. Reflection is when a person asks the question: "What are my goals that are driving the things I am doing?" These are the "Drivers". They also concern, "What must I do to accomplish this?" These are the actions. And when the number of actions becomes large, they may be grouped in "Milestones". These are the intermediate accomplishment that show progress. Sometimes a single action is bigger than can be accomplished in a day, when that is the case it can be converted into a milestone and then subdivided into smaller actions.
 
-### Daily Planning
+### Planning: Setting a daily plan
 
-Daily planning is tactical.
-
-Each day begins with reviewing actions from the previous day. Incomplete actions are rolled over deliberately, not passively. Actions are reviewed for scope, priority, and realism. Oversized actions are decomposed. Triggers are added where friction is evident.
+Planning is tactical. It too can occur whenever it feels right for a person, but our system assumes this is done daily. Planning is when a person chooses what actions to take that day. Typically, any action from the previous plan (the previous day) will rollover into the current plan. The person then adds, removes, and prioritizes the actions into a coherent plan for the day. The system then breaks up the day into "pomodoros" that wrap around existing commitments (meetings. appointments, etc). These are bite-size chunks of time that promote deep focus.
 
 Actions are classified into three categories:
 
@@ -100,7 +98,7 @@ Pomodoro is not merely a timer; it is a behavioral constraint that encourages fo
 
 This system is governed by a small set of principles:
 
-1. **Daily introspection and weekly deep reflection are non-negotiable.**
+1. **Daily planning and weekly reflection are non-negotiable.**
 2. **Plan one day at a time.**
 3. **Use time-boxing and Pomodoro to protect focus.**
 4. **Lower the barrier to starting through explicit triggers.**
